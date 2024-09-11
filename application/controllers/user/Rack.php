@@ -14,8 +14,8 @@ class Rack extends CI_Controller
 
     public function index()
     {
-        $this->form_validation->set_rules('name', 'Name', 'required|trim', [
-            'required' => 'Nama Rack tidak boleh kosong.'
+        $this->form_validation->set_rules('sloc', 'Sloc', 'required|trim', [
+            'required' => 'sloc Rack tidak boleh kosong.'
         ]);
         if ($this->form_validation->run() == FALSE) {
             $data = [
@@ -35,13 +35,13 @@ class Rack extends CI_Controller
                 'uuid' => $uuid,
                 'sloc' => $this->input->post('sloc'),
                 'zone' => $this->input->post('zone'),
-                'rack' => $this->input->post('rakc'),
+                'rack' => $this->input->post('rack'),
                 'row' => $this->input->post('row'),
                 'column_rack' => $this->input->post('column'),
-                'max_qty' => $this->input->post('max_qty'),
+                'max_qty' => $this->input->post('maxqty'),
                 'uom' => $this->input->post('uom'),
                 'created_at' => date('Y-m-d H:i:s'),
-                'created_by' => $this->session->userdata('id'),
+                'created_by' => $this->session->userdata('id_users'),
 
             ];
             $this->db->insert('rack',$data);
