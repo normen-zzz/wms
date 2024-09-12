@@ -35,6 +35,8 @@ class Barang extends CI_Controller
                 'uuid' => $uuid,
                 'nama_barang' => $this->input->post('name'),
                 'uom' => $this->input->post('uom'),
+                'created_at' => date('Y-m-d H:i:s'),
+                'created_by' => $this->session->userdata('id_users')
 
             ];
             $this->db->insert('barang',$data);

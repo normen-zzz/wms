@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Barang extends CI_Controller
+class Customer extends CI_Controller
 {
 
     public function __construct()
@@ -22,10 +22,10 @@ class Barang extends CI_Controller
                 'title' => 'Customer',
                 'subtitle' => 'Data Customer',
                 'subtitle2' => 'Data Customer',
-                'barang' => $this->customer->getDataCustomer(),
+                'customer' => $this->customer->getDataCustomer(),
             ];
 
-            $this->load->view('user/barang/index', $data);
+            $this->load->view('user/customer/index', $data);
         } else {
 
             $this->load->library('uuid');
@@ -33,13 +33,13 @@ class Barang extends CI_Controller
            
             $data = [
                 'uuid' => $uuid,
-                'nama_barang' => $this->input->post('name'),
-                'uom' => $this->input->post('uom'),
-
+                'nama_customer' => $this->input->post('name'),
+                'created_at' => date('Y-m-d H:i:s'),
+                'created_by' => $this->session->userdata('id_users')
             ];
-            $this->db->insert('barang',$data);
+            $this->db->insert('customer',$data);
             $this->session->set_flashdata("message", "Toast.fire({icon: 'success',title: 'Success'})");
-            redirect(base_url('user/Barang'));
+            redirect(base_url('user/Customer'));
         }
     }
 }

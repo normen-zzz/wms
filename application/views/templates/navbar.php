@@ -32,8 +32,8 @@
                 </a>
             </li>
 
-              <!-- DATABASE  -->
-              <li class="menu-item  has-sub">
+            <!-- DATABASE  -->
+            <li class="menu-item  has-sub">
                 <a href="#" class='menu-link'>
                     <span><i class="bi bi-database-fill"></i> DATABASE</span>
                 </a>
@@ -46,28 +46,19 @@
 
                             <li class="submenu-item">
                                 <a href="<?= base_url('user/Barang') ?>" class='submenu-link'>BARANG</a>
-                                
+
 
                             </li>
 
                             <li class="submenu-item">
                                 <a href="<?= base_url('user/Rack') ?>" class='submenu-link'>RACK</a>
-                                
+
 
                             </li>
 
-                            <li class="submenu-item  has-sub">
-                                <a href="#" class='submenu-link'>PUTAWAY</a>
-                                <!-- 3 Level Submenu PICKLIST -->
-                                <ul class="subsubmenu">
-                                    <li class="subsubmenu-item ">
-                                        <a href="<?= base_url('user/Putaway/addPutaway') ?>" class="subsubmenu-link">Add Putaway</a>
-                                    </li>
+                            <li class="submenu-item">
+                                <a href="<?= base_url('user/Customer') ?>" class='submenu-link'>CUSTOMER</a>
 
-                                    <li class="subsubmenu-item ">
-                                        <a href="<?= base_url('user/Putaway/dataPutaway') ?>" class="subsubmenu-link">Data Putaway</a>
-                                    </li>
-                                </ul>
 
                             </li>
                         </ul>
@@ -98,7 +89,7 @@
                                     </li>
 
                                     <li class="subsubmenu-item ">
-                                        <a href="<?= base_url('user/Picklist/dataPicklist') ?>" class="subsubmenu-link">Data Picklist</a>
+                                        <a href="<?= base_url('user/Picklist') ?>" class="subsubmenu-link">Data Picklist</a>
                                     </li>
                                 </ul>
 
@@ -224,17 +215,17 @@
 
 
 
-                           
-
-
-                           
 
 
 
-                            
+
+
+
+
+
 
                         </ul>
-                        
+
 
 
                     </div>
@@ -243,15 +234,15 @@
 
 
 
-           
 
 
-           
 
 
-          
 
-          
+
+
+
+
 
 
         </ul>

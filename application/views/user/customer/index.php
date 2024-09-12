@@ -47,7 +47,7 @@
 											<?= $subtitle2 ?>
 										</h5>
 										<button type="button" data-bs-toggle="modal"
-										data-bs-target="#modalAddRack" class="btn btn-primary">Add <?= $subtitle ?></button>
+										data-bs-target="#modalAddCustomer" class="btn btn-primary">Add <?= $title ?></button>
 									</div>
 
 									<div class="card-body">
@@ -55,30 +55,20 @@
 											<table class="table" id="table1">
 												<thead>
 													<tr>
-														<th>Sloc</th>
-														<th>Zone</th>
-														<th>Rack</th>
-														<th>Row</th>
-														<th>Column</th>
-														<th>Max QTY</th>
-														<th>UOM</th>
-														<th>Status</th>
+														<th>No</th>
+														<th>Name <?= $title ?></th>
+														<th>Created At</th>
 
 													</tr>
 												</thead>
 												<tbody>
-													<?php foreach ($rack->result_array() as $rack1) { ?>
+													<?php foreach ($customer->result_array() as $customer1) { ?>
 
 
 														<tr>
-															<td><?= $rack1['sloc'] ?></td>
-															<td><?= $rack1['zone'] ?></td>
-															<td><?= $rack1['rack'] ?></td>
-															<td><?= $rack1['row'] ?></td>
-															<td><?= $rack1['column_rack'] ?></td>
-															<td><?= $rack1['max_qty'] ?></td>
-															<td><?= $rack1['uom'] ?></td>
-															<td></td>
+															<td><?= $customer1['id_customer'] ?></td>
+                                                            <td><?= $customer1['nama_customer'] ?></td>
+                                                            <td><?= dateindo($customer1['created_at']) ?></td>
 														</tr>
 													<?php } ?>
 												</tbody>
@@ -101,50 +91,22 @@
 	</div>
 
 	<!--login form Modal -->
-	<div class="modal fade text-left" id="modalAddRack" tabindex="-1" role="dialog" aria-labelledby="modalAddRack" aria-hidden="true">
-		<div class="modal-dialog" role="document">
+	<div class="modal fade text-left" id="modalAddCustomer" tabindex="-1" role="dialog" aria-labelledby="modalAddCustomer" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title" id="myModalLabel33">Add Rack Form</h4>
+					<h4 class="modal-title" id="myModalLabel33">Add <?= $title ?> Form</h4>
 					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
 						<i data-feather="x"></i>
 					</button>
 				</div>
-				<form action="<?= base_url('user/Rack') ?>" method="POST">
+				<form action="<?= base_url('user/Customer') ?>" method="POST">
 					<div class="modal-body">
-						<label for="sloc">Sloc</label>
+						<label for="name">Name</label>
 						<div class="form-group">
-							<input id="sloc" type="text" placeholder="Sloc" name="sloc" class="form-control">
-						</div>
-						<label for="zone">Zone</label>
-						<div class="form-group">
-							<input id="zone" type="text" placeholder="Zone" name="zone" class="form-control">
+							<input id="name" type="text" placeholder="Name" name="name" class="form-control">
 						</div>
 
-						<label for="rack">Rack</label>
-						<div class="form-group">
-							<input id="rack" type="text" placeholder="rack" name="rack" class="form-control">
-						</div>
-
-						<label for="row">Row</label>
-						<div class="form-group">
-							<input id="row" type="text" placeholder="Row" name="row" class="form-control">
-						</div>
-
-						<label for="column">Column</label>
-						<div class="form-group">
-							<input id="column" type="text" placeholder="Column" name="column" class="form-control">
-						</div>
-
-						<label for="maxqty">Max QTY</label>
-						<div class="form-group">
-							<input id="maxqty" type="text" placeholder="MAX QTY" name="maxqty" class="form-control">
-						</div>
-
-						<label for="uom">Uom</label>
-						<div class="form-group">
-							<input id="uom" type="text" placeholder="Uom" name="uom" class="form-control">
-						</div>
 						
 					</div>
 					<div class="modal-footer">

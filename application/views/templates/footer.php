@@ -15,7 +15,27 @@
 	</div>
 </footer>
 <script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.min.js"></script>
-    <script src="<?= base_url() . '/' ?>assets/static/js/pages/sweetalert2.js"></script>
-    <script>
-<?= $this->session->flashdata('message') ?>
+<script src="<?= base_url() . '/' ?>assets/static/js/pages/sweetalert2.js"></script>
+<script>
+	<?= $this->session->flashdata('message') ?>
+</script>
+
+<script>
+	const submitButtons = document.querySelectorAll('button[type="submit"]');
+
+	submitButtons.forEach(button => {
+		button.addEventListener('click', function() {
+			this.disabled = true;
+		});
+	});
+</script>
+
+<script>
+	const modalContainer = document.querySelector('.modal-container'); // or whatever class/ID your modal container has
+
+	modalContainer.addEventListener('click', function(event) {
+		if (event.target.tagName === 'BUTTON' && event.target.type === 'submit') {
+			event.target.disabled = true;
+		}
+	});
 </script>
