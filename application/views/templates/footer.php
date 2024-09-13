@@ -20,22 +20,3 @@
 	<?= $this->session->flashdata('message') ?>
 </script>
 
-<script>
-	const submitButtons = document.querySelectorAll('button[type="submit"]');
-
-	submitButtons.forEach(button => {
-		button.addEventListener('click', function() {
-			this.disabled = true;
-		});
-	});
-</script>
-
-<script>
-	const modalContainer = document.querySelector('.modal-container'); // or whatever class/ID your modal container has
-
-	modalContainer.addEventListener('click', function(event) {
-		if (event.target.tagName === 'BUTTON' && event.target.type === 'submit') {
-			event.target.disabled = true;
-		}
-	});
-</script>

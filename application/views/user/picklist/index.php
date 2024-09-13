@@ -46,7 +46,7 @@
                                         <h5 class="card-title">
                                             <?= $subtitle2 ?>
                                         </h5>
-                                        
+
                                     </div>
 
                                     <div class="card-body">
@@ -54,30 +54,22 @@
                                             <table class="table" id="table1">
                                                 <thead>
                                                     <tr>
-                                                        <th>Sloc</th>
-                                                        <th>Zone</th>
-                                                        <th>Rack</th>
-                                                        <th>Row</th>
-                                                        <th>Column</th>
-                                                        <th>Max QTY</th>
-                                                        <th>UOM</th>
+                                                        <th>No PL</th>
+                                                        <th>Total Qty</th>
                                                         <th>Status</th>
+                                                        <th>Created At</th>
+                                                        <th>Action</th>
 
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <?php foreach ($rack->result_array() as $rack1) { ?>
-
-
+                                                    <?php foreach ($pl->result_array() as $pl1) { ?>
                                                         <tr>
-                                                            <td><?= $rack1['sloc'] ?></td>
-                                                            <td><?= $rack1['zone'] ?></td>
-                                                            <td><?= $rack1['rack'] ?></td>
-                                                            <td><?= $rack1['row'] ?></td>
-                                                            <td><?= $rack1['column_rack'] ?></td>
-                                                            <td><?= $rack1['max_qty'] ?></td>
-                                                            <td><?= $rack1['uom'] ?></td>
-                                                            <td></td>
+                                                            <td><?= $pl1['no_picklist'] ?></td>
+                                                            <td>???</td>
+                                                            <td><?= $pl1['status'] ?></td>
+                                                            <td><?= dateindo($pl1['created_at']) ?></td>
+                                                            <td>-</td>
                                                         </tr>
                                                     <?php } ?>
                                                 </tbody>
@@ -110,6 +102,8 @@
     <script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
     <script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
+
+    
 
 </body>
 

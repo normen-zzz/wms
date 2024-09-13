@@ -30,17 +30,24 @@ class Barang extends CI_Controller
 
             $this->load->library('uuid');
             $uuid = $this->uuid->v4(true);
-           
+            $sku = $this->input->post('sku');
             $data = [
                 'uuid' => $uuid,
+                'sku' => $sku,
                 'nama_barang' => $this->input->post('name'),
                 'uom' => $this->input->post('uom'),
                 'created_at' => date('Y-m-d H:i:s'),
                 'created_by' => $this->session->userdata('id_users')
 
             ];
-            $this->db->insert('barang',$data);
-            $this->session->set_flashdata("message", "Toast.fire({icon: 'success',title: 'Success'})");
+
+            $checkSku = $this->db->query('SELECT sku FROM barang WHERE sku = "' . $sku . '" ');
+            if ($checkSku->num_rows() == 0) {
+                $this->db->insert('barang', $data);
+                $this->session->set_flashdata("message", "Toast.fire({icon: 'success',title: 'Success'})");
+            } else {
+                $this->session->set_flashdata("message", "Toast.fire({icon: 'failed',title: 'failed,SKU already exists'})");
+            }
             redirect(base_url('user/Barang'));
         }
     }

@@ -171,6 +171,18 @@
 	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
 
+	<script>
+		$('body').on('click', 'button[type="submit"]', function() {
+			var button = $(this);
+			setTimeout(function() {
+				button.prop('disabled', true);
+				setTimeout(function() {
+					button.prop('disabled', false);
+				}, 10000);
+			}); // Jeda 1 detik untuk menonaktifkan tombol
+		});
+	</script>
+
 </body>
 
 </html>

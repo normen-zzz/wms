@@ -18,10 +18,31 @@ class Picklist extends CI_Controller
             'title' => 'Picklist',
             'subtitle' => 'Data Picklist',
             'subtitle2' => 'Data Picklist',
-            'barang' => $this->picklist->getDataPicklist(),
+            'pl' => $this->picklist->getDataPicklist(),
         ];
         $this->load->view('user/picklist/index', $data);
     }
+
+    public function addPicklist()
+    {
+        $data = [
+            'title' => 'Picklist',
+            'subtitle' => 'Add Picklist',
+            'subtitle2' => 'Add Picklist',
+            
+        ];
+        $this->load->view('user/picklist/addPicklist', $data);
+    }
+
+    public function getDataBarangSelect()
+	{
+		// Search term
+		$searchTerm = $this->input->post('searchTerm');
+
+		// Get users
+		$response = $this->picklist->selectBarang($searchTerm);
+		echo json_encode($response);
+	}
 }
 
 /* End of file User.php */

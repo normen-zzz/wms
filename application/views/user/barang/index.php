@@ -46,8 +46,7 @@
 										<h5 class="card-title">
 											<?= $subtitle2 ?>
 										</h5>
-										<button type="button" data-bs-toggle="modal"
-										data-bs-target="#modalAddBarang" class="btn btn-primary">Add Barang</button>
+										<button type="button" data-bs-toggle="modal" data-bs-target="#modalAddBarang" class="btn btn-primary">Add Barang</button>
 									</div>
 
 									<div class="card-body">
@@ -55,7 +54,7 @@
 											<table class="table" id="table1">
 												<thead>
 													<tr>
-														<th>No</th>
+														<th>SKU</th>
 														<th>Nama Barang</th>
 														<th>UOM</th>
 														<th>Status</th>
@@ -67,7 +66,7 @@
 
 
 														<tr>
-															<td><?= $barang1['id_barang'] ?></td>
+															<td><?= $barang1['sku'] ?></td>
 															<td><?= $barang1['nama_barang'] ?></td>
 															<td><?= $barang1['uom'] ?></td>
 															<td><?= getStatusBarang($barang1['is_deleted'])  ?></td>
@@ -88,46 +87,52 @@
 				</div>
 			</div>
 
+			<!--login form Modal -->
+			<div class="modal fade text-left" id="modalAddBarang" tabindex="-1" role="dialog" aria-labelledby="modalAddBarang" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h4 class="modal-title" id="myModalLabel33">Add Barang Form</h4>
+							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+								<i data-feather="x"></i>
+							</button>
+						</div>
+						<form action="<?= base_url('user/Barang') ?>" method="POST">
+							<div class="modal-body">
+								<label for="sku">Sku</label>
+								<div class="form-group">
+									<input id="sku" type="text" placeholder="Sku" name="sku" class="form-control">
+								</div>
+								<label for="name">Name</label>
+								<div class="form-group">
+									<input id="name" type="text" placeholder="Name" name="name" class="form-control">
+								</div>
+
+								<label for="uom">Uom</label>
+								<div class="form-group">
+									<input id="uom" type="text" placeholder="Uom" name="uom" class="form-control">
+								</div>
+
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+
+									Close
+								</button>
+								<button type="submit" class="btn btn-primary ms-1">
+									Submit
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+
 			<?php $this->load->view('templates/footer') ?>
 		</div>
 	</div>
 
-	<!--login form Modal -->
-	<div class="modal fade text-left" id="modalAddBarang" tabindex="-1" role="dialog" aria-labelledby="modalAddBarang" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title" id="myModalLabel33">Add Barang Form</h4>
-					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-						<i data-feather="x"></i>
-					</button>
-				</div>
-				<form action="<?= base_url('user/Barang') ?>" method="POST">
-					<div class="modal-body">
-						<label for="name">Name</label>
-						<div class="form-group">
-							<input id="name" type="text" placeholder="Name" name="name" class="form-control">
-						</div>
 
-						<label for="uom">Uom</label>
-						<div class="form-group">
-							<input id="uom" type="text" placeholder="Uom" name="uom" class="form-control">
-						</div>
-						
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
-							
-							Close
-						</button>
-						<button type="submit" class="btn btn-primary ms-1">
-							Submit
-						</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
 
 	<script src="<?= base_url() . '/' ?>assets/static/js/components/dark.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/static/js/pages/horizontal-layout.js"></script>
@@ -138,6 +143,19 @@
 	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
+
+	<script>
+		$('body').on('click', 'button[type="submit"]', function() {
+			var button = $(this);
+			setTimeout(function() {
+				button.prop('disabled', true);
+				setTimeout(function() {
+					button.prop('disabled', false);
+				}, 10000);
+			}); // Jeda 1 detik untuk menonaktifkan tombol
+		});
+	</script>
+
 
 </body>
 
