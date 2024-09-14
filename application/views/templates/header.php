@@ -15,7 +15,7 @@
                         <img src="<?= base_url() . '/' ?>assets/compiled/jpg/1.jpg" alt="Avatar">
                     </div>
                     <div class="text">
-                        <h6 class="user-dropdown-name">Norman Ardian</h6>
+                        <h6 class="user-dropdown-name"> <?= $this->session->userdata('nama') ?>  </h6>
                         <p class="user-dropdown-status text-sm text-muted"><?php if ($this->session->userdata('role_id') == 1) {
                             echo 'Admin';
                         } else{

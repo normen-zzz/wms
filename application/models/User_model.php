@@ -3,49 +3,30 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class User_model extends CI_Model
 {
-	function absendaily($id, $tgl)
-	{
-		$this->db->select('*');
-		$this->db->from('absen');
-		$this->db->where('nip', $id);
-		$this->db->where('waktu', $tgl);
-		return $this->db->get();
-	}
 	
-	// function absenid($id)
-	// {
-	// 	$this->db->select('*');
-	// 	$this->db->from('absen');
-	// 	$this->db->where('absen.id_absen', $id);
-	// 	return $this->db->get()->result();
-	// }
+	public function get_all_users() {
+		$this->db->select('users.*, roles.name as role_name');
+		$this->db->from('users');
+		$this->db->join('roles', 'users.role_id = roles.id');
+		return $this->db->get()->result();
+    }
 
-	public function getDetailAbsen($id)
-	{
-		return $this->db->get_where('absen', ['id_absen' => $id])->row_array();
-	}
+    public function get_user($id) {
+        return $this->db->get_where('users', ['id_users' => $id])->row();
+    }
 
-	public function getDetailUsers($id) {
-		return $this->db->get_where('users', ['id_users' => $id])->row_array();
-	}
-	public function editKaryawan($id, $data)
-	{
-		$this->db->update('users', $data, ['id_users' => $id]);
-		return $this->db->affected_rows();
-	}
+    public function insert_user($data) {
+        return $this->db->insert('users', $data);
+    }
 
-	public function cek_kehadiran($nip, $tgl)
-	{
-		$query_str =
+    public function update_user($id, $data) {
+        $this->db->where('id_users', $id);
+        return $this->db->update('users', $data);
+    }
 
-			$this->db->where('nip', $nip)
-			->where('waktu', $tgl)->get('absen');
-		if ($query_str->num_rows() > 0) {
-			return $query_str->row();
-		} else {
-			return false;
-		}
-	}
+    public function delete_user($id) {
+        return $this->db->delete('users', ['id_users' => $id]);
+    }
 
 }
 

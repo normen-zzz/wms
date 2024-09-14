@@ -53,39 +53,63 @@ $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-// Master Jabatan
-$route['data-jabatan'] = 'Karyawan/jabatan';
-$route['add-jabatan'] = 'Karyawan/addjabatan';
-$route['hapus-jabatan'] = 'Karyawan/deletejabatan';
+// dash
+$route['dashboard'] = 'user/dashboard';
 
-// Master Karyawan
-$route['data-karyawan'] = 'Karyawan';
-$route['add-karyawan'] = 'Karyawan/addkaryawan';
-$route['edit-karyawan'] = 'Karyawan/editkaryawan';
+// auth
+$route['login'] = 'auth';
 
-// Master Cuti 
-$route['data-cuti'] = 'Cuti';
-$route['terima-cuti'] = 'Cuti/cuti_terima/';
-$route['tolak-cuti'] = 'Cuti/cuti_tolak/';
+// barang
+$route['barang'] = 'user/barang';
+$route['barang/add'] = 'user/barang/add';
+$route['barang/edit/(:num)'] = 'user/barang/edit/$1';
 
-$route['data-cuti-karyawan'] = 'Cuti/cuti_karyawan';
-$route['add-cuti-karyawan'] = 'Cuti/cuti_add';
+// customer
+$route['customer'] = 'user/customer';
+$route['customer/add'] = 'user/customer/add';
+$route['customer/edit/(:num)'] = 'user/customer/edit/$1';
 
-// Master Absensi
-$route['data-absensi'] = 'Absen';
-$route['rekap-absensi-filter-data'] = 'Absen/rekapabsensi';
+// rack
+$route['rack'] = 'user/rack';
+$route['rack/add'] = 'user/rack/add';
+$route['rack/edit/(:num)'] = 'user/rack/edit/$1';
 
-// Master Overtime 
-$route['data-overtime'] = 'Overtime';
-$route['terima-overtime'] = 'Overtime/overtime_terima/';
-$route['tolak-overtime'] = 'Overtime/overtime_tolak/';
+// inbound
+$route['picklist'] = 'user/picklist';
+$route['picklist/add'] = 'user/picklist/add';
+$route['picklist/edit/(:num)'] = 'user/picklist/edit/$1';
 
-$route['data-overtime-karyawan'] = 'Overtime/overtime_karyawan';
-$route['add-overtime-karyawan'] = 'Overtime/overtime_add';
+// outbound
+$route['packinglist'] = 'user/packinglist';
+$route['packinglist/add'] = 'user/packinglist/add';
+$route['packinglist/edit/(:num)'] = 'user/packinglist/edit/$1';
 
-// Master Absensi User
-$route['data-absensi-user'] = 'Absen/getAbsenId/';
+// report
+$route['report'] = 'report';
+$route['report/inbound'] = 'report/inbound';
+$route['report/outbound'] = 'report/outbound';
+$route['report/stock'] = 'report/stock';
 
-// Master Laporan
-$route['rekap-absensi'] = 'Laporan';
-$route['rekap-absensi-filter'] = 'Laporan/laporanfilter';
+// putaway
+$route['putaway'] = 'user/putaway';
+$route['putaway/add'] = 'user/putaway/add';
+$route['putaway/edit/(:num)'] = 'user/putaway/edit/$1';
+
+// setting
+$route['setting'] = 'user/setting';
+
+// user
+$route['users'] = 'user/users';
+$route['users/create'] = 'user/users/create';
+$route['users/edit/(:num)'] = 'user/users/edit/$1';
+$route['users/delete/(:num)'] = 'user/users/delete/$1';
+$route['users/get_all_users'] = 'user/users/get_all_users';
+// users/get_user/
+$route['users/get_user/(:num)'] = 'user/users/get_user/$1';
+
+
+// user profile
+$route['user/profile'] = 'user/profile';
+$route['user/change_password'] = 'user/change_password';
+$route['user/setting'] = 'user/setting';
+

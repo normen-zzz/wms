@@ -16,8 +16,6 @@ class Profile extends CI_Controller
     public function index()
     {
 
-
-
         $this->form_validation->set_rules('nama', 'Nama Karyawan', 'required|trim', [
             'required' => 'Nama Karyawan tidak boleh kosong.'
         ]);

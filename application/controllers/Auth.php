@@ -37,9 +37,9 @@ class Auth extends CI_Controller
 
 					if ($user['role_id'] == 1) {
 						$this->session->set_flashdata('message', 'swal("Berhasil!", "Berhasil Login!", "success");');
-						redirect('admin');
+						redirect('user/dashboard');
 					} else {
-						redirect('user/Dashboard');
+						redirect('auth/change_password');
 					}
 				} else {
 					// Jika password tidak sesuai

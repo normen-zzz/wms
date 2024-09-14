@@ -14,8 +14,8 @@
 		</div>
 	</div>
 </footer>
-<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.min.js"></script>
-<script src="<?= base_url() . '/' ?>assets/static/js/pages/sweetalert2.js"></script>
+<!-- <script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.min.js"></script>
+<script src="<?= base_url() . '/' ?>assets/static/js/pages/sweetalert2.js"></script> -->
 <script>
 	<?= $this->session->flashdata('message') ?>
 </script>
