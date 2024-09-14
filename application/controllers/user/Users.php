@@ -55,7 +55,7 @@ class Users extends CI_Controller {
 		]);
 
 		if ($this->form_validation->run() == FALSE) {
-			$errors = validation_errors(); // Get validation errors
+			$errors = validation_errors(); 
 			echo json_encode(['success' => false, 'message' => $errors]);
 			return;
 		}
@@ -66,7 +66,7 @@ class Users extends CI_Controller {
 			'jenis_kelamin' => $this->input->post('jenis_kelamin'),
 			'password' => password_hash($this->input->post('password'), PASSWORD_BCRYPT),
 			'role_id' => $this->input->post('role_id'),
-			'tanggal_masuk' => date('Y-m-d H:i:s'),
+			'waktu_masuk' => date('Y-m-d H:i:s'),
 		];
 
 		$this->load->model('User_model');
