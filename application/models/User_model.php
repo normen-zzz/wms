@@ -28,6 +28,12 @@ class User_model extends CI_Model
         return $this->db->delete('users', ['id_users' => $id]);
     }
 
+	public function getDetailUsers($id)
+	{
+		// get data users by id
+		return $this->db->get_where('users', ['id_users' => $id])->row_array();
+	}
+
 }
 
 /* End of file ModelName.php */

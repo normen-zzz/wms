@@ -49,86 +49,44 @@
                                 <!-- Minimal jQuery Datatable end -->
                                 <!-- Basic Tables start -->
 
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5 class="card-title">
-                                            <?= $subtitle2 ?>
-                                        </h5>
-
-                                    </div>
-
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="helpInputTop">Input text with help</label>
-                                                    <small class="text-muted">eg.<i>someone@example.com</i></small>
-                                                    <input type="text" class="form-control" id="helpInputTop">
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <label for="helpInputTop">Input text with help</label>
-                                                    <small class="text-muted">eg.<i>someone@example.com</i></small>
-                                                    <input type="text" class="form-control" id="helpInputTop">
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <label for="helpInputTop">Input text with help</label>
-                                                    <small class="text-muted">eg.<i>someone@example.com</i></small>
-                                                    <input type="text" class="form-control" id="helpInputTop">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="helpInputTop">Input text with help</label>
-                                                    <small class="text-muted">eg.<i>someone@example.com</i></small>
-                                                    <input type="text" class="form-control" id="helpInputTop">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="helpInputTop">Input text with help</label>
-                                                    <small class="text-muted">eg.<i>someone@example.com</i></small>
-                                                    <input type="text" class="form-control" id="helpInputTop">
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <label for="helpInputTop">Input text with help</label>
-                                                    <small class="text-muted">eg.<i>someone@example.com</i></small>
-                                                    <input type="text" class="form-control" id="helpInputTop">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="table-responsive">
-                                            <table class="table" id="table">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Barang</th>
-                                                        <th>Batch</th>
-                                                        <th>Expired Date</th>
-
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="table-body">
-                                                    <tr>
-                                                        <td>
-                                                            <select name="barang[]" class="form-control selectBarang" id="selectBarang">
-
-                                                            </select>
-                                                        </td>
-                                                        <td><input type="text" class="form-control" name="batch[]" id="batch"></td>
-                                                        <td> <input type="date" name="ed[]" class="form-control flatpickrDate" placeholder="Select date.."></td>
-                                                    </tr>
-                                                </tbody>
-                                                <tfoot>
-                                                    <tr>
-                                                        <td colspan="3"><button id="add-row-btn">Add Row</button></td>
-                                                    </tr>
-                                                </tfoot>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-
-
+                               <div class="card">
+								 <div class="card-body">
+									<div class="table-responsive">
+										<form id="picklistForm">
+											<table class="table" id="table">
+												<thead>
+													<tr>
+														<th>Barang</th>
+														<th>No Pickinglist</th>
+														<th>Batch</th>
+														<th>Expired Date</th>
+													</tr>
+												</thead>
+												<tbody id="table-body">
+													<tr>
+														<td>
+															<select name="barang[]" class="form-control selectBarang "></select>
+														</td>
+														<td>
+															<input type="text" class="form-control" name="no_picklist">
+														</td>
+														<td><input type="text" class="form-control" name="batch[]"></td>
+														<td><input type="date" name="ed[]" class="form-control flatpickrDate"></td>
+													</tr>
+												</tbody>
+												<tfoot>
+													<tr>
+														<td colspan="3">
+															<button type="button" id="add-row-btn" class="btn btn-secondary">Add Row</button>
+															<button type="submit" class="btn btn-primary">Save</button>
+														</td>
+													</tr>
+												</tfoot>
+											</table>
+										</form>
+									</div>
+								</div>
+							   </div>
                                 <!-- Basic Tables end -->
                             </div>
                         </div>
@@ -156,77 +114,83 @@
     <script src="<?= base_url() . '/' ?>assets/static/js/pages/date-picker.js"></script>
     <!-- select2 -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+	<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
+	
 
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $(".selectBarang").select2({
-                
-                ajax: {
-                    url: '<?= base_url('user/Picklist/getDataBarangSelect') ?>',
-                    type: "post",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function(params) {
-                        return {
-                            searchTerm: params.term // search term
-                        };
-                    },
-                    processResults: function(response) {
-                        return {
-                            results: response
-                        };
-                    },
-                    cache: true
-                }
-            });
-        });
-    </script>
+   <script type="text/javascript">
+    $(document).ready(function () {
+        initSelect2AndFlatpickr();
 
-    <script>
-        $(".flatpickrDate").flatpickr({
-            dateFormat: "d-m-Y", //change format also 
-        });
-    </script>
-    <script>
-    $(document).ready(function() {
-        $('#add-row-btn').on('click', function() {
+        $('#add-row-btn').on('click', function () {
             var newRow = `
                 <tr>
-                    <td>
-                        <select name="barang[]" class="form-control selectBarang">
-                            <!-- options will be populated by select2 -->
-                        </select>
-                    </td>
+                    <td><select name="barang[]" class="form-control selectBarang"></select></td>
+					<td><input type="text" class="form-control" name="no_picklist"></td>
                     <td><input type="text" class="form-control" name="batch[]"></td>
-                    <td><input type="date" name="ed[]" class="form-control flatpickrDate" placeholder="Select date.."></td>
-                </tr>
-            `;
+                    <td><input type="date" name="ed[]" class="form-control flatpickrDate"></td>
+                </tr>`;
             $('#table-body').append(newRow);
-            // Initialize select2 on the new row
-            $('#table-body tr:last .selectBarang').select2({
-                ajax: {
-                    url: '<?= base_url('user/Picklist/getDataBarangSelect') ?>',
-                    type: "post",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function(params) {
-                        return {
-                            searchTerm: params.term // search term
-                        };
-                    },
-                    processResults: function(response) {
-                        return {
-                            results: response
-                        };
-                    },
-                    cache: true
-                }
-            });
-            // Initialize flatpickr on the new row
-            $('#table-body tr:last .flatpickrDate').flatpickr({
+
+            initSelect2AndFlatpickr();
+        });
+
+       $('#picklistForm').on('submit', function (e) {
+			e.preventDefault();
+			$.ajax({
+				url: "<?= base_url('user/picklist/insertPicklist') ?>",
+				type: "POST",
+				data: $(this).serialize(),
+				dataType: 'json', 
+				success: function (response) {
+					Swal.fire({
+						title: response.status === 'success' ? 'Success' : 'Error',
+						text: response.message,
+						icon: response.status === 'success' ? 'success' : 'error',
+						confirmButtonText: 'OK'
+					}).then(() => {
+						if (response.status === 'success') {
+							$('#picklistForm')[0].reset(); 
+							window.location.href = "<?= base_url('user/picklist') ?>";
+						}
+					});
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					Swal.fire({
+						title: 'Error',
+						text: 'Something went wrong: ' + textStatus,
+						icon: 'error',
+						confirmButtonText: 'OK'
+					});
+				}
+			});
+		});
+
+
+        function initSelect2AndFlatpickr() {
+           $('.selectBarang').select2({
+				ajax: {
+					url: '<?= base_url('user/picklist/getDataBarangSelect') ?>',
+					type: "POST",
+					dataType: 'json',
+					delay: 250,
+					data: function (params) {
+						return {
+							searchTerm: params.term
+						};
+					},
+					processResults: function (response) {
+						return {
+							results: response
+						};
+					},
+					cache: true
+				}
+			});
+
+            $('.flatpickrDate').flatpickr({
                 dateFormat: "d-m-Y"
             });
-        });
+        }
     });
 </script>
 

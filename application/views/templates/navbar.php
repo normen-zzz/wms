@@ -114,7 +114,7 @@
 									</li>
 
 									<li class="subsubmenu-item ">
-										<a href="<?= base_url('receiving/receivinginbound') ?>" class="subsubmenu-link">Data Receiving
+										<a href="<?= base_url('inbound') ?>" class="subsubmenu-link">Data Receiving
 											Inbound</a>
 									</li>
 								</ul>
@@ -235,6 +235,12 @@
 			<li class="menu-item  ">
 				<a href="<?= base_url('users') ?>" class='menu-link'>
 					<span><i class="bi bi-person-fill"></i>USERS</span>
+				</a>
+			</li>
+
+			<li class="menu-item  ">
+				<a href="<?= base_url('settings') ?>" class='menu-link'>
+					<span><i class="bi bi-gear"></i>SETTING</span>
 				</a>
 			</li>
 	

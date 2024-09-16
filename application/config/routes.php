@@ -75,14 +75,20 @@ $route['rack/add'] = 'user/rack/add';
 $route['rack/edit/(:num)'] = 'user/rack/edit/$1';
 
 // inbound
+$route['inbound/create'] = 'user/inbound/create_inbound';
+$route['inbound/view'] = 'user/inbound/view';
+$route['inbound'] = 'user/inbound';
+
+$route['receiving'] = 'user/receiving';
+$route['receiving/add/(:num)'] = 'user/receiving/add_receiving/$1';
+$route['putaway/create/(:num)'] = 'user/putaway/create_putaway/$1';
+$route['putaway/view'] = 'user/putaway/view';
+
+// picklist
 $route['picklist'] = 'user/picklist';
 $route['picklist/add'] = 'user/picklist/add';
-$route['picklist/edit/(:num)'] = 'user/picklist/edit/$1';
+$route['picklist/view'] = 'user/picklist/view';
 
-// outbound
-$route['packinglist'] = 'user/packinglist';
-$route['packinglist/add'] = 'user/packinglist/add';
-$route['packinglist/edit/(:num)'] = 'user/packinglist/edit/$1';
 
 // report
 $route['report'] = 'report';
@@ -90,13 +96,10 @@ $route['report/inbound'] = 'report/inbound';
 $route['report/outbound'] = 'report/outbound';
 $route['report/stock'] = 'report/stock';
 
-// putaway
-$route['putaway'] = 'user/putaway';
-$route['putaway/add'] = 'user/putaway/add';
-$route['putaway/edit/(:num)'] = 'user/putaway/edit/$1';
-
 // setting
-$route['setting'] = 'user/setting';
+$route['settings'] = 'user/settings/index';
+$route['settings/update_setting'] = 'user/settings/update_setting';
+
 
 // user
 $route['users'] = 'user/users';

@@ -12,28 +12,38 @@ class Picklist_model extends CI_Model
 	}
 
 	// Fetch users
-    function selectBarang($searchTerm=NULL){
+    function selectBarang($searchTerm = NULL)
+	{
+		$this->db->select('*');
+		$this->db->from('barang');
 
-        if ($searchTerm != NULL) {
-            // Fetch users
-        $this->db->select('*');
-        $this->db->where("nama_barang like '%".$searchTerm."%' OR sku like  '%".$searchTerm."%' ");
-        $fetched_records = $this->db->get('barang');
-        $users = $fetched_records->result_array();
+		if ($searchTerm != NULL) {
+			$this->db->where("nama_barang LIKE '%" . $this->db->escape_like_str($searchTerm) . "%' OR sku LIKE '%" . $this->db->escape_like_str($searchTerm) . "%'");
+		}
 
-        // Initialize Array with fetched data
-        $data = array();
-        foreach($users as $user){
-            $data[] = array("id"=>$user['id_barang'], "text"=>$user['sku'].' | '.$user['nama_barang']);
-        }
-        return $data;
-        } else{
-            return NULL;
-        }
-    	
+		$fetched_records = $this->db->get();
+		$items = $fetched_records->result_array();
+
+		$data = array();
+		foreach ($items as $item) {
+			$data[] = array(
+				"id" => $item['id_barang'],
+				"text" => $item['sku'] . ' | ' . $item['nama_barang']
+			);
+		}
+		
+		return $data;
+	}
+
+
+	 public function insert_picklist($data) {
+        return $this->db->insert('picklist', $data) ? $this->db->insert_id() : false;
     }
-	
-	
+
+    public function insert_datapicklist($data) {
+        return $this->db->insert('datapicklist', $data);
+    }
+
 
 }
 

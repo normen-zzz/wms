@@ -67,9 +67,11 @@
                                                         <tr>
                                                             <td><?= $pl1['no_picklist'] ?></td>
                                                             <td>???</td>
-                                                            <td><?= $pl1['status'] ?></td>
+															<td><?= $pl1['status'] == 0 ? 'Created' : $pl1['status'] ?></td> 
                                                             <td><?= dateindo($pl1['created_at']) ?></td>
-                                                            <td>-</td>
+                                                            <td>
+																<a href="<?= base_url('user/picklist/edit' . $pl1['id_picklist']) ?>" class="btn btn-primary btn-sm">Edit</a>
+															</td>
                                                         </tr>
                                                     <?php } ?>
                                                 </tbody>

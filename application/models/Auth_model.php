@@ -14,6 +14,8 @@ class Auth_model extends CI_Model
 		$this->db->update('users', $data, ['id_users' => 1]);
 		return $this->db->affected_rows();
 	}
+
+	
 }
 
 /* End of file ModelName.php */

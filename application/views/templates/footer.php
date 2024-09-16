@@ -2,13 +2,13 @@
 	<div class="container">
 		<div class="footer clearfix mb-0 text-muted">
 			<div class="float-start">
-				<p>2023 &copy; Mazer</p>
+				<p> <?= date('Y') ?> &copy; <?= get_setting('site_name'); ?></p>
 			</div>
 			<div class="float-end">
 				<p>
 					Crafted with
 					<span class="text-danger"><i class="bi bi-heart"></i></span>
-					by <a href="https://saugi.me">Saugi</a>
+					by <a href="#"><?= get_setting('company_name') ?></a>
 				</p>
 			</div>
 		</div>

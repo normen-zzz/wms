@@ -1,47 +1,40 @@
 <?php
-defined('BASEPATH') or exit('No direct script access allowed');
+defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Putaway extends CI_Controller
-{
+class Putaway extends CI_Controller {
 
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
-        is_login();
-        date_default_timezone_set('Asia/Jakarta');
-        $this->load->model('User_model', 'user');
-        $this->load->model('Admin_model', 'admin');
+        $this->load->model('Putaway_model');
     }
 
-    public function index()
-    {
+    public function create_putaway() {
+        if ($this->input->is_ajax_request()) {
+            $data = array(
+                'id_inbound' => $this->input->post('id_inbound'),
+                'id_barang' => $this->input->post('id_barang'),
+                'qty_putaway' => $this->input->post('qty_putaway'),
+                'location' => $this->input->post('location'),
+                'putaway_date' => date('Y-m-d H:i:s'),
+                'created_by' => $this->input->post('created_by')
+            );
 
-
-
-        $this->form_validation->set_rules('nama', 'Nama Karyawan', 'required|trim', [
-            'required' => 'Nama Karyawan tidak boleh kosong.'
-        ]);
-        if ($this->form_validation->run() == FALSE) {
-            $data = [
-                'title' => 'User Profile',
-                'subtitle' => 'Profile',
-                'subtitle2' => 'Data User',
-                'users' => $this->user->getDetailUsers($this->session->userdata('id_users')),
-            ];
-
-            $this->load->view('user/profile/index', $data);
+            if ($this->Putaway_model->insert_putaway($data)) {
+                echo json_encode(['status' => 'success', 'message' => 'Putaway created successfully']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Failed to create putaway']);
+            }
         } else {
-            $data = [
-                'nama' => $this->input->post('nama'),
-                'email' => $this->input->post('email'),
-                'password' => hashEncrypt($this->input->post('password')),
-                'jenis_kelamin' => $this->input->post('jenis_kelamin'),
-            ];
-            $this->user->editKaryawan($this->session->userdata('id_users'), $data);
-            $this->session->set_flashdata("message", "Toast.fire({icon: 'success',title: 'Success'})");
-            redirect(base_url('user/profile'));
+            show_error('No direct script access allowed', 403);
+        }
+    }
+
+    public function view() {
+        if ($this->input->is_ajax_request()) {
+            $data = $this->Putaway_model->get_all_putaways();
+            echo json_encode($data);
+        } else {
+            show_error('No direct script access allowed', 403);
         }
     }
 }
-
-/* End of file User.php */
