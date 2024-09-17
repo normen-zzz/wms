@@ -65,8 +65,6 @@ class Barang extends CI_Controller
 			'uom' => $this->input->post('uom')
 		);
 		
-		var_dump($data); exit;
-
 		$this->barang->update_barang($id_barang, $data);
 		echo json_encode(['success' => true]);
 	}

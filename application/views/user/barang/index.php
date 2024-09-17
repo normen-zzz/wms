@@ -256,30 +256,47 @@
     });
 
     $('.delete-btn').click(function() {
-        var id = $(this).data('id_barang');
+    	var id = $(this).data('id_barang');
 
-        if (confirm("Are you sure you want to delete this item?")) {
-            $.ajax({
-                url: '<?= base_url("barang/delete_barang") ?>/' + id,
-                type: 'POST',
-								success: function(response) {
-									Swal.fire({
-										title: 'Deleted!',
-										text: 'Data barang berhasil dihapus!',
-										icon: 'success',
-										confirmButtonText: 'OK'
-									}).then((result) => {
-										if (result.isConfirmed) {
-											location.reload();
-										}
-									});
-								},
-                error: function(xhr) {
-                    alert("An error occurred.");
-                }
-            });
-        }
-    });
+			Swal.fire({
+					title: 'Are you sure?',
+					text: "You won't be able to revert this!",
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonColor: '#3085d6',
+					cancelButtonColor: '#d33',
+					confirmButtonText: 'Yes, delete it!',
+					cancelButtonText: 'Cancel'
+			}).then((result) => {
+					if (result.isConfirmed) {
+							$.ajax({
+									url: '<?= base_url("barang/delete_barang") ?>/' + id,
+									type: 'POST',
+									success: function(response) {
+											Swal.fire({
+													title: 'Deleted!',
+													text: 'Data barang berhasil dihapus!',
+													icon: 'success',
+													confirmButtonText: 'OK'
+											}).then((result) => {
+													if (result.isConfirmed) {
+															location.reload();
+													}
+											});
+									},
+									error: function(xhr) {
+											Swal.fire({
+													title: 'Error!',
+													text: 'An error occurred while deleting the item.',
+													icon: 'error',
+													confirmButtonText: 'OK'
+											});
+									}
+							});
+					}
+			});
+	});
+
 	</script>
 
 

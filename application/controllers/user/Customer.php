@@ -42,6 +42,39 @@ class Customer extends CI_Controller
             redirect(base_url('user/Customer'));
         }
     }
+
+	public function get_customer() {
+		$id_customer = $this->input->post('id_customer');
+		
+		$this->db->where('id_customer', $id_customer);
+		$query = $this->db->get('customer');
+		$customer = $query->row_array();
+
+		echo json_encode($customer);
+	}
+
+	public function update_customer() {
+		$id_customer = $this->input->post('id_customer');
+		$data = [
+			'nama_customer' => $this->input->post('nama_customer'),
+		];
+
+		$this->db->where('id_customer', $id_customer);
+		$this->db->update('customer', $data);
+
+		echo json_encode(['status' => 'success']);
+	}
+
+
+	public function delete_customer() {
+		$id_customer = $this->input->post('id_customer');
+		
+		$this->db->where('id_customer', $id_customer);
+		$this->db->update('customer', ['is_deleted' => 1]);
+
+		echo json_encode(['status' => 'success']);
+	}
+
 }
 
 /* End of file User.php */

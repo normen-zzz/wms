@@ -69,7 +69,9 @@ $route['barang/get_barang/(:num)'] = 'user/barang/get_barang/$1';
 // customer
 $route['customer'] = 'user/customer';
 $route['customer/add'] = 'user/customer/add';
-$route['customer/edit/(:num)'] = 'user/customer/edit/$1';
+$route['customer/update_customer'] = 'user/customer/update_customer';
+$route['customer/delete_customer'] = 'user/customer/delete_customer';
+$route['customer/get_customer'] = 'user/customer/get_customer';
 
 // rack
 $route['rack'] = 'user/rack';
