@@ -58,7 +58,7 @@
 														<th>Nama Barang</th>
 														<th>UOM</th>
 														<th>Status</th>
-
+														<th>Action</th>
 													</tr>
 												</thead>
 												<tbody>
@@ -70,6 +70,10 @@
 															<td><?= $barang1['nama_barang'] ?></td>
 															<td><?= $barang1['uom'] ?></td>
 															<td><?= getStatusBarang($barang1['is_deleted'])  ?></td>
+															<td>
+																  <button class="btn btn-warning btn-sm edit-btn" data-id_barang="<?= $barang1['id_barang'] ?>">Edit</button>
+                        					<button class="btn btn-danger btn-sm delete-btn" data-id_barang="<?= $barang1['id_barang'] ?>">Delete</button>
+															</td>
 														</tr>
 													<?php } ?>
 												</tbody>
@@ -128,6 +132,43 @@
 				</div>
 			</div>
 
+			<!-- ediot barang -->
+			<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+					<div class="modal-dialog" role="document">
+							<div class="modal-content">
+									<form id="editForm">
+											<div class="modal-header">
+													<h5 class="modal-title" id="editModalLabel">Edit Barang</h5>
+													<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+															<span aria-hidden="true">&times;</span>
+													</button>
+											</div>
+											<div class="modal-body">
+													<input type="hidden" id="editId" name="id_barang">
+													<div class="form-group">
+															<label for="sku">SKU</label>
+															<input type="text" class="form-control" id="editSku" name="sku" required>
+													</div>
+													<div class="form-group">
+															<label for="nama_barang">Nama Barang</label>
+															<input type="text" class="form-control" id="editNamaBarang" name="nama_barang" required>
+													</div>
+													<div class="form-group">
+															<label for="uom">UOM</label>
+															<input type="text" class="form-control" id="editUom" name="uom" required>
+													</div>
+											</div>
+											<div class="modal-footer">
+													<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+													<button type="submit" class="btn btn-primary">Save changes</button>
+											</div>
+									</form>
+							</div>
+					</div>
+			</div>
+
+
+
 			<?php $this->load->view('templates/footer') ?>
 		</div>
 	</div>
@@ -143,17 +184,102 @@
 	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
+	<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
 
 	<script>
 		$('body').on('click', 'button[type="submit"]', function() {
 			var button = $(this);
 			setTimeout(function() {
 				button.prop('disabled', true);
+				Swal.fire({
+					title: 'Processing...',
+					text: 'Please wait while we process your request.',
+					icon: 'info',
+					timer: 10000,
+					timerProgressBar: true,
+					showConfirmButton: false
+				});
 				setTimeout(function() {
 					button.prop('disabled', false);
+					Swal.fire({
+						title: 'Success!',
+						text: 'Your request has been processed successfully.',
+						icon: 'success',
+						confirmButtonText: 'OK'
+					});
 				}, 10000);
-			}); // Jeda 1 detik untuk menonaktifkan tombol
+			}); 
 		});
+		 
+		$('.edit-btn').click(function() {
+        var id = $(this).data('id_barang');
+
+        $.ajax({
+            url: '<?= base_url("barang/get_barang") ?>/' + id,
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+							console.log(data);
+                $('#editId').val(data.id_barang);
+                $('#editSku').val(data.sku);
+                $('#editNamaBarang').val(data.nama_barang);
+                $('#editUom').val(data.uom);
+                $('#editModal').modal('show');
+            }
+        });
+    });
+
+    $('#editForm').submit(function(e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: '<?= base_url("barang/update_barang") ?>',
+            type: 'POST',
+            data: $(this).serialize(),
+						success: function(response) {
+							$('#editModal').modal('hide');
+							Swal.fire({
+								title: 'Success!',
+								text: 'Data barang berhasil diupdate!',
+								icon: 'success',
+								confirmButtonText: 'OK'
+							}).then((result) => {
+								if (result.isConfirmed) {
+									location.reload();
+								}
+							});
+						},
+            error: function(xhr) {
+                alert("An error occurred.");
+            }
+        });
+    });
+
+    $('.delete-btn').click(function() {
+        var id = $(this).data('id_barang');
+
+        if (confirm("Are you sure you want to delete this item?")) {
+            $.ajax({
+                url: '<?= base_url("barang/delete_barang") ?>/' + id,
+                type: 'POST',
+								success: function(response) {
+									Swal.fire({
+										title: 'Deleted!',
+										text: 'Data barang berhasil dihapus!',
+										icon: 'success',
+										confirmButtonText: 'OK'
+									}).then((result) => {
+										if (result.isConfirmed) {
+											location.reload();
+										}
+									});
+								},
+                error: function(xhr) {
+                    alert("An error occurred.");
+                }
+            });
+        }
+    });
 	</script>
 
 

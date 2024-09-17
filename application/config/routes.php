@@ -62,7 +62,9 @@ $route['login'] = 'auth';
 // barang
 $route['barang'] = 'user/barang';
 $route['barang/add'] = 'user/barang/add';
-$route['barang/edit/(:num)'] = 'user/barang/edit/$1';
+$route['barang/update_barang'] = 'user/barang/update_barang';
+$route['barang/delete_barang/(:num)'] = 'user/barang/delete_barang/$1';
+$route['barang/get_barang/(:num)'] = 'user/barang/get_barang/$1';
 
 // customer
 $route['customer'] = 'user/customer';

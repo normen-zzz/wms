@@ -51,6 +51,33 @@ class Barang extends CI_Controller
             redirect(base_url('user/Barang'));
         }
     }
+
+	public function get_barang($id_barang) {
+		$barang = $this->barang->get_barang_by_id($id_barang);
+		echo json_encode($barang);
+	}
+
+	public function update_barang() {
+		$id_barang = $this->input->post('id_barang');
+		$data = array(
+			'sku' => $this->input->post('sku'),
+			'nama_barang' => $this->input->post('nama_barang'),
+			'uom' => $this->input->post('uom')
+		);
+		
+		var_dump($data); exit;
+
+		$this->barang->update_barang($id_barang, $data);
+		echo json_encode(['success' => true]);
+	}
+
+	public function delete_barang($id_barang) {
+		$this->barang->delete_barang($id_barang);
+		echo json_encode(['success' => true]);
+	}
+
+
+
 }
 
 /* End of file User.php */
