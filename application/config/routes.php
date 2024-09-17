@@ -97,6 +97,11 @@ $route['picklist'] = 'user/picklist';
 $route['picklist/add'] = 'user/picklist/add';
 $route['picklist/view'] = 'user/picklist/view';
 
+// picklist
+$route['goodsorder'] = 'user/goodsorder';
+$route['goodsorder/add'] = 'user/goodsorder/add';
+$route['goodsorder/view'] = 'user/goodsorder/view';
+
 
 // report
 $route['report'] = 'report';

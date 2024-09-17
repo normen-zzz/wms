@@ -1,12 +1,12 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Picklist_model extends CI_Model
+class Goodsorder_model extends CI_Model
 {
-	function getDataPicklist()
+	function getDataGoodsorder()
 	{
 		$this->db->select('*');
-		$this->db->from('picklist');
+		$this->db->from('goodsorder');
 		$this->db->where('is_deleted', 0);
 		return $this->db->get();
 	}
@@ -38,12 +38,12 @@ class Picklist_model extends CI_Model
 	}
 
 
-	 public function insert_picklist($data) {
-        return $this->db->insert('picklist', $data) ? $this->db->insert_id() : false;
+	 public function insert_goodsorder($data) {
+        return $this->db->insert('goodsorder', $data) ? $this->db->insert_id() : false;
     }
 
-    public function insert_datapicklist($data) {
-        return $this->db->insert('datapicklist', $data);
+    public function insert_datagoodsorder($data) {
+        return $this->db->insert('datagoodsorder', $data);
     }
 
 
