@@ -77,6 +77,10 @@ $route['customer/get_customer'] = 'user/customer/get_customer';
 $route['rack'] = 'user/rack';
 $route['rack/add'] = 'user/rack/add';
 $route['rack/edit/(:num)'] = 'user/rack/edit/$1';
+$route['rack/update_rack'] = 'user/rack/update_rack';
+$route['rack/delete_rack/(:num)'] = 'user/rack/delete_rack/$1';
+// get_rack
+$route['rack/get_rack/(:num)'] = 'user/rack/get_rack/$1';
 
 // inbound
 $route['inbound/create'] = 'user/inbound/create_inbound';

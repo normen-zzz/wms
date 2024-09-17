@@ -11,8 +11,6 @@ class Rack_model extends CI_Model
 		return $this->db->get();
 	}
 	
-	
-
 }
 
 /* End of file ModelName.php */

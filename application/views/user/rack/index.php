@@ -63,13 +63,11 @@
 														<th>Max QTY</th>
 														<th>UOM</th>
 														<th>Status</th>
-
+														<th>Action</th>
 													</tr>
 												</thead>
 												<tbody>
 													<?php foreach ($rack->result_array() as $rack1) { ?>
-
-
 														<tr>
 															<td><?= $rack1['sloc'] ?></td>
 															<td><?= $rack1['zone'] ?></td>
@@ -78,7 +76,11 @@
 															<td><?= $rack1['column_rack'] ?></td>
 															<td><?= $rack1['max_qty'] ?></td>
 															<td><?= $rack1['uom'] ?></td>
-															<td></td>
+															<td><?= getStatusRack($rack1['status']) ?></td>
+															<td>
+																	<button class="btn btn-primary edit-btn" data-id="<?= $rack1['id_rack'] ?>">Edit</button>
+																	<button class="btn btn-danger delete-btn" data-id="<?= $rack1['id_rack'] ?>">Delete</button>
+															</td>
 														</tr>
 													<?php } ?>
 												</tbody>
@@ -161,6 +163,61 @@
 		</div>
 	</div>
 
+	<div class="modal fade" id="editModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Rack</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <input type="hidden" id="editrack_id" name="rack_id">
+                    <div class="form-group">
+												<label for="sloc">Sloc</label>
+												<input type="text" id="editsloc" name="sloc" class="form-control">
+										</div>
+                    <div class="form-group">
+                        <label for="zone">Zone</label>
+                        <input type="text" id="editzone" name="zone" class="form-control">
+                    </div>
+                    <label for="rack">Rack</label>
+										<div class="form-group">
+											<input type="text" id="editrack" name="rack" class="form-control">
+										</div>
+
+										<label for="row">Row</label>
+										<div class="form-group">
+											<input type="text" id="editrow" name="row" class="form-control">
+										</div>
+
+										<label for="column">Column</label>
+										<div class="form-group">
+											<input type="text" id="editcolumn" name="column" class="form-control">
+										</div>
+
+										<label for="maxqty">Max QTY</label>
+										<div class="form-group">
+											<input type="text" id="editmaxqty" name="maxqty" class="form-control">
+										</div>
+
+										<label for="uom">Uom</label>
+										<div class="form-group">
+											<input type="text" id="edituom" name="uom" class="form-control">
+										</div>
+								 </form>
+						</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveChanges">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 	<script src="<?= base_url() . '/' ?>assets/static/js/components/dark.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/static/js/pages/horizontal-layout.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
@@ -170,17 +227,143 @@
 	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
+	<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
 
 	<script>
-		$('body').on('click', 'button[type="submit"]', function() {
-			var button = $(this);
-			setTimeout(function() {
-				button.prop('disabled', true);
-				setTimeout(function() {
-					button.prop('disabled', false);
-				}, 10000);
-			}); // Jeda 1 detik untuk menonaktifkan tombol
-		});
+				$('body').on('click', 'button[type="submit"]', function() {
+					var button = $(this);
+					setTimeout(function() {
+						button.prop('disabled', true);
+						Swal.fire({
+							title: 'Processing...',
+							text: 'Please wait while we process your request.',
+							icon: 'info',
+							timer: 10000,
+							timerProgressBar: true,
+							showConfirmButton: false
+						});
+						setTimeout(function() {
+							button.prop('disabled', false);
+							Swal.fire({
+								title: 'Success!',
+								text: 'Your request has been processed successfully.',
+								icon: 'success',
+								confirmButtonText: 'OK'
+							});
+						}, 10000);
+					}); 
+				});
+
+				$('.edit-btn').click(function() {
+						var id = $(this).data('id');
+
+						$.ajax({
+								url: '<?= base_url("rack/get_rack") ?>/' + id,
+								type: 'GET',
+								dataType: 'json', 
+								success: function(data) {
+										console.log(data);
+										if (data) {
+												$('#editrack_id').val(data.id_rack);
+												$('#editsloc').val(data.sloc);
+												$('#editzone').val(data.zone);
+												$('#editrack').val(data.rack);
+												$('#editrow').val(data.row);
+												$('#editcolumn').val(data.column_rack);
+												$('#editmaxqty').val(data.max_qty);
+												$('#edituom').val(data.uom);
+
+												$('#editModal').modal('show');
+										} else {
+												Swal.fire({
+														title: 'Error!',
+														text: 'Data not found!',
+														icon: 'error',
+														confirmButtonText: 'OK'
+												});
+										}
+								},
+								error: function(xhr) {
+										Swal.fire({
+												title: 'Error!',
+												text: 'An error occurred while fetching the rack data.',
+												icon: 'error',
+												confirmButtonText: 'OK'
+										});
+								}
+						});
+				});
+
+				$('#saveChanges').click(function() {
+						$.ajax({
+								url: '<?= base_url("rack/update_rack") ?>', 
+								type: 'POST',
+								data: $('#editForm').serialize(), 
+								success: function(response) {
+										Swal.fire({
+												title: 'Updated!',
+												text: 'Rack data has been updated.',
+												icon: 'success',
+												confirmButtonText: 'OK'
+										}).then((result) => {
+												if (result.isConfirmed) {
+														location.reload(); 
+												}
+										});
+								},
+								error: function(xhr) {
+										Swal.fire({
+												title: 'Error!',
+												text: 'An error occurred while updating the rack.',
+												icon: 'error',
+												confirmButtonText: 'OK'
+										});
+								}
+						});
+				});
+
+			$('.delete-btn').click(function() {
+					var id = $(this).data('id'); 
+
+					Swal.fire({
+							title: 'Are you sure?',
+							text: "You won't be able to revert this!",
+							icon: 'warning',
+							showCancelButton: true,
+							confirmButtonColor: '#3085d6',
+							cancelButtonColor: '#d33',
+							confirmButtonText: 'Yes, delete it!',
+							cancelButtonText: 'Cancel'
+					}).then((result) => {
+							if (result.isConfirmed) {
+									$.ajax({
+											url: '<?= base_url("rack/delete_rack") ?>/' + id, 
+											type: 'POST',
+											success: function(response) {
+													Swal.fire({
+															title: 'Deleted!',
+															text: 'Rack data has been deleted.',
+															icon: 'success',
+															confirmButtonText: 'OK'
+													}).then((result) => {
+															if (result.isConfirmed) {
+																	location.reload(); 
+															}
+													});
+											},
+											error: function(xhr) {
+													Swal.fire({
+															title: 'Error!',
+															text: 'An error occurred while deleting the rack.',
+															icon: 'error',
+															confirmButtonText: 'OK'
+													});
+											}
+									});
+							}
+					});
+			});
+
 	</script>
 
 </body>

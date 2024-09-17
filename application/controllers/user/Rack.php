@@ -49,6 +49,39 @@ class Rack extends CI_Controller
             redirect(base_url('user/Rack'));
         }
     }
+	
+	public function get_rack($id_rack) {
+		$rack = $this->db->get_where('rack', ['id_rack' => $id_rack])->row_array();
+		echo json_encode($rack);
+	}
+
+	public function update_rack() {
+		$data = array(
+			'sloc' => $this->input->post('sloc'),
+			'zone' => $this->input->post('zone'),
+			'rack' => $this->input->post('rack'),
+			'row' => $this->input->post('row'),
+			'column_rack' => $this->input->post('column'),
+			'max_qty' => $this->input->post('maxqty'),
+			'uom' => $this->input->post('uom')
+		);
+
+		$this->db->where('id_rack', $this->input->post('rack_id'));
+		$this->db->update('rack', $data);
+		echo json_encode(['status' => 'success']);
+	}
+
+
+	public function delete_rack($id_rack) {
+		$data = array(
+			'is_deleted' => 1,
+		);
+
+		$this->db->where('id_rack', $id_rack);
+		$this->db->update('rack', $data);
+		echo json_encode(['status' => 'success']);
+	}
+
 }
 
 /* End of file User.php */
