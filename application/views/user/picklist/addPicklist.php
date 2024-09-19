@@ -57,7 +57,7 @@
 												<thead>
 													<tr>
 														<th>Barang</th>
-														<th>No Pickinglist</th>
+														<th>QTY</th>
 														<th>Batch</th>
 														<th>Expired Date</th>
 													</tr>
@@ -68,7 +68,7 @@
 															<select name="barang[]" class="form-control selectBarang "></select>
 														</td>
 														<td>
-															<input type="text" class="form-control" name="no_picklist">
+															<input type="text" class="form-control" name="qty">
 														</td>
 														<td><input type="text" class="form-control" name="batch[]"></td>
 														<td><input type="date" name="ed[]" class="form-control flatpickrDate"></td>

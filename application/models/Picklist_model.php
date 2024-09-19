@@ -46,6 +46,12 @@ class Picklist_model extends CI_Model
         return $this->db->insert('datapicklist', $data);
     }
 
+		public function get_last_counter() {
+        $this->db->select_max('id_picklist');
+        $query = $this->db->get('picklist');
+        $result = $query->row();
+        return $result->id_picklist ? (int)$result->id_picklist : 0;
+    }
 
 }
 

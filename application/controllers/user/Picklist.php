@@ -53,13 +53,15 @@ class Picklist extends CI_Controller
 
 
 	public function insertPicklist() {
-    $no_picklist = $this->input->post('no_picklist');
+    $no_picklist = generate_picklist_number();
 		$created_by = $this->session->userdata('id_users');
+		$qty = $this->input->post('qty');
 		$status = 0; 
 
 		$picklist_data = array(
 			'no_picklist' => $no_picklist,
 			'uuid' => uniqid(), 
+			'qty' => $qty,
 			'created_at' => date('Y-m-d H:i:s'),
 			'created_by' => $created_by,
 			'status' => $status
@@ -68,26 +70,7 @@ class Picklist extends CI_Controller
 		$insert_id = $this->picklist->insert_picklist($picklist_data);
 
 		if ($insert_id) {
-			$items = $this->input->post('items'); 
-
-			// if $items adalah array dan tidak kosong
-			if (is_array($items) && !empty($items)) {
-				foreach ($items as $item) {
-					$datapicklist_data = array(
-						'id_picklist' => $insert_id,
-						'id_barang' => $item['id_barang'],
-						'batch' => $item['batch'],
-						'qty' => $item['qty'],
-						'created_at' => date('Y-m-d H:i:s'),
-						'created_by' => $created_by
-					);
-
-					$this->picklist->insert_datapicklist($datapicklist_data);
-				}       
-				$response = array('status' => 'success', 'message' => 'Picklist inserted successfully.');
-			} else {
-				$response = array('status' => 'error', 'message' => 'No items to process.');
-			}
+			$response = array('status' => 'success', 'message' => 'Picklist inserted successfully.');
 		} else {
 			$response = array('status' => 'error', 'message' => 'Failed to insert picklist.');
 		}
