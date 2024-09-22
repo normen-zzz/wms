@@ -1,9 +1,10 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 // getStratusBarang
 if (!function_exists('getStatusBarang')) {
-    function getStatusBarang($is_deleted) {
+    function getStatusBarang($is_deleted)
+    {
         if ($is_deleted == 0) {
             return '<span class="badge bg-success">Active</span>';
         } else {
@@ -14,13 +15,31 @@ if (!function_exists('getStatusBarang')) {
 
 // getStatusRack
 if (!function_exists('getStatusRack')) {
-	function getStatusRack($status) {
-		if ($status == 0) {
-			return '<span class="badge bg-success">Active</span>';
-		} else {
-			return '<span class="badge bg-danger">Inactive</span>';
-		}
-	}
+    function getStatusRack($status)
+    {
+        if ($status == 0) {
+            return '<span class="badge bg-success">Active</span>';
+        } else {
+            return '<span class="badge bg-danger">Inactive</span>';
+        }
+    }
+}
+
+function getStatusPurchaseorder($status)
+{
+    switch ($status) {
+        case '0':
+            return '<span class="badge bg-secondary">Created</span>';
+            break;
+
+        case '1':
+            return '<span class="badge bg-primary">Process To Goods</span>';
+            break;
+
+        default:
+            # code...
+            break;
+    }
 }
 
 // getStatusPicklist

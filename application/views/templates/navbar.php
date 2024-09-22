@@ -159,12 +159,31 @@
 
 
 						<ul class="submenu-group">
-
-							<li class="submenu-item  has-sub">
-								<a href="#" class='submenu-link'>Goods Order</a>
+						<li class="submenu-item  has-sub">
+								<a href="#" class='submenu-link'>Purchase Order</a>
 
 
 								<!-- 3 Level Submenu -->
+								<ul class="subsubmenu">
+									<li class="subsubmenu-item ">
+										<a href="<?= base_url('purchaseorder/add') ?>" class="subsubmenu-link">Add Purchase
+											Order</a>
+									</li>
+
+									<li class="subsubmenu-item ">
+										<a href="<?= base_url('purchaseorder') ?>" class="subsubmenu-link">Data Purchase
+											Order</a>
+									</li>
+
+								</ul>
+
+							</li>
+
+							<!-- <li class="submenu-item  has-sub">
+								<a href="#" class='submenu-link'>Goods Order</a>
+
+
+								3 Level Submenu
 								<ul class="subsubmenu">
 									<li class="subsubmenu-item ">
 										<a href="<?= base_url('goodsorder/add') ?>" class="subsubmenu-link">Add Goods
@@ -178,7 +197,7 @@
 
 								</ul>
 
-							</li>
+							</li> -->
 							<li class="submenu-item  has-sub">
 								<a href="#" class='submenu-link'>PICKING SLIP</a>
 								<!-- 3 Level Submenu -->

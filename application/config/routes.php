@@ -100,10 +100,15 @@ $route['picklist/delete'] = 'user/picklist/delete';
 $route['picklist/get_picklist_details'] = 'user/picklist/get_picklist_details';
 $route['picklist/update'] = 'user/picklist/update';
 
-// picklist
+// goodsorder
 $route['goodsorder'] = 'user/goodsorder';
 $route['goodsorder/add'] = 'user/goodsorder/add';
 $route['goodsorder/view'] = 'user/goodsorder/view';
+
+// purchaseorder
+$route['purchaseorder'] = 'user/purchaseorder';
+$route['purchaseorder/add'] = 'user/purchaseorder/add';
+$route['purchaseorder/view'] = 'user/purchaseorder/view';
 
 
 // report

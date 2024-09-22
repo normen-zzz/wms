@@ -1,13 +1,21 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Goodsorder_model extends CI_Model
+class Purchaseorder_model extends CI_Model
 {
-	function getDataGoodsorder()
+	function getDataPurchaseorder()
 	{
 		$this->db->select('*');
-		$this->db->from('goodsorder');
+		$this->db->from('purchaseorder');
 		$this->db->where('is_deleted', 0);
+		return $this->db->get();
+	}
+
+	function getDetailPurchaseOrder($uuidPo) {
+		$id_purchaseorder = $this->db->query('SELECT id_purchaseorder WHERE uuid = '.$uuidPo.' ')->row_array();
+		$this->db->select('*');
+		$this->db->from('datapurchaseorder');
+		$this->db->where('id_purchaseorder', $id_purchaseorder['id_purchaseorder']);
 		return $this->db->get();
 	}
 
@@ -38,12 +46,12 @@ class Goodsorder_model extends CI_Model
 	}
 
 
-	 public function insert_goodsorder($data) {
-        return $this->db->insert('goodsorder', $data) ? $this->db->insert_id() : false;
+	 public function insert_purchaseorder($data) {
+        return $this->db->insert('purchaseorder', $data) ? $this->db->insert_id() : false;
     }
 
-    public function insert_datagoodsorder($data) {
-        return $this->db->insert('datagoodsorder', $data);
+    public function insert_datapurchaseorder($data) {
+        return $this->db->insert('datapurchaseorder', $data);
     }
 
 	public function getBatchBarang($id_barang) {
@@ -56,10 +64,10 @@ class Goodsorder_model extends CI_Model
 
 	public function get_last_counter()
 	{
-		$this->db->select_max('id_goodsorder');
-		$query = $this->db->get('goodsorder');
+		$this->db->select_max('id_purchaseorder');
+		$query = $this->db->get('purchaseorder');
 		$result = $query->row();
-		return $result->id_goodsorder ? (int)$result->id_goodsorder : 0;
+		return $result->id_purchaseorder ? (int)$result->id_purchaseorder : 0;
 	}
 
 

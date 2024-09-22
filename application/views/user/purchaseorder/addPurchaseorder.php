@@ -53,7 +53,21 @@
 								<div class="card">
 									<div class="card-body">
 										<div class="table-responsive">
-											<form id="goodsorderForm">
+											<form id="purchaseorderForm">
+												<div class="form-group">
+													<div class="col-xs-12">
+														<label for="first_name">
+															<h4>Customer</h4>
+														</label>
+														
+														<select name="customer" id="customer" class="form-select">
+															<?php foreach ($customer->result_array() as $customer1) {?>
+																<option value="<?= $customer1['id_customer'] ?>"><?= $customer1['nama_customer'] ?></option>
+															<?php } ?>
+														</select>
+														
+													</div>
+												</div>
 												<table class="table" id="table">
 													<thead>
 														<tr>
@@ -145,10 +159,10 @@
 
 			});
 
-			$('#goodsorderForm').on('submit', function(e) {
+			$('#purchaseorderForm').on('submit', function(e) {
 				e.preventDefault();
 				$.ajax({
-					url: "<?= base_url('user/goodsorder/insertGoodsorder') ?>",
+					url: "<?= base_url('user/purchaseorder/insertPurchaseorder') ?>",
 					type: "POST",
 					data: $(this).serialize(),
 					dataType: 'json',
@@ -160,8 +174,8 @@
 							confirmButtonText: 'OK'
 						}).then(() => {
 							if (response.status === 'success') {
-								$('#goodsorderForm')[0].reset();
-								window.location.href = "<?= base_url('user/goodsorder') ?>";
+								$('#purchaseorderForm')[0].reset();
+								window.location.href = "<?= base_url('user/purchaseorder') ?>";
 							}
 						});
 					},
@@ -180,7 +194,7 @@
 			function initSelect2AndFlatpickr() {
 				$('.selectBarang').select2({
 					ajax: {
-						url: '<?= base_url('user/goodsorder/getDataBarangSelect') ?>',
+						url: '<?= base_url('user/purchaseorder/getDataBarangSelect') ?>',
 						type: "POST",
 						dataType: 'json',
 						delay: 250,
@@ -208,7 +222,7 @@
 					var batchSelect = row.find('.selectBatch'); // Get the selectBatch element in the current row
 					var inputEd = row.find('.inputEd');
 					$.ajax({
-						url: '<?= base_url('user/goodsorder/getBatch') ?>',
+						url: '<?= base_url('user/purchaseorder/getBatch') ?>',
 						type: 'POST',
 						data: {
 							barangId: barangId
@@ -244,7 +258,7 @@
 					var lastqty = row.find('.qty');
 
 					$.ajax({
-						url: '<?= base_url('user/goodsorder/checkQty') ?>',
+						url: '<?= base_url('user/purchaseorder/checkQty') ?>',
 						type: 'POST',
 						data: {
 							barangId: barangId.val(),
@@ -256,7 +270,7 @@
 							if (qty > response) {
 								lastqty.val('');
 								alert('input melebihi jumlah qty yang ada!!!');
-								
+
 							}
 						}
 					});
@@ -265,7 +279,7 @@
 		});
 	</script>
 
-	
+
 
 </body>
 
