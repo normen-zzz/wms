@@ -46,7 +46,8 @@
                                         <h5 class="card-title">
                                             <?= $subtitle2 ?>
                                         </h5>
-
+										
+											<a href="<?= base_url('picklist/add') ?>" class="btn btn-primary btn-sm">Add Picklist</a>
                                     </div>
 
                                     <div class="card-body">
