@@ -55,22 +55,25 @@
                                                 <thead>
                                                     <tr>
                                                         <th>No PL</th>
+														<th>Batch</th>
                                                         <th>Total Qty</th>
                                                         <th>Status</th>
                                                         <th>Created At</th>
                                                         <th>Action</th>
-
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <?php foreach ($pl->result_array() as $pl1) { ?>
                                                         <tr>
                                                             <td><?= $pl1['no_picklist'] ?></td>
-                                                            <td><?= $pl1['qty'] ?>td>
+															<td><?= $pl1['batch'] ?></td>
+                                                            <td><?= $pl1['qty'] ?></td>
 															<td><?= $pl1['status'] == 0 ? 'Created' : $pl1['status'] ?></td> 
                                                             <td><?= dateindo($pl1['created_at']) ?></td>
                                                             <td>
 																<a href="<?= base_url('user/picklist/edit' . $pl1['id_picklist']) ?>" class="btn btn-primary btn-sm">Edit</a>
+																<!-- DELETE -->
+																<button type="button" class="btn btn-danger btn-sm" onclick="deleteData(<?= $pl1['id_picklist'] ?>)">Delete</button>
 															</td>
                                                         </tr>
                                                     <?php } ?>
@@ -104,7 +107,41 @@
     <script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
     <script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
+	<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
 
+	<script>
+		// onclick deleteData
+		function deleteData(id) {
+			Swal.fire({
+				title: 'Are you sure?',
+				text: "You won't be able to revert this!",
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Yes, delete it!'
+			}).then((result) => {
+				if (result.isConfirmed) {
+					$.ajax({
+						url: '<?= base_url('picklist/delete') ?>',
+						type: 'POST',
+						data: {
+							id_picklist: id
+						},
+						success: function(data) {
+							Swal.fire(
+								'Deleted!',
+								'Your data has been deleted.',
+								'success'
+							).then((result) => {
+								location.reload();
+							});
+						}
+					});
+				}
+			})
+		}
+	</script>
     
 
 </body>

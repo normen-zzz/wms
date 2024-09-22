@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Mazer Admin Dashboard</title>
+    <title><?= get_setting('site_name'); ?> - Login</title>
 
 
 
@@ -22,11 +22,11 @@
         <div class="row h-100">
             <div class="col">
                 <div id="auth-left">
-                    <div class="auth-logo">
-                        <a href="index.html"><img src="<?= base_url().'/' ?>assets/compiled/svg/logo.svg" alt="Logo"></a>
+                    <div class="row col-4">
+                         <img width="20%" src="<?= base_url() . '/' ?>assets/compiled/logo/logoRaw.png" alt="Logo">
                     </div>
                     <h1 class="auth-title">Log in.</h1>
-                    <p class="auth-subtitle mb-5">Log in with your data that you entered during registration.</p>
+                    <p class="auth-subtitle mb-5"><?= get_setting('site_name'); ?></p>
 
                     <form action="<?= base_url('auth') ?>" method="post">
                         <div class="form-group position-relative has-icon-left mb-4">
