@@ -116,7 +116,8 @@ class Purchaseorder extends CI_Controller
 			'title' => 'Purchaseorder',
 			'subtitle' => 'Data Purchaseorder',
 			'subtitle2' => 'Data Purchaseorder',
-			'po' => $this->purchaseorder->getDetailPurchaseOrder(),
+			'detailPo' => $this->purchaseorder->getDetailPurchaseOrder($uuidPo),
+			'uuid' => $uuidPo
 		];
 		$this->load->view('user/purchaseorder/createPickingSlip', $data);
 	}
