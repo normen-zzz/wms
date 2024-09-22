@@ -59,6 +59,27 @@ class Picklist_model extends CI_Model
 			$this->db->where('id_picklist', $id);
 			return $this->db->update('picklist', $data);
 		}
+
+		public function get_picklist_with_details($id) {
+			$this->db->select('p.id_picklist, p.no_picklist, p.status, d.batch, d.qty');
+			$this->db->from('picklist p');
+			$this->db->join('datapicklist d', 'p.id_picklist = d.id_picklist'); 
+			$this->db->where('p.id_picklist', $id);
+
+			return $this->db->get()->row_array();
+		}
+
+		public function update_picklist($id, $data) {
+				$this->db->where('id_picklist', $id);
+				return $this->db->update('picklist', $data);
+		}
+
+		public function update_details($id, $data) {
+				$this->db->where('id_picklist', $id);
+				return $this->db->update('datapicklist', $data);
+		}
+
+
 }
 
 /* End of file ModelName.php */

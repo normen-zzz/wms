@@ -96,8 +96,9 @@ $route['putaway/view'] = 'user/putaway/view';
 $route['picklist'] = 'user/picklist';
 $route['picklist/add'] = 'user/picklist/add';
 $route['picklist/view'] = 'user/picklist/view';
-$route['picklist/edit/(:num)'] = 'user/picklist/edit/$1';
 $route['picklist/delete'] = 'user/picklist/delete';
+$route['picklist/get_picklist_details'] = 'user/picklist/get_picklist_details';
+$route['picklist/update'] = 'user/picklist/update';
 
 // picklist
 $route['goodsorder'] = 'user/goodsorder';

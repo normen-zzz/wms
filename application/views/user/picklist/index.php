@@ -68,10 +68,10 @@
                                                             <td><?= $pl1['no_picklist'] ?></td>
 															<td><?= $pl1['batch'] ?></td>
                                                             <td><?= $pl1['qty'] ?></td>
-															<td><?= $pl1['status'] == 0 ? 'Created' : $pl1['status'] ?></td> 
+															<td><?= getStatusPicklist($pl1['status']) ?></td> 
                                                             <td><?= dateindo($pl1['created_at']) ?></td>
                                                             <td>
-																<a href="<?= base_url('user/picklist/edit' . $pl1['id_picklist']) ?>" class="btn btn-primary btn-sm">Edit</a>
+																 <button type="button" class="btn btn-primary btn-sm" onclick="editData(<?= $pl1['id_picklist'] ?>)">Edit</button>
 																<!-- DELETE -->
 																<button type="button" class="btn btn-danger btn-sm" onclick="deleteData(<?= $pl1['id_picklist'] ?>)">Delete</button>
 															</td>
@@ -91,6 +91,47 @@
                     <!-- // Basic Vertical form layout section end -->
                 </div>
             </div>
+
+			<!-- Modal Edit -->
+			<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="editModalLabel">Edit Picklist</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<form id="editForm">
+								<input type="hidden" id="id_picklist" name="id_picklist">
+								<div class="form-group">
+									<label for="no_picklist">No Picklist</label>
+									<input type="text" class="form-control" id="no_picklist" name="no_picklist" required>
+								</div>
+								<div class="form-group">
+									<label for="batch">Batch</label>
+									<input type="text" class="form-control" id="batch" name="batch" required>
+								</div>
+								<div class="form-group">
+									<label for="qty">Quantity</label>
+									<input type="text" class="form-control" id="qty" name="qty" required>
+								</div>
+								<div class="form-group">
+									<label for="status">Status</label>
+									<select class="form-control" id="status" name="status">
+										<option value="0">Created</option>
+										<option value="1">Completed</option>
+									</select>
+								</div>
+								<button type="submit" class="btn btn-primary">Save Changes</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
 
             <?php $this->load->view('templates/footer') ?>
         </div>
@@ -141,6 +182,47 @@
 				}
 			})
 		}
+
+		function editData(id) {
+			$.ajax({
+				url: '<?= base_url('picklist/get_picklist_details') ?>', 
+				type: 'GET',
+				data: { id_picklist: id },
+				success: function(data) {
+					var picklist = JSON.parse(data);
+
+					$('#id_picklist').val(picklist.id_picklist);
+					$('#no_picklist').val(picklist.no_picklist);
+					$('#batch').val(picklist.batch);
+					$('#qty').val(picklist.qty);
+					$('#status').val(picklist.status);
+
+
+					$('#editModal').modal('show');
+				}
+			});
+		}
+
+		$('#editForm').on('submit', function(e) {
+			e.preventDefault();
+
+			$.ajax({
+				url: '<?= base_url('picklist/update') ?>', 
+				type: 'POST',
+				data: $(this).serialize(),
+				success: function(response) {
+					Swal.fire(
+						'Updated!',
+						'Your data has been updated.',
+						'success'
+					).then((result) => {
+						location.reload();
+					});
+				}
+			});
+		});
+
+
 	</script>
     
 

@@ -107,6 +107,40 @@ class Picklist extends CI_Controller
 		echo json_encode($response);
 	}
 
+	// edit
+
+	public function get_picklist_details() {
+			$id_picklist = $this->input->get('id_picklist');
+			$picklist = $this->picklist->get_picklist_with_details($id_picklist); 
+
+			echo json_encode($picklist); 
+	}
+
+
+	public function update() {
+    $id_picklist = $this->input->post('id_picklist');
+		$updated_by = $this->session->userdata('id_users');
+    
+    $data_picklist = array(
+        'no_picklist' => $this->input->post('no_picklist'),
+        'updated_at' => date('Y-m-d H:i:s'),
+				'status' => $this->input->post('status'),
+				'updated_by' => $updated_by
+    );
+
+    $data_details = array(
+        'qty' => $this->input->post('qty'),
+				'batch' => $this->input->post('batch'),
+				'updated_at' => date('Y-m-d H:i:s'),
+				'updated_by' => $updated_by
+    );
+
+    $this->picklist->update_picklist($id_picklist, $data_picklist);
+    $this->picklist->update_details($id_picklist, $data_details);
+
+    $response = array('status' => 'success', 'message' => 'Picklist updated successfully.');
+    echo json_encode($response);
+	}
 
 }
 
