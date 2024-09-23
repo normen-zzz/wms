@@ -51,3 +51,19 @@ function generate_purchaseorder_number($prefix = 'PO') {
 
     return $purchaseorder_number;
 }
+function generate_pickingslip_number($prefix = 'PS') {
+    $CI =& get_instance();
+    $CI->load->model('Purchaseorder_model');
+
+    $date = date('ymd');
+
+    $last_counter = $CI->Purchaseorder_model->get_last_counter_pickingslip();
+    $new_counter = $last_counter + 1;
+
+    $formatted_counter = str_pad($new_counter, 1, '0', STR_PAD_LEFT);
+
+
+    $pickinglist_number = "{$prefix}/{$date}/{$formatted_counter}";
+
+    return $pickinglist_number;
+}

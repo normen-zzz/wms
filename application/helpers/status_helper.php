@@ -33,7 +33,24 @@ function getStatusPurchaseorder($status)
             break;
 
         case '1':
-            return '<span class="badge bg-primary">Process To Goods</span>';
+            return '<span class="badge bg-primary">Picking Slip Created</span>';
+            break;
+
+        default:
+            # code...
+            break;
+    }
+}
+
+function getStatusPickingslip($status)
+{
+    switch ($status) {
+        case '0':
+            return '<span class="badge bg-secondary">Created</span>';
+            break;
+
+        case '1':
+            return '<span class="badge bg-primary">Processed</span>';
             break;
 
         default:

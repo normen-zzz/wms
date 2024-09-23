@@ -1,30 +1,31 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Purchaseorder_model extends CI_Model
+class Pickingslip_model extends CI_Model
 {
-	function getDataPurchaseorder()
+	function getDataPickingslip()
 	{
-		$this->db->select('*');
-		$this->db->from('purchaseorder');
-		$this->db->where('is_deleted', 0);
+		$this->db->select('a.*,b.no_purchaseorder,b.customer');
+		$this->db->from('pickingslip a');
+		$this->db->join('purchaseorder b','a.id_purchaseorder = b.id_purchaseorder');
+		$this->db->where('is_void', 0);
 		return $this->db->get();
 	}
 
 	function getDetailPurchaseOrder($uuidPo) {
-		$id_purchaseorder = $this->db->query('SELECT id_purchaseorder FROM purchaseorder WHERE uuid = "'.$uuidPo.'" ')->row_array();
+		$id_pickingslip = $this->db->query('SELECT id_pickingslip FROM pickingslip WHERE uuid = "'.$uuidPo.'" ')->row_array();
 		$this->db->select('sku,nama_barang,batchnumber,expiration_date,a.qty');
-		$this->db->from('datapurchaseorder a');
+		$this->db->from('datapickingslip a');
 		$this->db->join('barang b','a.id_barang = b.id_barang');
 		$this->db->join('batch c','a.id_batch = c.id_batch');
-		$this->db->where('id_purchaseorder', $id_purchaseorder['id_purchaseorder']);
+		$this->db->where('id_pickingslip', $id_pickingslip['id_pickingslip']);
 		return $this->db->get();
 	}
 
-	function getCustomerPurchaseorderByUuid($uuid)  {
+	function getCustomerPickingslipByUuid($uuid)  {
 		
 		$this->db->select('nama_customer');
-		$this->db->from('purchaseorder a');
+		$this->db->from('pickingslip a');
 		$this->db->join('customer b','a.customer = b.id_customer');
 		$this->db->where('a.uuid', $uuid);
 		$this->db->where('a.is_deleted', 0);
@@ -58,12 +59,12 @@ class Purchaseorder_model extends CI_Model
 	}
 
 
-	 public function insert_purchaseorder($data) {
-        return $this->db->insert('purchaseorder', $data) ? $this->db->insert_id() : false;
+	 public function insert_pickingslip($data) {
+        return $this->db->insert('pickingslip', $data) ? $this->db->insert_id() : false;
     }
 
-    public function insert_datapurchaseorder($data) {
-        return $this->db->insert('datapurchaseorder', $data);
+    public function insert_datapickingslip($data) {
+        return $this->db->insert('datapickingslip', $data);
     }
 
 	public function getBatchBarang($id_barang) {
@@ -76,10 +77,10 @@ class Purchaseorder_model extends CI_Model
 
 	public function get_last_counter()
 	{
-		$this->db->select_max('id_purchaseorder');
-		$query = $this->db->get('purchaseorder');
+		$this->db->select_max('id_pickingslip');
+		$query = $this->db->get('pickingslip');
 		$result = $query->row();
-		return $result->id_purchaseorder ? (int)$result->id_purchaseorder : 0;
+		return $result->id_pickingslip ? (int)$result->id_pickingslip : 0;
 	}
 
 	public function getUserPicker() {

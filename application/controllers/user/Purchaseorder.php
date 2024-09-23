@@ -106,20 +106,52 @@ class Purchaseorder extends CI_Controller
 	{
 		$barangId = $this->input->post('barangId');
 		$batchId = $this->input->post('batchId');
-		$qty = $this->purchaseorder->checkQty($barangId,$batchId)->row_array();
+		$qty = $this->purchaseorder->checkQty($barangId, $batchId)->row_array();
 		echo json_encode($qty['qty']);
 	}
 
 	public function createPickingSlip($uuidPo)
 	{
+		$customer = $this->purchaseorder->getCustomerPurchaseorderByUuid($uuidPo);
 		$data = [
 			'title' => 'Purchaseorder',
 			'subtitle' => 'Data Purchaseorder',
 			'subtitle2' => 'Data Purchaseorder',
 			'detailPo' => $this->purchaseorder->getDetailPurchaseOrder($uuidPo),
-			'uuid' => $uuidPo
+			'uuid' => $uuidPo,
+			'customer' => $customer['nama_customer'],
+			'userPicker' => $this->purchaseorder->getUserPicker()
 		];
 		$this->load->view('user/purchaseorder/createPickingSlip', $data);
+	}
+
+	public function processPickingslip($uuid)
+	{
+
+		$no_pickingslip = generate_pickingslip_number();
+
+		$pickingslip = array(
+			'uuid' => uniqid(),
+			'no_pickingslip' => $no_pickingslip,
+			'id_purchaseorder' => getIdPurchaseorderByUuid($uuid),
+			'picker' => $this->input->post('assignPicker'),
+			'created_at' => date('Y-m-d H:i:s'),
+			'created_by' => $this->session->userdata('id_users'),
+			'status' => 0,
+			'is_void' => 0
+		);
+
+		$insertPickingslip = $this->db->insert('pickingslip', $pickingslip);
+		//update purchase order jadi status 1 (picking slip created)
+		$updatePurchaseorder = $this->db->update('purchaseorder', ['status' => 1], ['id_purchaseorder' => getIdPurchaseorderByUuid($uuid)]);
+
+		if ($insertPickingslip && $updatePurchaseorder) {
+			$response = array('status' => 'success', 'message' => 'Pickinglist process successfully.');
+		} else {
+			$response = array('status' => 'error', 'message' => 'Failed to process Pickinglist.');
+		}
+
+		echo json_encode($response);
 	}
 }
 
