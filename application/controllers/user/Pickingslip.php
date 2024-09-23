@@ -50,13 +50,8 @@ class Pickingslip extends CI_Controller
     
     foreach ($items as $item) {
         $sku = $item['sku'];
-        $batch = $item['id_batch']; // Ensure this is the correct field
+        $batch = $item['id_batch']; 
         $available_racks = $this->pickingslip->getAvailableRacksBySkuAndBatch($sku, $batch);
-        
-        if (empty($available_racks)) {
-            // Debugging: Check if available racks are empty
-            var_dump("No available racks found for SKU: $sku and Batch: $batch");
-        }
 
         $rack_info[$sku] = $available_racks; 
     }
