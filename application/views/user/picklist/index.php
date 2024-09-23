@@ -56,7 +56,7 @@
                                                 <thead>
                                                     <tr>
                                                         <th>No PL</th>
-														<th>Batch</th>
+																												<th>Batch</th>
                                                         <th>Total Qty</th>
                                                         <th>Status</th>
                                                         <th>Created At</th>
@@ -67,15 +67,17 @@
                                                     <?php foreach ($pl->result_array() as $pl1) { ?>
                                                         <tr>
                                                             <td><?= $pl1['no_picklist'] ?></td>
-															<td><?= $pl1['batch'] ?></td>
-                                                            <td><?= $pl1['qty'] ?></td>
-															<td><?= getStatusPicklist($pl1['status']) ?></td> 
-                                                            <td><?= dateindo($pl1['created_at']) ?></td>
-                                                            <td>
-																 <button type="button" class="btn btn-primary btn-sm" onclick="editData(<?= $pl1['id_picklist'] ?>)">Edit</button>
-																<!-- DELETE -->
-																<button type="button" class="btn btn-danger btn-sm" onclick="deleteData(<?= $pl1['id_picklist'] ?>)">Delete</button>
-															</td>
+																														<td><?= $pl1['batchnumber'] ?></td>
+																														<td><?= $pl1['qty'] ?></td>
+																														<td><?= getStatusPicklist($pl1['status']) ?></td> 
+																														<td><?= dateindo($pl1['created_at']) ?></td>
+																														<td>
+																															<button type="button" class="btn btn-primary btn-sm" onclick="editData(<?= $pl1['id_picklist'] ?>)">Edit</button>
+																															<!-- DELETE -->
+																															<button type="button" class="btn btn-danger btn-sm" onclick="deleteData(<?= $pl1['id_picklist'] ?>)">Delete</button>
+																															<!-- inbouNd -->
+																															<button type="button" class="btn btn-success btn-sm" onclick="inboundData(<?= $pl1['id_picklist'] ?>)">Inbound</button>
+																														</td>
                                                         </tr>
                                                     <?php } ?>
                                                 </tbody>
@@ -99,7 +101,7 @@
 					<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title" id="editModalLabel">Edit Picklist</h5>
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
 								<span aria-hidden="true">&times;</span>
 							</button>
 						</div>
@@ -131,6 +133,10 @@
 					</div>
 				</div>
 			</div>
+
+			<!-- Modal Inbound -->
+		
+
 
 
 
@@ -222,7 +228,6 @@
 				}
 			});
 		});
-
 
 	</script>
     

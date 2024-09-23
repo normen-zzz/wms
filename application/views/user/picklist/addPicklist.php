@@ -62,8 +62,8 @@
 													<thead>
 														<tr>
 															<th>Barang</th>
-															<th>QTY</th>
 															<th>Batch</th>
+															<th>QTY</th>
 															<th>Expired Date</th>
 														</tr>
 													</thead>
@@ -72,10 +72,14 @@
 															<td>
 																<select name="barang[]" class="form-control selectBarang "></select>
 															</td>
-															<td>
-																<input type="text" class="form-control" name="qty[]">
+														
+															<td><select name="batch[]" class="form-select selectBatch">
+																	<option selected value="-">Select Batch</option>
+																</select>
 															</td>
-															<td><input type="text" class="form-control" name="batch[]"></td>
+																<td>
+																<input type="text" class="form-control qty" name="qty[]">
+															</td>
 															<td><input type="date" name="ed[]" class="form-control flatpickrDate"></td>
 														</tr>
 													</tbody>
@@ -131,8 +135,8 @@
 				var newRow = `
 				<tr>
 						<td><select name="barang[]" class="form-control selectBarang"></select></td>
-						<td><input type="text" class="form-control" name="qty[]"></td>
-						<td><input type="text" class="form-control" name="batch[]"></td>
+						<td><select class="form-control selectBatch" name="batch[]"><option selected value="-">Select Batch</option></select></td>
+						<td><input type="text" class="form-control qty" name="qty[]"></td>
 						<td><input type="date" name="ed[]" class="form-control flatpickrDate"></td>
 				</tr>`;
 				$('#table-body').append(newRow);
@@ -198,6 +202,67 @@
 					$('.flatpickrDate').flatpickr({
 							dateFormat: "d-m-Y"
 					});
+
+					$('.selectBarang').on('change', function() {
+					var barangId = $(this).val();
+					var row = $(this).closest('tr'); // Get the current row
+					var batchSelect = row.find('.selectBatch'); // Get the selectBatch element in the current row
+					var inputEd = row.find('.inputEd');
+					$.ajax({
+						url: '<?= base_url('user/purchaseorder/getBatch') ?>',
+						type: 'POST',
+						data: {
+							barangId: barangId
+						},
+						dataType: 'json',
+						success: function(response) {
+							console.log(response);
+							var batchOptions = response.batch_options;
+							batchSelect.empty();
+							batchSelect.append($('<option>', {
+								value: '-',
+								text: 'Select Batch'
+							}));
+							$.each(batchOptions, function(index, batch) {
+								batchSelect.append($('<option>', {
+									value: batch.id,
+									text: batch.name
+								}));
+							});
+
+							batchSelect.select2({
+								width: '100%',
+								placeholder: 'Select batch'
+							});
+						}
+					});
+				});
+
+				$('.qty').on('keyup', function() {
+					var qty = $(this).val();
+					var row = $(this).closest('tr'); // Get the current row
+					var barangId = row.find('.selectBarang');
+					var batchId = row.find('.selectBatch'); // Get the selectBatch element in the current row
+					var lastqty = row.find('.qty');
+
+					$.ajax({
+						url: '<?= base_url('user/goodsorder/checkQty') ?>',
+						type: 'POST',
+						data: {
+							barangId: barangId.val(),
+							batchId: batchId.val()
+						},
+						dataType: 'json',
+						success: function(response) {
+							console.log(response);
+							if (qty > response) {
+								lastqty.val('');
+								alert('input melebihi jumlah qty yang ada!!!');
+								
+							}
+						}
+					});
+				});
 			}
 		});
 
