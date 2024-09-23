@@ -17,6 +17,8 @@
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.min.css">
 	<link rel="stylesheet"
 		href="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 
 
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/compiled/css/table-datatable-jquery.css">
@@ -39,66 +41,63 @@
 					<!-- Basic Vertical form layout section start -->
 					<section id="basic-vertical-layouts">
 						<div class="row match-height">
+
 							<div class="col">
 								<!-- Minimal jQuery Datatable end -->
 								<!-- Basic Tables start -->
 
-
 								<div class="card">
 									<div class="card-header">
-										<h5 class="card-title"><?= $subtitle2 ?></h5>
+										<h5 class="card-title">
+											<?= $subtitle2 ?>
+										</h5>
+
 									</div>
+
 									<div class="card-body">
-									<div class="table-responsive">
-												<table class="table" id="inboundTable">
-														<thead>
-																<tr>
-																		<th>No Inbound</th>
-																		<th>No PL</th>
-																		<th>Batch</th>
-																		<th>Received QTY</th>
-																		<th>Goods</th>
-																		<th>Damage</th>
-																		<th>Created At</th>
-																		<th>Status</th>
-																		<th>Action</th>
-																</tr>
-														</thead>
-														<tbody>
-																<?php if (!empty($inbound_data)) { ?>
-																		<?php foreach ($inbound_data as $inbound) { ?>
-																				<tr>
-																						<td><?= $inbound->no_inbound ?></td>
-																						<td><?= $inbound->no_picklist ?></td>
-																						<td><?= $inbound->batchnumber ?></td>
-																						<td><?= $inbound->received_qty ?></td>
-																						<td><?= $inbound->good_qty ?></td>
-																						<td><?= $inbound->bad_qty ?></td>
-																						<td><?= date('Y-m-d H:i:s', strtotime($inbound->created_at)) ?></td>
-																						<td><?= getStatusInbound($inbound->status) ?></td>
-																						<td>
-																							<a href="<?= base_url('user/inbound/detail/' . $inbound->uuid) ?>" class="btn btn-primary btn-sm">Detail</a>
-																						 <!-- assign putaway -->
-																							<a href="<?= base_url('user/inbound/putaway/' . $inbound->uuid) ?>" class="btn btn-secondary btn-sm">Putaway</a>
-																						</td>
-																				</tr>
-																		<?php } ?>
-																<?php } else { ?>
-																		<tr>
-																				<td colspan="6">No data available</td>
-																		</tr>
-																<?php } ?>
-														</tbody>
-												</table>
-										</div>
+										<h1>Picking Slip: <?= $picking_slip['no_pickingslip'] ?></h1>
+											 <div class="table-responsive mt-4">
+												<table class="table" id="inboundDetailsTable">
+													<thead>
+															<tr>
+																	<th>SKU</th>
+																	<th>Item Name</th>
+																	<th>Batch</th>
+																	<th>Available Racks</th>
+															</tr>
+													</thead>
+													<tbody>
+															<?php foreach ($items as $item): ?>
+																	<tr>
+																			<td><?= $item['sku'] ?></td>
+																			<td><?= $item['nama_barang'] ?></td>
+																			<td><?= $item['batchnumber'] ?></td>
+																			<td>
+																					<?php if (isset($rack_info[$item['sku']])): ?>
+																							<ul>
+																									<?php foreach ($rack_info[$item['sku']] as $rack): ?>
+																											<li>
+																													Rack: <?= $rack['rack'] ?> (Zone: <?= $rack['zone'] ?>, Row: <?= $rack['row'] ?>, Column: <?= $rack['column_rack'] ?>, Qty: <?= $rack['quantity'] ?>)
+																											</li>
+																									<?php endforeach; ?>
+																							</ul>
+																					<?php else: ?>
+																							No available racks
+																					<?php endif; ?>
+																			</td>
+																	</tr>
+															<?php endforeach; ?>
+													</tbody>
+											</table>	
+											</div>	
 									</div>
 								</div>
+
+
 								<!-- Basic Tables end -->
 							</div>
 						</div>
 					</section>
-
-
 					<!-- // Basic Vertical form layout section end -->
 				</div>
 			</div>
@@ -114,64 +113,57 @@
 	<script src="<?= base_url() . '/' ?>assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 
 	<script src="<?= base_url() . '/' ?>assets/compiled/js/app.js"></script>
-	<script src="<?= base_url() . '/' ?>assets/extensions/jquery/jquery.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+		integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
-	<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.min.js"></script>
+	<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 	<script>
-	$(document).ready(function () {
-		function loadInbounds() {
-			$.ajax({
-				url: "<?php echo base_url('inbound/view'); ?>",
-				type: "GET",
-				dataType: "json",
-				success: function (data) {
-					let rows = '';
-					$.each(data, function (index, inbound) {
-						rows += `<tr>
-									<td>${inbound.no_inbound}</td>
-									<td>${inbound.created_at}</td>
-									<td>${inbound.status == 0 ? 'Inbound telah dibuat' : inbound.status}</td>
-								</tr>`;
-					});
-					$('#inboundTable tbody').html(rows);
-				}
-			});
-		}
-
-		$('#submitInbound').on('click', function () {
-			$('#inboundForm').submit();
+		$(document).ready(function () {
+			$('.assignPicker').select2();
 		});
 
+	</script>
+
+	<script>
 		$('#inboundForm').on('submit', function (e) {
 			e.preventDefault();
+
+			var $submitBtn = $(this).find('button[type="submit"]');
+			$submitBtn.prop('disabled', true);
+
 			$.ajax({
-				url: "<?php echo base_url('inbound/create'); ?>",
+				url: "<?= base_url('user/inbound/process/' . $uuid) ?>",
 				type: "POST",
 				data: $(this).serialize(),
-				dataType: "json",
+				dataType: 'json',
 				success: function (response) {
 					Swal.fire({
-						title: response.status == 'success' ? 'Success' : 'Error',
+						title: response.status === 'success' ? 'Success' : 'Error',
 						text: response.message,
-						icon: response.status == 'success' ? 'success' : 'error',
+						icon: response.status === 'success' ? 'success' : 'error',
 						confirmButtonText: 'OK'
-					}).then((result) => {
-						if (result.isConfirmed && response.status == 'success') {
-							$('#inboundForm')[0].reset();
-							$('#inboundModal').modal('hide'); 
-							loadInbounds();
+					}).then(() => {
+						if (response.status === 'success') {
+							window.location.href = "<?= base_url('user/inbound') ?>";
 						}
+					});
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					Swal.fire({
+						title: 'Error',
+						text: 'Something went wrong: ' + textStatus,
+						icon: 'error',
+						confirmButtonText: 'OK'
 					});
 				}
 			});
 		});
 
-		loadInbounds();
-	});
-</script>
+	</script>
 
 </body>
 
