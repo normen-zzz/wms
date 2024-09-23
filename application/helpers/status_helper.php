@@ -71,3 +71,16 @@ if (!function_exists('getStatusPicklist')) {
 		}
 	}
 }
+
+// getStatusInbound
+if (!function_exists('getStatusInbound')) {
+	function getStatusInbound($status) {
+		if ($status == 'received') {
+			return '<span class="badge bg-success">Received</span>';
+		} else if ($status == 'putaway') {
+			return '<span class="badge bg-primary">Putaway</span>';
+		} else {
+			return '<span class="badge bg-warning">Created</span>';
+		}
+	}
+}

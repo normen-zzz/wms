@@ -109,12 +109,7 @@
 								<!-- 3 Level Submenu PICKLIST -->
 								<ul class="subsubmenu">
 									<li class="subsubmenu-item ">
-										<a href="<?= base_url('receiving') ?>" class="subsubmenu-link">Add Receiving
-											inbound</a>
-									</li>
-
-									<li class="subsubmenu-item ">
-										<a href="<?= base_url('inbound') ?>" class="subsubmenu-link">Data Receiving
+										<a href="<?= base_url('inbound') ?>" class="subsubmenu-link">Data
 											Inbound</a>
 									</li>
 								</ul>
@@ -202,11 +197,6 @@
 								<a href="#" class='submenu-link'>PICKING SLIP</a>
 								<!-- 3 Level Submenu -->
 								<ul class="subsubmenu">
-									<li class="subsubmenu-item ">
-										<a href="<?= base_url('pickingslip/add') ?>" class="subsubmenu-link">Add Picking
-											Slip</a>
-									</li>
-
 									<li class="subsubmenu-item ">
 										<a href="<?= base_url('pickingslip') ?>" class="subsubmenu-link">Data Picking
 											Slip</a>

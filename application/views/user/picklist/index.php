@@ -47,7 +47,7 @@
                                             <?= $subtitle2 ?>
                                         </h5>
 										
-											<a href="<?= base_url('picklist/add') ?>" class="btn btn-primary btn-sm">Add Picklist</a>
+																		<a href="<?= base_url('picklist/add') ?>" class="btn btn-primary btn-sm">Add Picklist</a>
                                     </div>
 
                                     <div class="card-body">
@@ -72,11 +72,11 @@
 																														<td><?= getStatusPicklist($pl1['status']) ?></td> 
 																														<td><?= dateindo($pl1['created_at']) ?></td>
 																														<td>
-																															<button type="button" class="btn btn-primary btn-sm" onclick="editData(<?= $pl1['id_picklist'] ?>)">Edit</button>
+																															<button type="button" class="btn btn-info btn-sm" onclick="editData(<?= $pl1['id_picklist'] ?>)">Edit</button>
 																															<!-- DELETE -->
-																															<button type="button" class="btn btn-danger btn-sm" onclick="deleteData(<?= $pl1['id_picklist'] ?>)">Delete</button>
+																															<button type="button" class="btn btn-danger btn-sm" onclick="deleteData(<?= $pl1['id_picklist'] ?>)">Void</button>
 																															<!-- inbouNd -->
-																															<button type="button" class="btn btn-success btn-sm" onclick="inboundData(<?= $pl1['id_picklist'] ?>)">Inbound</button>
+																														  <a href="<?= base_url('user/inbound/create/' . $pl1['uuid']) ?>" class="btn btn-primary btn-sm">Inbound</a>
 																														</td>
                                                         </tr>
                                                     <?php } ?>
@@ -95,51 +95,46 @@
                 </div>
             </div>
 
-			<!-- Modal Edit -->
-			<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title" id="editModalLabel">Edit Picklist</h5>
-							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-						<div class="modal-body">
-							<form id="editForm">
-								<input type="hidden" id="id_picklist" name="id_picklist">
-								<div class="form-group">
-									<label for="no_picklist">No Picklist</label>
-									<input type="text" class="form-control" id="no_picklist" name="no_picklist" required>
-								</div>
-								<div class="form-group">
-									<label for="batch">Batch</label>
-									<input type="text" class="form-control" id="batch" name="batch" required>
-								</div>
-								<div class="form-group">
-									<label for="qty">Quantity</label>
-									<input type="text" class="form-control" id="qty" name="qty" required>
-								</div>
-								<div class="form-group">
-									<label for="status">Status</label>
-									<select class="form-control" id="status" name="status">
-										<option value="0">Created</option>
-										<option value="1">Completed</option>
-									</select>
-								</div>
-								<button type="submit" class="btn btn-primary">Save Changes</button>
-							</form>
+				<!-- Modal Edit -->
+				<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="editModalLabel">Edit Picklist</h5>
+								<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<form id="editForm">
+									<input type="hidden" id="id_picklist" name="id_picklist">
+									<div class="form-group">
+										<label for="no_picklist">No Picklist</label>
+										<input type="text" class="form-control" id="no_picklist" name="no_picklist" required>
+									</div>
+									<div class="form-group">
+										<label for="batch">Batch</label>
+										<input type="text" class="form-control" id="batch" name="batch" required>
+									</div>
+									<div class="form-group">
+										<label for="qty">Quantity</label>
+										<input type="text" class="form-control" id="qty" name="qty" required>
+									</div>
+									<div class="form-group">
+										<label for="status">Status</label>
+										<select class="form-control" id="status" name="status">
+											<option value="0">Created</option>
+											<option value="1">Completed</option>
+										</select>
+									</div>
+									<button type="submit" class="btn btn-primary">Save Changes</button>
+								</form>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
 
 			<!-- Modal Inbound -->
-		
-
-
-
-
             <?php $this->load->view('templates/footer') ?>
         </div>
     </div>

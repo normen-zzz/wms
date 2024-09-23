@@ -17,6 +17,8 @@
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.min.css">
 	<link rel="stylesheet"
 		href="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 
 
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/compiled/css/table-datatable-jquery.css">
@@ -39,67 +41,75 @@
 					<!-- Basic Vertical form layout section start -->
 					<section id="basic-vertical-layouts">
 						<div class="row match-height">
+
 							<div class="col">
 								<!-- Minimal jQuery Datatable end -->
 								<!-- Basic Tables start -->
 
-								<!-- Button to trigger modal -->
-								<button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
-									data-bs-target="#inboundModal">
-									Create Inbound
-								</button>
-
-								<!-- Modal -->
-								<div class="modal fade" id="inboundModal" tabindex="-1" aria-labelledby="inboundModalLabel"
-									aria-hidden="true">
-									<div class="modal-dialog">
-										<div class="modal-content">
-											<div class="modal-header">
-												<h5 class="modal-title" id="inboundModalLabel">Create Inbound</h5>
-												<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-											</div>
-											<div class="modal-body">
-												<form id="inboundForm">
-													<div class="mb-3">
-														<label for="no_inbound" class="form-label">No Inbound:</label>
-														<input type="text" class="form-control" id="no_inbound" name="no_inbound" required>
-													</div>
-													<input type="hidden" id="created_by" name="created_by" value="1">
-												</form>
-											</div>
-											<div class="modal-footer">
-												<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-												<button type="submit" class="btn btn-primary" id="submitInbound">Save Inbound</button>
-											</div>
-										</div>
-									</div>
-								</div>
-
 								<div class="card">
 									<div class="card-header">
-										<h5 class="card-title"><?= $subtitle2 ?></h5>
+										<h5 class="card-title">
+											<?= $subtitle2 ?>
+										</h5>
+
 									</div>
+
 									<div class="card-body">
+										<label for="customer">NO PL</label>
+										<input type="text" class="form-control mb-4"
+											value="<?= $picklist->no_picklist ?>" disabled>
 										<div class="table-responsive">
-											<table class="table" id="inboundTable">
+											<table class="table" id="table">
 												<thead>
 													<tr>
-														<th>No Inbound</th>
-														<th>Created At</th>
-														<th>Status</th>
+														<th>SKU</th>
+														<th>Nama Barang</th>
+														<th>Batch</th>
+														<th>ED</th>
+														<th>Qty</th>
 													</tr>
 												</thead>
-												<tbody></tbody>
+												<tbody>
+													<?php foreach ($detailPl as $dtl) { ?>
+													<tr>
+														<td><?= $dtl['sku'] ?></td>
+														<td><?= $dtl['nama_barang'] ?></td>
+														<td><?= $dtl['batchnumber'] ?></td>
+														<td><?= $dtl['expiration_date'] ?></td>
+														<td><?= $dtl['qty'] ?></td>
+													</tr>
+													<?php } ?>
+												</tbody>
 											</table>
 										</div>
+										<form id="inboundForm">
+											<div class="mb-3">
+												<label for="goods" class="form-label">Goods</label>
+												<input type="number" name="good_qty" class="form-control" id="good_qty"
+													required>
+											</div>
+
+											<div class="mb-3">
+												<label for="bad" class="form-label">Bad</label>
+												<input type="number" name="bad_qty" class="form-control" id="bad_qty"
+													required>
+											</div>
+
+											<input type="hidden" name="id_picklist"
+												value="<?= $picklist->id_picklist ?>">
+											<input type="hidden" name="received_qty" value="<?= $picklist->qty ?>">
+											<input type="hidden" name="batch_id" value="<?= $picklist->batch ?>">
+
+											<button type="submit" class="btn btn-primary mt-2">Process Inbound</button>
+										</form>
 									</div>
 								</div>
+
+
 								<!-- Basic Tables end -->
 							</div>
 						</div>
 					</section>
-
-
 					<!-- // Basic Vertical form layout section end -->
 				</div>
 			</div>
@@ -115,64 +125,57 @@
 	<script src="<?= base_url() . '/' ?>assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 
 	<script src="<?= base_url() . '/' ?>assets/compiled/js/app.js"></script>
-	<script src="<?= base_url() . '/' ?>assets/extensions/jquery/jquery.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+		integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
-	<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.min.js"></script>
+	<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 	<script>
-	$(document).ready(function () {
-		function loadInbounds() {
-			$.ajax({
-				url: "<?php echo base_url('inbound/view'); ?>",
-				type: "GET",
-				dataType: "json",
-				success: function (data) {
-					let rows = '';
-					$.each(data, function (index, inbound) {
-						rows += `<tr>
-									<td>${inbound.no_inbound}</td>
-									<td>${inbound.created_at}</td>
-									<td>${inbound.status == 0 ? 'Inbound telah dibuat' : inbound.status}</td>
-								</tr>`;
-					});
-					$('#inboundTable tbody').html(rows);
-				}
-			});
-		}
-
-		$('#submitInbound').on('click', function () {
-			$('#inboundForm').submit();
+		$(document).ready(function () {
+			$('.assignPicker').select2();
 		});
 
+	</script>
+
+	<script>
 		$('#inboundForm').on('submit', function (e) {
 			e.preventDefault();
+
+			var $submitBtn = $(this).find('button[type="submit"]');
+			$submitBtn.prop('disabled', true);
+
 			$.ajax({
-				url: "<?php echo base_url('inbound/create'); ?>",
+				url: "<?= base_url('user/inbound/process/' . $uuid) ?>",
 				type: "POST",
 				data: $(this).serialize(),
-				dataType: "json",
+				dataType: 'json',
 				success: function (response) {
 					Swal.fire({
-						title: response.status == 'success' ? 'Success' : 'Error',
+						title: response.status === 'success' ? 'Success' : 'Error',
 						text: response.message,
-						icon: response.status == 'success' ? 'success' : 'error',
+						icon: response.status === 'success' ? 'success' : 'error',
 						confirmButtonText: 'OK'
-					}).then((result) => {
-						if (result.isConfirmed && response.status == 'success') {
-							$('#inboundForm')[0].reset();
-							$('#inboundModal').modal('hide'); 
-							loadInbounds();
+					}).then(() => {
+						if (response.status === 'success') {
+							window.location.href = "<?= base_url('user/inbound') ?>";
 						}
+					});
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					Swal.fire({
+						title: 'Error',
+						text: 'Something went wrong: ' + textStatus,
+						icon: 'error',
+						confirmButtonText: 'OK'
 					});
 				}
 			});
 		});
 
-		loadInbounds();
-	});
-</script>
+	</script>
 
 </body>
 

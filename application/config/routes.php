@@ -84,13 +84,10 @@ $route['rack/get_rack/(:num)'] = 'user/rack/get_rack/$1';
 
 // inbound
 $route['inbound/create'] = 'user/inbound/create_inbound';
-$route['inbound/view'] = 'user/inbound/view';
 $route['inbound'] = 'user/inbound';
+$route['inbound/add'] = 'user/inbound/add';
 
-$route['receiving'] = 'user/receiving';
-$route['receiving/add/(:num)'] = 'user/receiving/add_receiving/$1';
-$route['putaway/create/(:num)'] = 'user/putaway/create_putaway/$1';
-$route['putaway/view'] = 'user/putaway/view';
+
 
 // picklist
 $route['picklist'] = 'user/picklist';
@@ -110,6 +107,8 @@ $route['purchaseorder'] = 'user/purchaseorder';
 $route['purchaseorder/add'] = 'user/purchaseorder/add';
 $route['purchaseorder/view'] = 'user/purchaseorder/view';
 
+//pickingslip
+$route['pickingslip'] = 'user/pickingslip';
 
 // report
 $route['report'] = 'report';

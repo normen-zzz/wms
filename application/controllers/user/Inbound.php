@@ -9,40 +9,113 @@ class Inbound extends CI_Controller {
     }
 
 	public function index() {
+    $data = [
+        'title' => 'Inbound',
+        'subtitle' => 'Data Inbound',
+        'subtitle2' => 'Data Inbound',
+        'inbound_data' => $this->ReceivingInbound_model->get_inbound_data()
+    ];
+
+			$this->load->view('user/inbound/index', $data);
+	}
+
+
+	public function add() {
 		$data = [
-            'title' => 'Inbound',
-            'subtitle' => 'Data Inbound',
-            'subtitle2' => 'Data Inbound',
-        ];
-        $this->load->view('user/inbound/view', $data);
-    }
+						'title' => 'Inbound',
+						'subtitle' => 'Add Inbound',
+						'subtitle2' => 'Add Inbound',
+				];
+				$this->load->view('user/inbound/add', $data);
+	}
 
-    public function create_inbound() {
-        if ($this->input->is_ajax_request()) {
-            $data = array(
-                'uuid' => uniqid(),
-                'no_inbound' => $this->input->post('no_inbound'),
-                'created_at' => date('Y-m-d H:i:s'),
-                'created_by' => $this->input->post('created_by'),
-                'status' => 0 // 0 = created
-            );
 
-            if ($this->ReceivingInbound_model->insert_inbound($data)) {
-                echo json_encode(['status' => 'success', 'message' => 'Inbound created successfully']);
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'Failed to create inbound']);
-            }
-        } else {
-            show_error('No direct script access allowed', 403);
-        }
-    }
+  public function create($uuid)
+	{
 
-    public function view() {
-        if ($this->input->is_ajax_request()) {
-            $data = $this->ReceivingInbound_model->get_all_inbounds();
-            echo json_encode($data);
-        } else {
-            show_error('No direct script access allowed', 403);
-        }
-    }
+		$detailPl = $this->ReceivingInbound_model->get_detils_inbound($uuid);
+		$picklist = $this->ReceivingInbound_model->get_picklist_byuuid($uuid);
+
+		$data = [
+			'title' => 'inbound',
+			'subtitle' => 'Data inbound',
+			'subtitle2' => 'Data inbound',
+			'detailPl' => $detailPl,
+			'uuid' => $uuid,
+			'picklist' => $picklist,
+		];
+		$this->load->view('user/inbound/createInbound', $data);
+	}
+
+
+	public function process() {
+    $id_picklist = $this->input->post('id_picklist');
+    $received_qty = $this->input->post('received_qty');
+    $status = $this->input->post('status');
+    $created_by = $this->session->userdata('id_users');
+    $good_qty = $this->input->post('good_qty');
+    $bad_qty = $this->input->post('bad_qty');
+		$no_inbound = generate_inbound_number();
+		$batch_id = $this->input->post('batch_id');
+
+    $data_inbound = array(
+        'id_picklist' => $id_picklist,
+				'no_inbound' => $no_inbound,
+        'received_qty' => $received_qty,
+        'received_date' => date('Y-m-d'), 
+        'status' => 'received', 
+        'good_qty' => $good_qty,
+        'bad_qty' => $bad_qty,
+				'batch_id' => $batch_id,
+        'created_at' => date('Y-m-d H:i:s'),
+        'created_by' => $created_by,
+				'uuid' => uniqid(),
+    );
+
+	
+		$this->ReceivingInbound_model->update_status_picklist($id_picklist, 1);
+    $this->ReceivingInbound_model->insert_inbound($data_inbound);
+
+    $response = array('status' => 'success', 'message' => 'Inbound process successfully.');
+    echo json_encode($response);
+	}
+
+
+	public function getDataPicklist() {
+				if ($this->input->is_ajax_request()) {
+						$searchTerm = $this->input->post('searchTerm');
+						$data = $this->ReceivingInbound_model->get_picklist($searchTerm);
+						echo json_encode($data);
+				} else {
+						show_error('No direct script access allowed', 403);
+				}
+	}
+
+	public function getBatchData() {
+				if ($this->input->is_ajax_request()) {
+						$id = $this->input->post('id');
+						$data = $this->ReceivingInbound_model->get_batch($id);
+						echo json_encode($data);
+				} else {
+						show_error('No direct script access allowed', 403);
+				}
+	}
+
+	// detail
+	public function detail($uuid) {
+    $inbound = $this->ReceivingInbound_model->get_inbound_byuuid($uuid);
+		$inbound_details = $this->ReceivingInbound_model->get_detils_inboundpl($uuid);
+
+    $data = [
+        'title' => 'Inbound',
+        'subtitle' => 'Detail Inbound',
+        'subtitle2' => 'Detail Inbound',
+        'inbound' => $inbound,
+				'inbound_details' => $inbound_details,
+    ];
+
+    // Load the view with the data
+    $this->load->view('user/inbound/detail', $data);
+	}
+
 }
