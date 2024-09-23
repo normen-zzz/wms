@@ -68,7 +68,7 @@
 																		<?php foreach ($inbound_data as $inbound) { ?>
 																				<tr>
 																						<td><?= $inbound->no_inbound ?></td>
-																						<td><?= $inbound->batch_id ?></td>
+																						<td><?= $inbound->batchnumber ?></td>
 																						<td><?= $inbound->received_qty ?></td>
 																						<td><?= $inbound->good_qty ?></td>
 																						<td><?= $inbound->bad_qty ?></td>

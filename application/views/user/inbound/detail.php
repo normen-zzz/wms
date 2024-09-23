@@ -59,9 +59,6 @@
 										<label for="no_inbound">No Inbound</label>
 										<input type="text" class="form-control mb-4" value="<?= $inbound->no_inbound ?>" disabled>
 
-										<label for="batch">Batch</label>
-										<input type="text" class="form-control mb-4" value="<?= $inbound->batch_id ?>" disabled>
-
 										<label for="created_at">Created At</label>
 										<input type="text" class="form-control mb-4"
 											value="<?= date('Y-m-d H:i:s', strtotime($inbound->created_at)) ?>" disabled>

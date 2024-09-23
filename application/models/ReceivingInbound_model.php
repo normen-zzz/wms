@@ -6,11 +6,12 @@ class ReceivingInbound_model extends CI_Model {
 	}
 
 
-   public function get_inbound_data() {
-    $this->db->select('*'); 
-    $this->db->from('inbound'); 
-    $query = $this->db->get();
-    return $query->result(); 
+	public function get_inbound_data() {
+		$this->db->select('inbound.*, batch.batchnumber, batch.expiration_date'); 
+		$this->db->from('inbound'); 
+		$this->db->join('batch', 'inbound.batch_id = batch.id_batch', 'left'); 
+		$query = $this->db->get();
+		return $query->result(); 
 	}
 
 	public function get_detils_inbound($uuid) {
