@@ -67,7 +67,7 @@
                                                     <?php foreach ($pl->result_array() as $pl1) { ?>
                                                         <tr>
                                                             <td><?= $pl1['no_picklist'] ?></td>
-																														<td><?= $pl1['batchnumber'] ?></td>
+																														<td><?= $pl1['batch'] ?></td>
 																														<td><?= $pl1['qty'] ?></td>
 																														<td><?= getStatusPicklist($pl1['status']) ?></td> 
 																														<td><?= dateindo($pl1['created_at']) ?></td>

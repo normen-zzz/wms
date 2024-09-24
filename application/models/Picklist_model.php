@@ -5,11 +5,9 @@ class Picklist_model extends CI_Model
 {
 	public function getDataPicklist()
 	{
-		$this->db->select('picklist.*, datapicklist.id_barang, datapicklist.batch, datapicklist.qty, batch.batchnumber');
+		$this->db->select('picklist.*, datapicklist.id_barang, datapicklist.batch, datapicklist.qty');
 		$this->db->from('picklist');
 		$this->db->join('datapicklist', 'datapicklist.id_picklist = picklist.id_picklist');
-		$this->db->join('batch', 'batch.id_batch = datapicklist.batch');
-		
 		$this->db->where('picklist.is_deleted', 0);
 		$this->db->group_by('picklist.no_picklist');
 		return $this->db->get();

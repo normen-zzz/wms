@@ -76,7 +76,7 @@
 																		<tr>
 																				<td><?= $dtl['sku'] ?></td>
 																				<td><?= $dtl['nama_barang'] ?></td>
-																				<td><?= $dtl['batchnumber'] ?></td>
+																				<td><?= $dtl['batch'] ?></td>
 																				<td><?= $dtl['expiration_date'] ?></td>
 																				<td><?= $dtl['qty'] ?></td>
 																				<td>
@@ -87,7 +87,7 @@
 																				</td>
 																				<!-- Optional hidden fields to keep track of batch or ID per row -->
 																				<input type="hidden" name="sku[]" value="<?= $dtl['sku'] ?>">
-																				<input type="hidden" name="batch_id[]" value="<?= $dtl['batchnumber'] ?>">
+																				<input type="hidden" name="batch_id[]" value="<?= $dtl['batch'] ?>">
 																		</tr>
 																		<?php } ?>
 																</tbody>

@@ -72,8 +72,10 @@ class Picklist extends CI_Controller
 						'batch' => $batches[$key],
 						'qty' => $qtys[$key],
 						'created_at' => date('Y-m-d H:i:s'),
-						'created_by' => $created_by
+						'created_by' => $created_by,
+						'expiration_date' => $expired_dates[$key]
 					);
+					// var_dump($datapicklist_data);exit;
 					$this->picklist->insert_datapicklist($datapicklist_data);
 				}
 
