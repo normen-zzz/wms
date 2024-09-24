@@ -56,56 +56,48 @@
 
 									<div class="card-body">
 										<label for="customer">NO PL</label>
-										<input type="text" class="form-control mb-4"
-											value="<?= $picklist->no_picklist ?>" disabled>
+										<input type="text" class="form-control mb-4" value="<?= $picklist->no_picklist ?>" disabled>
 										<div class="table-responsive">
-											<table class="table" id="table">
-												<thead>
-													<tr>
-														<th>SKU</th>
-														<th>Nama Barang</th>
-														<th>Batch</th>
-														<th>ED</th>
-														<th>Qty</th>
-													</tr>
-												</thead>
-												<tbody>
-													<?php foreach ($detailPl as $dtl) { ?>
-													<tr>
-														<td><?= $dtl['sku'] ?></td>
-														<td><?= $dtl['nama_barang'] ?></td>
-														<td><?= $dtl['batchnumber'] ?></td>
-														<td><?= $dtl['expiration_date'] ?></td>
-														<td><?= $dtl['qty'] ?></td>
-													</tr>
-													<?php } ?>
-												</tbody>
-											</table>
+												<form id="inboundForm" method="POST" action="your-processing-url">
+														<table class="table" id="table">
+																<thead>
+																		<tr>
+																				<th>SKU</th>
+																				<th>Nama Barang</th>
+																				<th>Batch</th>
+																				<th>ED</th>
+																				<th>Qty</th>
+																				<th>Good</th>
+																				<th>Bad</th>
+																		</tr>
+																</thead>
+																<tbody>
+																		<?php foreach ($detailPl as $dtl) { ?>
+																		<tr>
+																				<td><?= $dtl['sku'] ?></td>
+																				<td><?= $dtl['nama_barang'] ?></td>
+																				<td><?= $dtl['batchnumber'] ?></td>
+																				<td><?= $dtl['expiration_date'] ?></td>
+																				<td><?= $dtl['qty'] ?></td>
+																				<td>
+																						<input type="number" name="good_qty[]" class="form-control" required>
+																				</td>
+																				<td>
+																						<input type="number" name="bad_qty[]" class="form-control" required>
+																				</td>
+																				<!-- Optional hidden fields to keep track of batch or ID per row -->
+																				<input type="hidden" name="sku[]" value="<?= $dtl['sku'] ?>">
+																				<input type="hidden" name="batch_id[]" value="<?= $dtl['batchnumber'] ?>">
+																		</tr>
+																		<?php } ?>
+																</tbody>
+														</table>
+														<input type="hidden" name="id_picklist" value="<?= $picklist->id_picklist ?>">
+														<input type="hidden" name="received_qty" value="<?= $picklist->qty ?>">
+														<button type="submit" class="btn btn-primary mt-2">Process Inbound</button>
+												</form>
 										</div>
-										<form id="inboundForm">
-											<div class="mb-3">
-												<label for="goods" class="form-label">Goods</label>
-												<input type="number" name="good_qty" class="form-control" id="good_qty"
-													required>
-											</div>
-
-											<div class="mb-3">
-												<label for="bad" class="form-label">Bad</label>
-												<input type="number" name="bad_qty" class="form-control" id="bad_qty"
-													required>
-											</div>
-
-											<input type="hidden" name="id_picklist"
-												value="<?= $picklist->id_picklist ?>">
-											<input type="hidden" name="received_qty" value="<?= $picklist->qty ?>">
-											<input type="hidden" name="batch_id" value="<?= $picklist->batch ?>">
-
-											<button type="submit" class="btn btn-primary mt-2">Process Inbound</button>
-										</form>
-									</div>
 								</div>
-
-
 								<!-- Basic Tables end -->
 							</div>
 						</div>

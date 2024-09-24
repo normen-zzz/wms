@@ -11,6 +11,8 @@ class ReceivingInbound_model extends CI_Model {
 		$this->db->from('inbound'); 
 		$this->db->join('batch', 'inbound.batch_id = batch.id_batch', 'left'); 
 		$this->db->join('picklist', 'inbound.id_picklist = picklist.id_picklist', 'left');
+		$this->db->where('inbound.is_deleted', 0);
+		$this->db->group_by('inbound.no_inbound');
 		$query = $this->db->get();
 		return $query->result(); 
 	}
@@ -93,11 +95,12 @@ class ReceivingInbound_model extends CI_Model {
 	public function get_detils_inboundpl($uuid) {
 			$id_picklist = $this->db->query('SELECT id_picklist FROM inbound WHERE uuid = "'.$uuid.'" ')->row_array();
 			
-			$this->db->select('p.no_picklist, sku, b.nama_barang, c.batchnumber, c.expiration_date, a.qty');
+			$this->db->select('p.no_picklist, sku, b.nama_barang, c.batchnumber, c.expiration_date, a.qty, i.good_qty, i.bad_qty, i.no_inbound, i.batch_id, i.received_qty');
 			$this->db->from('datapicklist a');
 			$this->db->join('picklist p', 'p.id_picklist = a.id_picklist');
 			$this->db->join('barang b', 'a.id_barang = b.id_barang');
 			$this->db->join('batch c', 'a.batch = c.id_batch');
+			$this->db->join('inbound i', 'i.id_picklist = a.id_picklist');
 			$this->db->where('a.id_picklist', $id_picklist['id_picklist']);
 			
 			// Return the result as an array

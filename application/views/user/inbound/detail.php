@@ -68,50 +68,42 @@
 											<?= getStatusInbound($inbound->status) ?>
 										</div>
 										
-										<label for="status" class="mt-4">Received QTY</label>
-										<input type="text" class="form-control mb-4" value="<?= $inbound->received_qty ?>" disabled>
-
-										<label for="status">Goods</label>
-										<input type="text" class="form-control mb-4" value="<?= $inbound->good_qty ?>" disabled>
-
-										<label for="status">Damage</label>
-										<input type="text" class="form-control mb-4" value="<?= $inbound->bad_qty ?>" disabled>
-
-
-										 <div class="table-responsive mt-4">
+										<div class="table-responsive mt-4">
 												<table class="table" id="inboundDetailsTable">
 														<thead>
 																<tr>
-																		<th>No PL</th>
+																		<th>No Inbound</th>
 																		<th>SKU</th>
 																		<th>Nama Barang</th>
 																		<th>Batch</th>
-																		<th>Expiration Date</th>
+																		<th>Good</th>
+																		<th>Bad</th>
+																		<!-- <th>Expiration Date</th> -->
 																		<th>Qty</th>
 																</tr>
 														</thead>
 														<tbody>
-															<?php if (!empty($inbound_details)) { ?>
-																	<?php foreach ($inbound_details as $detail) { ?>
-																			<tr>
-																					<td><?= $detail['no_picklist'] ?></td>
-																					<td><?= $detail['sku'] ?></td>
-																					<td><?= $detail['nama_barang'] ?></td>
-																					<td><?= $detail['batchnumber'] ?></td>
-																					<td><?= $detail['expiration_date'] ?></td>
-																					<td><?= $detail['qty'] ?></td>
-																			</tr>
-																	<?php } ?>
-															<?php } else { ?>
-																	<tr>
-																			<td colspan="6">No details available</td>
-																	</tr>
-															<?php } ?>
-													</tbody>
+																<?php if (!empty($inbound_details)) { ?>
+																		<?php foreach ($inbound_details as $detail) { ?>
+																				<tr>
+																						<td><?= $detail['no_inbound'] ?></td>
+																						<td><?= $detail['sku'] ?></td>
+																						<td><?= $detail['nama_barang'] ?></td>
+																						<td><?= $detail['batch_id'] ?></td>
+																						<td><?= $detail['good_qty'] ?></td>
+																						<td><?= $detail['bad_qty'] ?></td>
+																						<!-- <td><?= $detail['expiration_date'] ?></td> -->
+																						<td><?= $detail['received_qty'] ?></td>
+																				</tr>
+																		<?php } ?>
+																<?php } else { ?>
+																		<tr>
+																				<td colspan="8">No details available</td>
+																		</tr>
+																<?php } ?>
+														</tbody>
 												</table>
 										</div>
-									</div>
-
 								</div>
 
 

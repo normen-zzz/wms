@@ -49,36 +49,39 @@ class Inbound extends CI_Controller {
 
 
 	public function process() {
-    $id_picklist = $this->input->post('id_picklist');
-    $received_qty = $this->input->post('received_qty');
-    $status = $this->input->post('status');
-    $created_by = $this->session->userdata('id_users');
-    $good_qty = $this->input->post('good_qty');
-    $bad_qty = $this->input->post('bad_qty');
-		$no_inbound = generate_inbound_number();
-		$batch_id = $this->input->post('batch_id');
+			$id_picklist = $this->input->post('id_picklist');
+			$received_qty = $this->input->post('received_qty');
+			$status = $this->input->post('status');
+			$created_by = $this->session->userdata('id_users');
+			$good_qty = $this->input->post('good_qty'); 
+			$bad_qty = $this->input->post('bad_qty'); 
+			$batch_id = $this->input->post('batch_id'); 
+			$no_inbound = generate_inbound_number();
 
-    $data_inbound = array(
-        'id_picklist' => $id_picklist,
-				'no_inbound' => $no_inbound,
-        'received_qty' => $received_qty,
-        'received_date' => date('Y-m-d'), 
-        'status' => 'received', 
-        'good_qty' => $good_qty,
-        'bad_qty' => $bad_qty,
-				'batch_id' => $batch_id,
-        'created_at' => date('Y-m-d H:i:s'),
-        'created_by' => $created_by,
-				'uuid' => uniqid(),
-    );
+			foreach ($good_qty as $index => $good) {
+					$data_inbound = array(
+							'id_picklist' => $id_picklist,
+							'no_inbound' => $no_inbound,
+							'received_qty' => $received_qty,
+							'received_date' => date('Y-m-d'),
+							'status' => 'received',
+							'good_qty' => $good, 
+							'bad_qty' => $bad_qty[$index], 
+							'batch_id' => $batch_id[$index], 
+							'created_at' => date('Y-m-d H:i:s'),
+							'created_by' => $created_by,
+							'uuid' => uniqid(),
+					);
 
-	
-		$this->ReceivingInbound_model->update_status_picklist($id_picklist, 1);
-    $this->ReceivingInbound_model->insert_inbound($data_inbound);
+					$this->ReceivingInbound_model->insert_inbound($data_inbound);
+			}
 
-    $response = array('status' => 'success', 'message' => 'Inbound process successfully.');
-    echo json_encode($response);
+			$this->ReceivingInbound_model->update_status_picklist($id_picklist, 1);
+
+			$response = array('status' => 'success', 'message' => 'Inbound process successfully.');
+			echo json_encode($response);
 	}
+
 
 
 	public function getDataPicklist() {
