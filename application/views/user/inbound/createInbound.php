@@ -64,9 +64,9 @@
 																		<tr>
 																				<th>SKU</th>
 																				<th>Nama Barang</th>
+																				<th>Batch</th>
 																				<th>ED</th>
 																				<th>Qty</th>
-																				<th>Batch</th>
 																				<th>Good</th>
 																				<th>Bad</th>
 																		</tr>
@@ -76,11 +76,9 @@
 																		<tr>
 																				<td><?= $dtl['sku'] ?></td>
 																				<td><?= $dtl['nama_barang'] ?></td>
+																				<td><?= $dtl['batchnumber'] ?></td>
 																				<td><?= $dtl['expiration_date'] ?></td>
 																				<td><?= $dtl['qty'] ?></td>
-																				<td>
-																						<input type="text" name="batch_id[]" class="form-control" required>
-																				</td>
 																				<td>
 																						<input type="number" name="good_qty[]" class="form-control" required>
 																				</td>
@@ -89,6 +87,7 @@
 																				</td>
 																				<!-- Optional hidden fields to keep track of batch or ID per row -->
 																				<input type="hidden" name="sku[]" value="<?= $dtl['sku'] ?>">
+																				<input type="hidden" name="batch_id[]" value="<?= $dtl['batchnumber'] ?>">
 																		</tr>
 																		<?php } ?>
 																</tbody>
