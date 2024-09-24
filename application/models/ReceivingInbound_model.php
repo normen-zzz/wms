@@ -7,11 +7,9 @@ class ReceivingInbound_model extends CI_Model {
 
 
 	public function get_inbound_data() {
-		$this->db->select('inbound.*, batch.batchnumber, batch.expiration_date, picklist.no_picklist'); 
+		$this->db->select('inbound.*, picklist.no_picklist'); 
 		$this->db->from('inbound'); 
-		$this->db->join('batch', 'inbound.batch_id = batch.id_batch', 'left'); 
 		$this->db->join('picklist', 'inbound.id_picklist = picklist.id_picklist', 'left');
-		$this->db->where('inbound.is_deleted', 0);
 		$this->db->group_by('inbound.no_inbound');
 		$query = $this->db->get();
 		return $query->result(); 
