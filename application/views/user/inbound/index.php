@@ -79,7 +79,7 @@
 																						<td>
 																							<a href="<?= base_url('user/inbound/detail/' . $inbound->uuid) ?>" class="btn btn-primary btn-sm">Detail</a>
 																						 <!-- assign putaway -->
-																							<a href="<?= base_url('user/inbound/putaway/' . $inbound->uuid) ?>" class="btn btn-secondary btn-sm">Putaway</a>
+																							<a href="<?= base_url('putaway/create/' . $inbound->uuid) ?>" class="btn btn-secondary btn-sm">Putaway</a>
 																						</td>
 																				</tr>
 																		<?php } ?>

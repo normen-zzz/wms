@@ -75,7 +75,7 @@ class Picklist extends CI_Controller
 						'created_by' => $created_by,
 						'expiration_date' =>  date('Y-m-d', strtotime($expired_dates[$key]))
 					);
-					// var_dump($datapicklist_data);exit;
+					// var_dump($datapicklist_data);ezxit;
 					$this->picklist->insert_datapicklist($datapicklist_data);
 				}
 

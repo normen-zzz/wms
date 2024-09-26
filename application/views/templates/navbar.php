@@ -121,10 +121,6 @@
 								<!-- 3 Level Submenu PICKLIST -->
 								<ul class="subsubmenu">
 									<li class="subsubmenu-item ">
-										<a href="<?= base_url('putaway/add') ?>" class="subsubmenu-link">Add Putaway</a>
-									</li>
-
-									<li class="subsubmenu-item ">
 										<a href="<?= base_url('putaway') ?>" class="subsubmenu-link">Data Putaway</a>
 									</li>
 								</ul>

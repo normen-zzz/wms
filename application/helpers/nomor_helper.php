@@ -84,3 +84,20 @@ function generate_inbound_number($prefix = 'IB') {
 
     return $inbound_number;
 }
+
+function generate_putaway_number($prefix = 'PUT') {
+    $CI =& get_instance();
+    $CI->load->model('Putaway_model');
+
+    $date = date('ymd');
+
+    $last_counter = $CI->Putaway_model->get_last_counter();
+    $new_counter = $last_counter + 1;
+
+    $formatted_counter = str_pad($new_counter, 1, '0', STR_PAD_LEFT);
+
+
+    $inbound_number = "{$prefix}/{$date}/{$formatted_counter}";
+
+    return $inbound_number;
+}

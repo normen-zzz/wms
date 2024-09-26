@@ -87,6 +87,10 @@ $route['inbound/create'] = 'user/inbound/create_inbound';
 $route['inbound'] = 'user/inbound';
 $route['inbound/add'] = 'user/inbound/add';
 
+// putaway
+$route['putaway'] = 'user/putaway';
+$route['putaway/create/(:any)'] = 'user/putaway/create/$1';
+
 
 
 // picklist
