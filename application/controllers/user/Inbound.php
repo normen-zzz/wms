@@ -3,10 +3,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Inbound extends CI_Controller {
 
-   	public function __construct() {
-        parent::__construct();
-        $this->load->model('ReceivingInbound_model');
-    }
+  public function __construct() {
+    parent::__construct();
+    $this->load->model('ReceivingInbound_model');
+  }
 
 	public function index() {
     $data = [

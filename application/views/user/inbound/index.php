@@ -77,9 +77,9 @@
 																						<td><?= date('Y-m-d H:i:s', strtotime($inbound->created_at)) ?></td>
 																						<td><?= getStatusInbound($inbound->status) ?></td>
 																						<td>
-																							<a href="<?= base_url('user/inbound/detail/' . $inbound->uuid) ?>" class="btn btn-primary btn-sm">Detail</a>
+																							<a href="<?= base_url('user/putaway/assign/' . $inbound->uuid) ?>" class="btn btn-primary btn-sm">Assign Putaway</a>
+																							<a href="<?= base_url('user/inbound/detail/' . $inbound->uuid) ?>" class="btn btn-secondary btn-sm">Detail</a>
 																						 <!-- assign putaway -->
-																							<a href="<?= base_url('putaway/create/' . $inbound->uuid) ?>" class="btn btn-secondary btn-sm">Putaway</a>
 																						</td>
 																				</tr>
 																		<?php } ?>

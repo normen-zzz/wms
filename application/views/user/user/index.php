@@ -141,6 +141,7 @@
 										<option value="2">Outbound</option>
 										<option value="3">Inbound</option>
 										<option value="4">Picker</option>
+										<option value="5">Putaway</option>
 									</select>
 								</div>
 								<!-- More form fields -->
@@ -186,6 +187,7 @@
 										<option value="2">Outbound</option>
 										<option value="3">Inbound</option>
 										<option value="4">Picker</option>
+										<option value="5">Putaway</option>
 									</select>
 								</div>
 							</div>

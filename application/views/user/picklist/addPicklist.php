@@ -68,19 +68,26 @@
 														</tr>
 													</thead>
 													<tbody id="table-body">
-														<tr>
-															<td>
-																<select name="barang[]" class="form-control selectBarang "></select>
-															</td>
+															<tr>
+																	<td>
+																			<select name="barang[]" class="form-control selectBarang">
+																					<option value="">Pilih Barang</option>
+																					<option value="manual">Input Manual</option>
+																			</select>
+																			<input type="text" name="barang_manual[]" class="form-control inputManual" style="display:none;" placeholder="Input Barang">
+																	</td>
+																	<td><select name="batch[]" class="form-select selectBatch">
 
-															<td>
-																<input type="text" class="form-control batch" name="batch[]">
-															</td>
-															<td>
-																<input type="text" class="form-control qty" name="qty[]">
-															</td>
-															<td><input type="date" name="ed[]" class="form-control flatpickrDate"></td>
-														</tr>
+																	<option selected value="-">Select Batch</option>
+
+																</select></td>
+																	<td>
+																			<input type="text" class="form-control qty" name="qty[]">
+																	</td>
+																	<td>
+																			<input type="date" name="ed[]" class="form-control flatpickrDate">
+																	</td>
+															</tr>
 													</tbody>
 													<tfoot>
 														<tr>
@@ -143,66 +150,98 @@
 			});
 
 			$('#picklistForm').on('submit', function (e) {
-				e.preventDefault();
-				$.ajax({
-					url: "<?= base_url('user/picklist/insertPicklist') ?>",
-					type: "POST",
-					data: $(this).serialize(),
-					dataType: 'json',
-					success: function (response) {
-						Swal.fire({
-							title: response.status === 'success' ? 'Success' : 'Error',
-							text: response.message,
-							icon: response.status === 'success' ? 'success' : 'error',
-							confirmButtonText: 'OK'
-						}).then(() => {
-							if (response.status === 'success') {
-								$('#picklistForm')[0].reset();
-								window.location.href = "<?= base_url('user/picklist') ?>";
+					e.preventDefault();
+					$.ajax({
+							url: "<?= base_url('user/picklist/insertPicklist') ?>",
+							type: "POST",
+							data: $(this).serialize(),
+							dataType: 'json',
+							success: function (response) {
+									Swal.fire({
+											title: response.status === 'success' ? 'Success' : 'Error',
+											text: response.message,
+											icon: response.status === 'success' ? 'success' : 'error',
+											confirmButtonText: 'OK'
+									}).then(() => {
+											if (response.status === 'success') {
+													$('#picklistForm')[0].reset();
+													window.location.href = "<?= base_url('user/picklist') ?>";
+											}
+									});
+							},
+							error: function (jqXHR, textStatus, errorThrown) {
+									Swal.fire({
+											title: 'Error',
+											text: 'Something went wrong: ' + textStatus,
+											icon: 'error',
+											confirmButtonText: 'OK'
+									});
 							}
-						});
-					},
-					error: function (jqXHR, textStatus, errorThrown) {
-						Swal.fire({
-							title: 'Error',
-							text: 'Something went wrong: ' + textStatus,
-							icon: 'error',
-							confirmButtonText: 'OK'
-						});
-					}
-				});
+					});
 			});
-
 
 			function initSelect2AndFlatpickr() {
 				$('.selectBarang').select2({
-					ajax: {
-						url: '<?= base_url('user/picklist/getDataBarangSelect ') ?>',
-						type: "POST",
+						ajax: {
+								url: '<?= base_url('user/picklist/getDataBarangSelect') ?>',
+								type: "POST",
+								dataType: 'json',
+								delay: 250,
+								data: function (params) {
+										return {
+												searchTerm: params.term || ''
+										};
+								},
+								processResults: function (response) {
+										return {
+												results: response
+										};
+								},
+								cache: true
+						},
+						minimumInputLength: 0,
+						placeholder: "Pilih barang",
+						allowClear: true
+				});
+
+				$('.selectBarang').on('change', function() {
+					var barangId = $(this).val();
+					var row = $(this).closest('tr'); 
+					var batchSelect = row.find('.selectBatch'); 
+					var inputEd = row.find('.inputEd');
+					$.ajax({
+						url: '<?= base_url('user/goodsorder/getBatch') ?>',
+						type: 'POST',
+						data: {
+							barangId: barangId
+						},
 						dataType: 'json',
-						delay: 250,
-						data: function (params) {
-							return {
-								searchTerm: params.term || ''
-							};
-						},
-						processResults: function (response) {
-							return {
-								results: response
-							};
-						},
-						cache: true
-					},
-					minimumInputLength: 0,
-					placeholder: "Pilih barang",
-					allowClear: true
+						success: function(response) {
+							console.log(response);
+							var batchOptions = response.batch_options;
+							batchSelect.empty();
+							batchSelect.append($('<option>', {
+								value: '-',
+								text: 'Select Batch'
+							}));
+							$.each(batchOptions, function(index, batch) {
+								batchSelect.append($('<option>', {
+									value: batch.id,
+									text: batch.name
+								}));
+							});
+
+							batchSelect.select2({
+								width: '100%',
+								placeholder: 'Select batch'
+							});
+						}
+					});
 				});
 
 				$('.flatpickrDate').flatpickr({
 					dateFormat: "d-m-Y"
 				});
-
-
 			}
 		});
 
