@@ -78,7 +78,8 @@
 															</td>
 															<td><?= $p->created_at ?></td>
 															<td>
-																<a href="<?= base_url('user/putaway/create/' . $p->uuid) ?>" class="btn btn-primary">Detail</a>
+																<a href="<?= base_url('user/putaway/create/' . $p->uuid) ?>" class="btn btn-primary">Put</a>
+																<a href="<?= base_url('user/putaway/detail/' . $p->uuid) ?>" class="btn btn-primary">Detail</a>
 															</td>
 														</tr>
 													<?php endforeach; ?>
