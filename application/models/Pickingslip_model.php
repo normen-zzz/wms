@@ -105,7 +105,7 @@ class Pickingslip_model extends CI_Model
 	}
 
 	public function get_items_by_pickingslip($id_pickingslip) {
-			$this->db->select('b.sku, b.nama_barang, c.expiration_date, c.batchnumber, c.id_batch');
+			$this->db->select('b.sku, b.nama_barang, c.expiration_date, c.batchnumber, c.id_batch,b.id_barang');
 			$this->db->from('pickingslip a'); 
 			$this->db->join('datapurchaseorder dp', 'a.id_purchaseorder = dp.id_purchaseorder'); 
 			$this->db->join('barang b', 'dp.id_barang = b.id_barang'); 
@@ -117,7 +117,7 @@ class Pickingslip_model extends CI_Model
 	}
 	
 	public function getAvailableRacksBySkuAndBatch($sku, $batchnumber) {
-			$this->db->select('r.rack, r.sloc, r.zone, r.row, r.column_rack, ri.quantity, b.nama_barang');
+			$this->db->select('r.rack,r.sloc, ri.quantity, b.nama_barang,ri.id_batch,ri.id_barang');
 			$this->db->from('rack_items ri');
 			$this->db->join('rack r', 'ri.id_rack = r.id_rack');
 			$this->db->join('barang b', 'ri.id_barang = b.id_barang');

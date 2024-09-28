@@ -27,10 +27,17 @@ class Rack extends CI_Controller
 
             $this->load->view('user/rack/index', $data);
         } else {
+        }
+    }
 
-            $this->load->library('uuid');
-            $uuid = $this->uuid->v4(true);
-           
+    public function processAddRack()
+    {
+        $this->load->library('uuid');
+        $uuid = $this->uuid->v4(true);
+
+        $checkSloc = $this->db->query('SELECT sloc FROM rack WHERE sloc = "' . $this->input->post('sloc') . '" ');
+
+        if ($checkSloc->num_rows() == 0) {
             $data = [
                 'uuid' => $uuid,
                 'sloc' => $this->input->post('sloc'),
@@ -44,44 +51,50 @@ class Rack extends CI_Controller
                 'created_by' => $this->session->userdata('id_users'),
 
             ];
-            $this->db->insert('rack',$data);
-            $this->session->set_flashdata("message", "Toast.fire({icon: 'success',title: 'Success'})");
-            redirect(base_url('user/Rack'));
+            $this->db->insert('rack', $data);
+
+            $response = array('status' => 'success', 'message' => 'Add Rack successfully.');
+        } else {
+            $response = array('status' => 'error', 'message' => 'Failed to Add Rack (SLOC SAME).');
         }
+
+        echo json_encode($response);
     }
-	
-	public function get_rack($id_rack) {
-		$rack = $this->db->get_where('rack', ['id_rack' => $id_rack])->row_array();
-		echo json_encode($rack);
-	}
 
-	public function update_rack() {
-		$data = array(
-			'sloc' => $this->input->post('sloc'),
-			'zone' => $this->input->post('zone'),
-			'rack' => $this->input->post('rack'),
-			'row' => $this->input->post('row'),
-			'column_rack' => $this->input->post('column'),
-			'max_qty' => $this->input->post('maxqty'),
-			'uom' => $this->input->post('uom')
-		);
+    public function get_rack($id_rack)
+    {
+        $rack = $this->db->get_where('rack', ['id_rack' => $id_rack])->row_array();
+        echo json_encode($rack);
+    }
 
-		$this->db->where('id_rack', $this->input->post('rack_id'));
-		$this->db->update('rack', $data);
-		echo json_encode(['status' => 'success']);
-	}
+    public function update_rack()
+    {
+        $data = array(
+            'sloc' => $this->input->post('sloc'),
+            'zone' => $this->input->post('zone'),
+            'rack' => $this->input->post('rack'),
+            'row' => $this->input->post('row'),
+            'column_rack' => $this->input->post('column'),
+            'max_qty' => $this->input->post('maxqty'),
+            'uom' => $this->input->post('uom')
+        );
+
+        $this->db->where('id_rack', $this->input->post('rack_id'));
+        $this->db->update('rack', $data);
+        echo json_encode(['status' => 'success']);
+    }
 
 
-	public function delete_rack($id_rack) {
-		$data = array(
-			'is_deleted' => 1,
-		);
+    public function delete_rack($id_rack)
+    {
+        $data = array(
+            'is_deleted' => 1,
+        );
 
-		$this->db->where('id_rack', $id_rack);
-		$this->db->update('rack', $data);
-		echo json_encode(['status' => 'success']);
-	}
-
+        $this->db->where('id_rack', $id_rack);
+        $this->db->update('rack', $data);
+        echo json_encode(['status' => 'success']);
+    }
 }
 
 /* End of file User.php */

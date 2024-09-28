@@ -23,6 +23,37 @@ class Purchaseorder extends CI_Controller
 		$this->load->view('user/purchaseorder/index', $data);
 	}
 
+	public function detail($uuidPo)
+	{
+		$customer = $this->purchaseorder->getCustomerPurchaseorderByUuid($uuidPo);
+		$data = [
+			'title' => 'Purchaseorder',
+			'subtitle' => 'Data Purchaseorder',
+			'subtitle2' => 'Data Purchaseorder',
+			'detailPo' => $this->purchaseorder->getDetailPurchaseOrder($uuidPo),
+			'uuid' => $uuidPo,
+			'customer' => $customer['nama_customer'],
+			'userPicker' => $this->purchaseorder->getUserPicker()
+		];
+		$this->load->view('user/purchaseorder/detailPurchaseorder', $data);
+	}
+
+	public function edit($uuidPo)
+	{
+		$customer = $this->purchaseorder->getCustomerPurchaseorderByUuid($uuidPo);
+		$data = [
+			'title' => 'Purchaseorder',
+			'subtitle' => 'Data Purchaseorder',
+			'subtitle2' => 'Data Purchaseorder',
+			'detailPo' => $this->purchaseorder->getDetailPurchaseOrder($uuidPo),
+			'uuid' => $uuidPo,
+			'customer' => $this->db->get('customer'),
+			'customerPo' => $customer
+
+		];
+		$this->load->view('user/purchaseorder/editPurchaseorder', $data);
+	}
+
 	public function add()
 	{
 		$data = [
@@ -91,6 +122,40 @@ class Purchaseorder extends CI_Controller
 		echo json_encode($response);
 	}
 
+	public function editPurchaseorder($uuid)
+	{
+		$customer = $this->input->post('customer');
+
+		$barang =  $this->input->post('barang');
+		$qty = $this->input->post('qty');
+		$batch =  $this->input->post('batch');
+
+		$id_purchaseorder = getIdPurchaseorderByUuid($uuid);
+		$updateCustomer = $this->db->update('purchaseorder', ['customer' => $customer], ['uuid' => $uuid]);
+
+		if ($updateCustomer) {
+			if ($barang) {
+				for ($i = 0; $i < sizeof($barang); $i++) {
+					$dataPurchaseorder = [
+						'id_purchaseorder' => $id_purchaseorder,
+						'id_barang' => $barang[$i],
+						'id_batch' => $batch[$i],
+						'qty' => $qty[$i],
+						'created_at' => date('Y-m-d H:i:s'),
+						'created_by' => $this->session->userdata('id_users')
+					];
+					$this->db->insert('datapurchaseorder', $dataPurchaseorder);
+				}
+				$response = array('status' => 'success', 'message' => 'Purchaseorder Edit successfully.');
+			} else {
+				$response = array('status' => 'success', 'message' => 'Purchaseorder Edit successfully (CUSTOMER).');
+			}
+		} else {
+			$response = array('status' => 'error', 'message' => 'Failed to Edit purchaseorder.');
+		}
+		echo json_encode($response);
+	}
+
 	public function getBatch()
 	{
 		$barangId = $this->input->post('barangId');
@@ -151,6 +216,19 @@ class Purchaseorder extends CI_Controller
 			$response = array('status' => 'error', 'message' => 'Failed to process Pickinglist.');
 		}
 
+		echo json_encode($response);
+	}
+
+	public function deleteDataPurchaseorder()
+	{
+		$id = $this->input->post('id_datapurchaseorder');
+		$delete = $this->db->delete('datapurchaseorder', ['id_datapurchaseorder' => $id]);
+		if ($delete) {
+			$response = array('status' => 'success', 'message' => 'Delete Data successfully.');
+		} else {
+
+			$response = array('status' => 'error', 'message' => 'Failed to Delete Data.');
+		}
 		echo json_encode($response);
 	}
 }

@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="<?= base_url() . '/' ?>assets/compiled/css/iconly.css" />
     <link rel="stylesheet" href="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.min.css">
     <link rel="stylesheet" href="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 
 
     <link rel="stylesheet" href="<?= base_url() . '/' ?>assets/compiled/css/table-datatable-jquery.css">
@@ -44,46 +46,42 @@
                                 <div class="card">
                                     <div class="card-header">
                                         <h5 class="card-title">
-                                            <?= $subtitle2 ?>
+                                            <?= $subtitle2 ?> <?= getNoPoByUuid($uuid) ?>
                                         </h5>
 
                                     </div>
 
                                     <div class="card-body">
+                                        <label for="customer">Customer</label>
+                                        <input type="text" class="form-control" value="<?= $customer ?>" disabled>
                                         <div class="table-responsive">
-                                            <table class="table" id="table1">
+                                            <table class="table" id="table">
                                                 <thead>
                                                     <tr>
-                                                        <th>No PO</th>
-                                                        <th>Customer</th>
-                                                        <th>Status</th>
-                                                        <th>Created At</th>
-                                                        <th>Action</th>
+                                                        <th>SKU</th>
+                                                        <th>Nama Barang</th>
+                                                        <th>Batch</th>
+                                                        <th>ED</th>
+                                                        <th>Qty</th>
+
 
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <?php foreach ($po->result_array() as $po1) { ?>
+                                                    <?php foreach ($detailPo->result_array() as $detailPo1) { ?>
                                                         <tr>
-                                                            <td><?= $po1['no_purchaseorder'] ?></td>
-                                                            <td><?= getNamaCustomer($po1['customer']) ?></td>
-															<td><?= getStatusPurchaseorder($po1['status']) ?></td> 
-                                                            <td><?= dateindo($po1['created_at']) ?></td>
-                                                            <td>
-                                                                <?php if ($po1['status'] == 0) { ?>
-                                                                    <a href="<?= base_url('user/purchaseorder/edit/' . $po1['uuid']) ?>" class="btn btn-primary btn-sm mb-1">Edit</a>
-                                                                    <a href="<?= base_url('user/purchaseorder/createPickingSlip/' . $po1['uuid']) ?>" class="btn btn-warning btn-sm mb-1">Create Picking Slip</a>
-                                                                <?php } ?>
+                                                            <td><?= $detailPo1['sku'] ?></td>
+                                                            <td><?= $detailPo1['nama_barang'] ?></td>
+                                                            <td><?= $detailPo1['batchnumber'] ?></td>
+                                                            <td><?= $detailPo1['expiration_date'] ?></td>
+                                                            <td><?= $detailPo1['qty'] ?></td>
 
-                                                                <a href="<?= base_url('user/purchaseorder/detail/' . $po1['uuid']) ?>" class="btn btn-primary btn-sm mb-1">Detail</a>
-																
-                                                                
-															</td>
                                                         </tr>
                                                     <?php } ?>
                                                 </tbody>
                                             </table>
                                         </div>
+                                        
                                     </div>
                                 </div>
 
@@ -107,12 +105,54 @@
     <script src="<?= base_url() . '/' ?>assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 
     <script src="<?= base_url() . '/' ?>assets/compiled/js/app.js"></script>
-    <script src="<?= base_url() . '/' ?>assets/extensions/jquery/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
     <script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
+    <script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-    
+    <script>
+        $(document).ready(function() {
+            $('.assignPicker').select2();
+        });
+    </script>
+
+    <script>
+        $('#assignPickerForm').on('submit', function(e) {
+            e.preventDefault();
+            var $submitBtn = $(this).find('button[type="submit"]'); // get the submit button
+            $submitBtn.prop('disabled', true); // disable the submit button
+            $.ajax({
+                url: "<?= base_url('user/purchaseorder/processpickingslip/' . $uuid) ?>",
+                type: "POST",
+                data: $(this).serialize(),
+                dataType: 'json',
+                success: function(response) {
+                    Swal.fire({
+                        title: response.status === 'success' ? 'Success' : 'Error',
+                        text: response.message,
+                        icon: response.status === 'success' ? 'success' : 'error',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        if (response.status === 'success') {
+                            window.location.href = "<?= base_url('user/pickingslip') ?>";
+                        }
+                    });
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Something went wrong: ' + textStatus,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        });
+    </script>
+
+
 
 </body>
 
