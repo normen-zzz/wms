@@ -84,11 +84,7 @@
 															</td>
 															<td>
 																<input type="hidden" class="id_dataputaway" value="<?= $item['id_dataputaway'] ?>">
-																<?php if ($item['status'] == 2) : ?>
-																	<button type="button" class="btn btn-primary done-button" disabled>Done</button>
-																<?php else : ?>
-																	<button type="button" class="btn btn-primary done-button">Done</button>
-																<?php endif; ?>
+																<button type="button" class="btn btn-primary done-button">Done</button>
 															</td>
 														</tr>
 													<?php endforeach; ?>

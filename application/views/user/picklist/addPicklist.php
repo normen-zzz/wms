@@ -7,16 +7,13 @@
 	<title><?= $title ?></title>
 
 	<link rel="shortcut icon" href="<?= base_url() . '/' ?>assets/compiled/svg/favicon.svg" type="image/x-icon" />
-	<link rel="shortcut icon"
-		href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAiCAYAAADRcLDBAAAEs2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjMzIgogICBleGlmOlBpeGVsWURpbWVuc2lvbj0iMzQiCiAgIGV4aWY6Q29sb3JTcGFjZT0iMSIKICAgdGlmZjpJbWFnZVdpZHRoPSIzMyIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMzQiCiAgIHRpZmY6UmVzb2x1dGlvblVuaXQ9IjIiCiAgIHRpZmY6WFJlc29sdXRpb249Ijk2LjAiCiAgIHRpZmY6WVJlc29sdXRpb249Ijk2LjAiCiAgIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiCiAgIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIKICAgeG1wOk1vZGlmeURhdGU9IjIwMjItMDMtMzFUMTA6NTA6MjMrMDI6MDAiCiAgIHhtcDpNZXRhZGF0YURhdGU9IjIwMjItMDMtMzFUMTA6NTA6MjMrMDI6MDAiPgogICA8eG1wTU06SGlzdG9yeT4KICAgIDxyZGY6U2VxPgogICAgIDxyZGY6bGkKICAgICAgc3RFdnQ6YWN0aW9uPSJwcm9kdWNlZCIKICAgICAgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWZmaW5pdHkgRGVzaWduZXIgMS4xMC4xIgogICAgICBzdEV2dDp3aGVuPSIyMDIyLTAzLTMxVDEwOjUwOjIzKzAyOjAwIi8+CiAgICA8L3JkZjpTZXE+CiAgIDwveG1wTU06SGlzdG9yeT4KICA8L3JkZjpEZXNjcmlwdGlvbj4KIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+Cjw/eHBhY2tldCBlbmQ9InIiPz5V57uAAAABgmlDQ1BzUkdCIElFQzYxOTY2LTIuMQAAKJF1kc8rRFEUxz9maORHo1hYKC9hISNGTWwsRn4VFmOUX5uZZ36oeTOv954kW2WrKLHxa8FfwFZZK0WkZClrYoOe87ypmWTO7dzzud97z+nec8ETzaiaWd4NWtYyIiNhZWZ2TvE946WZSjqoj6mmPjE1HKWkfdxR5sSbgFOr9Ll/rXoxYapQVik8oOqGJTwqPL5i6Q5vCzeo6dii8KlwpyEXFL519LjLLw6nXP5y2IhGBsFTJ6ykijhexGra0ITl5bRqmWU1fx/nJTWJ7PSUxBbxJkwijBBGYYwhBgnRQ7/MIQIE6ZIVJfK7f/MnyUmuKrPOKgZLpEhj0SnqslRPSEyKnpCRYdXp/9++msneoFu9JgwVT7b91ga+LfjetO3PQ9v+PgLvI1xkC/m5A+h7F32zoLXug38dzi4LWnwHzjeg8UGPGbFfySvuSSbh9QRqZ6H+Gqrm3Z7l9zm+h+iafNUV7O5Bu5z3L/wAdthn7QIme0YAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAJTSURBVFiF7Zi9axRBGIefEw2IdxFBRQsLWUTBaywSK4ubdSGVIY1Y6HZql8ZKCGIqwX/AYLmCgVQKfiDn7jZeEQMWfsSAHAiKqPiB5mIgELWYOW5vzc3O7niHhT/YZvY37/swM/vOzJbIqVq9uQ04CYwCI8AhYAlYAB4Dc7HnrOSJWcoJcBS4ARzQ2F4BZ2LPmTeNuykHwEWgkQGAet9QfiMZjUSt3hwD7psGTWgs9pwH1hC1enMYeA7sKwDxBqjGnvNdZzKZjqmCAKh+U1kmEwi3IEBbIsugnY5avTkEtIAtFhBrQCX2nLVehqyRqFoCAAwBh3WGLAhbgCRIYYinwLolwLqKUwwi9pxV4KUlxKKKUwxC6ZElRCPLYAJxGfhSEOCz6m8HEXvOB2CyIMSk6m8HoXQTmMkJcA2YNTHm3congOvATo3tE3A29pxbpnFzQSiQPcB55IFmFNgFfEQeahaAGZMpsIJIAZWAHcDX2HN+2cT6r39GxmvC9aPNwH5gO1BOPFuBVWAZue0vA9+A12EgjPadnhCuH1WAE8ivYAQ4ohKaagV4gvxi5oG7YSA2vApsCOH60WngKrA3R9IsvQUuhIGY00K4flQG7gHH/mLytB4C42EgfrQb0mV7us8AAMeBS8mGNMR4nwHamtBB7B4QRNdaS0M8GxDEog7iyoAguvJ0QYSBuAOcAt71Kfl7wA8DcTvZ2KtOlJEr+ByyQtqqhTyHTIeB+ONeqi3brh+VgIN0fohUgWGggizZFTplu12yW8iy/YLOGWMpDMTPXnl+Az9vj2HERYqPAAAAAElFTkSuQmCC"
-		type="image/png" />
+	<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAiCAYAAADRcLDBAAAEs2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjMzIgogICBleGlmOlBpeGVsWURpbWVuc2lvbj0iMzQiCiAgIGV4aWY6Q29sb3JTcGFjZT0iMSIKICAgdGlmZjpJbWFnZVdpZHRoPSIzMyIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMzQiCiAgIHRpZmY6UmVzb2x1dGlvblVuaXQ9IjIiCiAgIHRpZmY6WFJlc29sdXRpb249Ijk2LjAiCiAgIHRpZmY6WVJlc29sdXRpb249Ijk2LjAiCiAgIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiCiAgIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIKICAgeG1wOk1vZGlmeURhdGU9IjIwMjItMDMtMzFUMTA6NTA6MjMrMDI6MDAiCiAgIHhtcDpNZXRhZGF0YURhdGU9IjIwMjItMDMtMzFUMTA6NTA6MjMrMDI6MDAiPgogICA8eG1wTU06SGlzdG9yeT4KICAgIDxyZGY6U2VxPgogICAgIDxyZGY6bGkKICAgICAgc3RFdnQ6YWN0aW9uPSJwcm9kdWNlZCIKICAgICAgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWZmaW5pdHkgRGVzaWduZXIgMS4xMC4xIgogICAgICBzdEV2dDp3aGVuPSIyMDIyLTAzLTMxVDEwOjUwOjIzKzAyOjAwIi8+CiAgICA8L3JkZjpTZXE+CiAgIDwveG1wTU06SGlzdG9yeT4KICA8L3JkZjpEZXNjcmlwdGlvbj4KIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+Cjw/eHBhY2tldCBlbmQ9InIiPz5V57uAAAABgmlDQ1BzUkdCIElFQzYxOTY2LTIuMQAAKJF1kc8rRFEUxz9maORHo1hYKC9hISNGTWwsRn4VFmOUX5uZZ36oeTOv954kW2WrKLHxa8FfwFZZK0WkZClrYoOe87ypmWTO7dzzud97z+nec8ETzaiaWd4NWtYyIiNhZWZ2TvE946WZSjqoj6mmPjE1HKWkfdxR5sSbgFOr9Ll/rXoxYapQVik8oOqGJTwqPL5i6Q5vCzeo6dii8KlwpyEXFL519LjLLw6nXP5y2IhGBsFTJ6ykijhexGra0ITl5bRqmWU1fx/nJTWJ7PSUxBbxJkwijBBGYYwhBgnRQ7/MIQIE6ZIVJfK7f/MnyUmuKrPOKgZLpEhj0SnqslRPSEyKnpCRYdXp/9++msneoFu9JgwVT7b91ga+LfjetO3PQ9v+PgLvI1xkC/m5A+h7F32zoLXug38dzi4LWnwHzjeg8UGPGbFfySvuSSbh9QRqZ6H+Gqrm3Z7l9zm+h+iafNUV7O5Bu5z3L/wAdthn7QIme0YAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAJTSURBVFiF7Zi9axRBGIefEw2IdxFBRQsLWUTBaywSK4ubdSGVIY1Y6HZql8ZKCGIqwX/AYLmCgVQKfiDn7jZeEQMWfsSAHAiKqPiB5mIgELWYOW5vzc3O7niHhT/YZvY37/swM/vOzJbIqVq9uQ04CYwCI8AhYAlYAB4Dc7HnrOSJWcoJcBS4ARzQ2F4BZ2LPmTeNuykHwEWgkQGAet9QfiMZjUSt3hwD7psGTWgs9pwH1hC1enMYeA7sKwDxBqjGnvNdZzKZjqmCAKh+U1kmEwi3IEBbIsugnY5avTkEtIAtFhBrQCX2nLVehqyRqFoCAAwBh3WGLAhbgCRIYYinwLolwLqKUwwi9pxV4KUlxKKKUwxC6ZElRCPLYAJxGfhSEOCz6m8HEXvOB2CyIMSk6m8HoXQTmMkJcA2YNTHm3congOvATo3tE3A29pxbpnFzQSiQPcB55IFmFNgFfEQeahaAGZMpsIJIAZWAHcDX2HN+2cT6r39GxmvC9aPNwH5gO1BOPFuBVWAZue0vA9+A12EgjPadnhCuH1WAE8ivYAQ4ohKaagV4gvxi5oG7YSA2vApsCOH60WngKrA3R9IsvQUuhIGY00K4flQG7gHH/mLytB4C42EgfrQb0mV7us8AAMeBS8mGNMR4nwHamtBB7B4QRNdaS0M8GxDEog7iyoAguvJ0QYSBuAOcAt71Kfl7wA8DcTvZ2KtOlJEr+ByyQtqqhTyHTIeB+ONeqi3brh+VgIN0fohUgWGggizZFTplu12yW8iy/YLOGWMpDMTPXnl+Az9vj2HERYqPAAAAAElFTkSuQmCC" type="image/png" />
 
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/compiled/css/app.css" />
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/compiled/css/app-dark.css" />
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/compiled/css/iconly.css" />
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.min.css">
-	<link rel="stylesheet"
-		href="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
+	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/extensions/flatpickr/flatpickr.min.css">
 	<!-- select2 -->
 	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -29,7 +26,6 @@
 	.select2-container {
 		width: 100% !important;
 	}
-
 </style>
 
 <body>
@@ -68,27 +64,28 @@
 														</tr>
 													</thead>
 													<tbody id="table-body">
-															<tr>
-																	<td>
-																			<select name="barang[]" class="form-control selectBarang">
-																					<option value="">Pilih Barang</option>
-																					<option value="manual">Input Manual</option>
-																			</select>
-																			<input type="text" name="barang_manual[]" class="form-control inputManual" style="display:none;" placeholder="Input Barang">
-																	</td>
-																	<td><select name="batch[]" class="form-select selectBatch">
-
+														<tr>
+															<td>
+																<select name="barang[]" class="form-control selectBarang">
+																	<option value="">Pilih Barang</option>
+																</select>
+															</td>
+															<td>
+																<select name="batch[]" class="form-select selectBatch">
 																	<option selected value="-">Select Batch</option>
-
-																</select></td>
-																	<td>
-																			<input type="text" class="form-control qty" name="qty[]">
-																	</td>
-																	<td>
-																			<input type="date" name="ed[]" class="form-control flatpickrDate">
-																	</td>
-															</tr>
+																</select>
+																<input type="text" name="batch_manual[]" class="form-control inputBatchManual mt-2" style="display:none;" placeholder="Input Batch Manually">
+																<button type="button" class="btn btn-primary btn-save-batch mt-2" style="display:none;">Save Batch</button>
+															</td>
+															<td>
+																<input type="text" class="form-control qty" name="qty[]">
+															</td>
+															<td>
+																<input type="date" name="ed[]" class="form-control flatpickrDate">
+															</td>
+														</tr>
 													</tbody>
+
 													<tfoot>
 														<tr>
 															<td colspan="3">
@@ -121,8 +118,7 @@
 	<script src="<?= base_url() . '/' ?>assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 
 	<script src="<?= base_url() . '/' ?>assets/compiled/js/app.js"></script>
-	<script src="https://code.jquery.com/jquery-3.7.1.min.js"
-		integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
@@ -134,10 +130,10 @@
 
 
 	<script type="text/javascript">
-		$(document).ready(function () {
+		$(document).ready(function() {
 			initSelect2AndFlatpickr();
 
-			$('#add-row-btn').on('click', function () {
+			$('#add-row-btn').on('click', function() {
 				var newRow = `
 				<tr>
 						<td><select name="barang[]" class="form-control selectBarang"></select></td>
@@ -149,66 +145,70 @@
 				initSelect2AndFlatpickr();
 			});
 
-			$('#picklistForm').on('submit', function (e) {
-					e.preventDefault();
-					$.ajax({
-							url: "<?= base_url('user/picklist/insertPicklist') ?>",
-							type: "POST",
-							data: $(this).serialize(),
-							dataType: 'json',
-							success: function (response) {
-									Swal.fire({
-											title: response.status === 'success' ? 'Success' : 'Error',
-											text: response.message,
-											icon: response.status === 'success' ? 'success' : 'error',
-											confirmButtonText: 'OK'
-									}).then(() => {
-											if (response.status === 'success') {
-													$('#picklistForm')[0].reset();
-													window.location.href = "<?= base_url('user/picklist') ?>";
-											}
-									});
-							},
-							error: function (jqXHR, textStatus, errorThrown) {
-									Swal.fire({
-											title: 'Error',
-											text: 'Something went wrong: ' + textStatus,
-											icon: 'error',
-											confirmButtonText: 'OK'
-									});
+			$('#picklistForm').on('submit', function(e) {
+				e.preventDefault();
+				$.ajax({
+					url: "<?= base_url('user/picklist/insertPicklist') ?>",
+					type: "POST",
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function(response) {
+						Swal.fire({
+							title: response.status === 'success' ? 'Success' : 'Error',
+							text: response.message,
+							icon: response.status === 'success' ? 'success' : 'error',
+							confirmButtonText: 'OK'
+						}).then(() => {
+							if (response.status === 'success') {
+								$('#picklistForm')[0].reset();
+								window.location.href = "<?= base_url('user/picklist') ?>";
 							}
-					});
+						});
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+						Swal.fire({
+							title: 'Error',
+							text: 'Something went wrong: ' + textStatus,
+							icon: 'error',
+							confirmButtonText: 'OK'
+						});
+					}
+				});
 			});
 
 			function initSelect2AndFlatpickr() {
 				$('.selectBarang').select2({
-						ajax: {
-								url: '<?= base_url('user/picklist/getDataBarangSelect') ?>',
-								type: "POST",
-								dataType: 'json',
-								delay: 250,
-								data: function (params) {
-										return {
-												searchTerm: params.term || ''
-										};
-								},
-								processResults: function (response) {
-										return {
-												results: response
-										};
-								},
-								cache: true
+					ajax: {
+						url: '<?= base_url('user/picklist/getDataBarangSelect') ?>',
+						type: "POST",
+						dataType: 'json',
+						delay: 250,
+						data: function(params) {
+							return {
+								searchTerm: params.term || ''
+							};
 						},
-						minimumInputLength: 0,
-						placeholder: "Pilih barang",
-						allowClear: true
+						processResults: function(response) {
+							return {
+								results: response
+							};
+						},
+						cache: true
+					},
+					minimumInputLength: 0,
+					placeholder: "Pilih barang",
+					allowClear: true
 				});
 
 				$('.selectBarang').on('change', function() {
 					var barangId = $(this).val();
-					var row = $(this).closest('tr'); 
-					var batchSelect = row.find('.selectBatch'); 
-					var inputEd = row.find('.inputEd');
+					var row = $(this).closest('tr');
+					var batchSelect = row.find('.selectBatch');
+					var inputBatchManual = row.find('.inputBatchManual');
+					var qty = row.find('.qty');
+					var ed = row.find('.flatpickrDate');
+					var btnSaveBatch = row.find('.btn-save-batch');
+
 					$.ajax({
 						url: '<?= base_url('user/goodsorder/getBatch') ?>',
 						type: 'POST',
@@ -224,12 +224,20 @@
 								value: '-',
 								text: 'Select Batch'
 							}));
-							$.each(batchOptions, function(index, batch) {
-								batchSelect.append($('<option>', {
-									value: batch.id,
-									text: batch.name
-								}));
-							});
+
+							if (batchOptions.length > 0) {
+								$.each(batchOptions, function(index, batch) {
+									batchSelect.append($('<option>', {
+										value: batch.id,
+										text: batch.name
+									}));
+								});
+								inputBatchManual.hide();
+								btnSaveBatch.hide();
+							} else {
+								inputBatchManual.show();
+								btnSaveBatch.show();
+							}
 
 							batchSelect.select2({
 								width: '100%',
@@ -242,9 +250,39 @@
 				$('.flatpickrDate').flatpickr({
 					dateFormat: "d-m-Y"
 				});
-			}
-		});
 
+				$('.btn-save-batch').on('click', function() {
+					var manualBatch = $(this).closest('tr').find('.inputBatchManual').val();
+					var barangId = $(this).closest('tr').find('.selectBarang').val();
+					var qty = $(this).closest('tr').find('.qty').val();
+					var ed = $(this).closest('tr').find('.flatpickrDate').val();
+
+					$.ajax({
+						url: '<?= base_url('user/picklist/saveManualBatch') ?>',
+						type: 'POST',
+						data: {
+							barangId: barangId,
+							manualBatch: manualBatch,
+							qty: qty,
+							expirationDate: ed
+						},
+						dataType: 'json',
+						success: function(response) {
+							if (response.status === 'success') {
+								alert('Batch saved successfully!');
+							} else {
+								alert('Failed to save batch: ' + (response.message || 'Unknown error'));
+							}
+						},
+						error: function(xhr, status, error) {
+							alert('Failed to save batch: ' + error);
+						}
+					});
+				});
+			}
+
+
+		});
 	</script>
 
 </body>

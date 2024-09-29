@@ -4,46 +4,47 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Picklist extends CI_Controller
 {
 
-    public function __construct()
-    {
-        parent::__construct();
-        is_login();
-        date_default_timezone_set('Asia/Jakarta');
-        $this->load->model('Picklist_model', 'picklist');
-    }
-
-    public function index()
-    {
-        $data = [
-            'title' => 'Picklist',
-            'subtitle' => 'Data Picklist',
-            'subtitle2' => 'Data Picklist',
-            'pl' => $this->picklist->getDataPicklist(),
-        ];
-        $this->load->view('user/picklist/index', $data);
-    }
-
-    public function add()
-    {
-        $data = [
-            'title' => 'Picklist',
-            'subtitle' => 'Add Picklist',
-            'subtitle2' => 'Add Picklist',
-            
-        ];
-        $this->load->view('user/picklist/addPicklist', $data);
-    }
-
-    public function getDataBarangSelect()
+	public function __construct()
 	{
-		$searchTerm = $this->input->post('searchTerm'); 
-		$response = $this->picklist->selectBarang($searchTerm); 
+		parent::__construct();
+		is_login();
+		date_default_timezone_set('Asia/Jakarta');
+		$this->load->model('Picklist_model', 'picklist');
+	}
+
+	public function index()
+	{
+		$data = [
+			'title' => 'Picklist',
+			'subtitle' => 'Data Picklist',
+			'subtitle2' => 'Data Picklist',
+			'pl' => $this->picklist->getDataPicklist(),
+		];
+		$this->load->view('user/picklist/index', $data);
+	}
+
+	public function add()
+	{
+		$data = [
+			'title' => 'Picklist',
+			'subtitle' => 'Add Picklist',
+			'subtitle2' => 'Add Picklist',
+
+		];
+		$this->load->view('user/picklist/addPicklist', $data);
+	}
+
+	public function getDataBarangSelect()
+	{
+		$searchTerm = $this->input->post('searchTerm');
+		$response = $this->picklist->selectBarang($searchTerm);
 
 		echo json_encode($response);
 	}
 
 
-	public function insertPicklist() {
+	public function insertPicklist()
+	{
 		$no_picklist = generate_picklist_number();
 		$created_by = $this->session->userdata('id_users');
 		$status = 0;
@@ -92,7 +93,8 @@ class Picklist extends CI_Controller
 
 
 	// delete
-	public function delete() {
+	public function delete()
+	{
 		$id_picklist = $this->input->post('id_picklist');
 		$deleted_by = $this->session->userdata('id_users');
 
@@ -111,39 +113,82 @@ class Picklist extends CI_Controller
 
 	// edit
 
-	public function get_picklist_details() {
-			$id_picklist = $this->input->get('id_picklist');
-			$picklist = $this->picklist->get_picklist_with_details($id_picklist); 
+	public function get_picklist_details()
+	{
+		$id_picklist = $this->input->get('id_picklist');
+		$picklist = $this->picklist->get_picklist_with_details($id_picklist);
 
-			echo json_encode($picklist); 
+		echo json_encode($picklist);
 	}
 
 
-	public function update() {
-    $id_picklist = $this->input->post('id_picklist');
+	public function update()
+	{
+		$id_picklist = $this->input->post('id_picklist');
 		$updated_by = $this->session->userdata('id_users');
-    
-    $data_picklist = array(
-        'no_picklist' => $this->input->post('no_picklist'),
-        'updated_at' => date('Y-m-d H:i:s'),
-				'status' => $this->input->post('status'),
-				'updated_by' => $updated_by
-    );
 
-    $data_details = array(
-        'qty' => $this->input->post('qty'),
-				'batch' => $this->input->post('batch'),
-				'updated_at' => date('Y-m-d H:i:s'),
-				'updated_by' => $updated_by
-    );
+		$data_picklist = array(
+			'no_picklist' => $this->input->post('no_picklist'),
+			'updated_at' => date('Y-m-d H:i:s'),
+			'status' => $this->input->post('status'),
+			'updated_by' => $updated_by
+		);
 
-    $this->picklist->update_picklist($id_picklist, $data_picklist);
-    $this->picklist->update_details($id_picklist, $data_details);
+		$data_details = array(
+			'qty' => $this->input->post('qty'),
+			'batch' => $this->input->post('batch'),
+			'updated_at' => date('Y-m-d H:i:s'),
+			'updated_by' => $updated_by
+		);
 
-    $response = array('status' => 'success', 'message' => 'Picklist updated successfully.');
-    echo json_encode($response);
+		$this->picklist->update_picklist($id_picklist, $data_picklist);
+		$this->picklist->update_details($id_picklist, $data_details);
+
+		$response = array('status' => 'success', 'message' => 'Picklist updated successfully.');
+		echo json_encode($response);
 	}
 
+	public function saveManualBatch()
+	{
+		$barangId = $this->input->post('barangId');
+		$manualBatch = $this->input->post('manualBatch');
+		$expirationDate = $this->input->post('expirationDate');
+		$qty = $this->input->post('qty');
+
+		$dateParts = explode('-', $expirationDate);
+		if (count($dateParts) == 3) {
+			$expirationDate = $dateParts[2] . '-' . $dateParts[1] . '-' . $dateParts[0];
+		}
+
+		if (!empty($barangId) && !empty($manualBatch) && !empty($expirationDate) && !empty($qty)) {
+			$batchData = [
+				'batchnumber' => $manualBatch,
+				'expiration_date' => $expirationDate,
+				'qty' => (int)$qty,
+				'uuid' => uniqid(),
+			];
+
+			if ($this->db->insert('batch', $batchData)) {
+				$batchId = $this->db->insert_id();
+
+				$batchItemData = [
+					'id_batch' => $batchId,
+					'id_barang' => (int)$barangId,
+					'qty' => (int)$qty,
+				];
+
+				if ($this->db->insert('batchitem', $batchItemData)) {
+					echo json_encode(['status' => 'success']);
+				} else {
+					echo json_encode(['status' => 'error', 'message' => 'Failed to insert into batchitem: ' . $this->db->last_query()]);
+				}
+			} else {
+				echo json_encode(['status' => 'error', 'message' => 'Database error on batch insert: ' . $this->db->last_query()]);
+			}
+		} else {
+			echo json_encode(['status' => 'error', 'message' => 'Invalid input']);
+		}
+	}
 }
 
 /* End of file User.php */
