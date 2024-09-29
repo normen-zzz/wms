@@ -77,12 +77,13 @@
 																<td><?= $dtl['batch_id'] ?></td>
 																<td><?= $dtl['good_qty'] ?></td>
 																<td>
-																	<?php if (!empty($dtl['sloc'])) { ?>
-																		<p>SLOC: <?= $dtl['sloc'] ?></p>
-																		<p>Quantity: <?= $dtl['rack_quantity'] ?></p>
-																	<?php } else { ?>
+																	<?php if (!empty($dtl['existing_racks'])) : ?>
+																		<?php foreach ($dtl['existing_racks'] as $rack) : ?>
+																			<p>SLOC: <?= $rack['sloc'] ?></p>
+																		<?php endforeach; ?>
+																	<?php else : ?>
 																		<p>Not assigned</p>
-																	<?php } ?>
+																	<?php endif; ?>
 																</td>
 																<td>
 																	<button type="button" class="btn btn-sm btn-primary get-recommendations" data-id-barang="<?= $dtl['id_barang'] ?>" data-quantity="<?= $dtl['good_qty'] ?>">
@@ -226,18 +227,23 @@
 				}
 
 				let data = {
-					'id_barang': id_barang,
-					'batch_id': batch_id,
-					'id_inbound': $(`input[name="putaway_field[${id_barang}][id_inbound]"]`).val(),
-					'id_putaway': $(`input[name="putaway_field[${id_barang}][id_putaway]"]`).val(),
-					'rack_ids': rack_ids,
-					'quantities': quantities
+					'putaway_field': {
+						[id_barang]: {
+							'id_barang': id_barang,
+							'batch_id': batch_id,
+							'id_inbound': $(`input[name="putaway_field[${id_barang}][id_inbound]"]`).val(),
+							'id_putaway': $(`input[name="putaway_field[${id_barang}][id_putaway]"]`).val(),
+							'rack_ids': rack_ids,
+							'quantities': quantities
+						}
+					}
 				};
 
 				$.ajax({
 					url: '<?= site_url('user/putaway/create_putaway') ?>',
 					type: 'POST',
-					data: data,
+					contentType: 'application/json', // Send the data as JSON
+					data: JSON.stringify(data), // Stringify the data
 					success: function(response) {
 						Swal.fire({
 							icon: 'success',
@@ -253,8 +259,9 @@
 						});
 					}
 				});
-			});
 
+
+			});
 
 			$('#table').on('click', '.add-row', function() {
 				var id_barang = $(this).closest('tr').find('input').attr('name').match(/\[(.*?)\]/)[1]; // Ambil id_barang dari row
@@ -294,6 +301,7 @@
 						text: `Total quantity yang diinputkan (${totalQuantity}) kurang dari jumlah yang dibutuhkan (${good_qty}).`
 					});
 				}
+
 				if (totalQuantity > good_qty) {
 					Swal.fire({
 						icon: 'warning',
@@ -303,6 +311,7 @@
 				}
 			}
 
+			// add row add-row table choosenRack
 			$('#table').on('click', '.add-row', function() {
 				var row = '<tr>' +
 					'<td><input type="text" name="putaway_field[' + $(this).data('id-barang') + '][id_rack][]" class="form-control" placeholder="Enter Rack"></td>' +

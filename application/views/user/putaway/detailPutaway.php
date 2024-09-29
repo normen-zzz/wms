@@ -14,6 +14,8 @@
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/compiled/css/iconly.css" />
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.min.css">
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 
 
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/compiled/css/table-datatable-jquery.css">
@@ -46,46 +48,40 @@
 										<h5 class="card-title">
 											<?= $subtitle2 ?>
 										</h5>
-										<!-- create putaway -->
-										<!-- <a href="<?= base_url('user/putaway/create') ?>" class="btn btn-primary">Create Putaway</a> -->
+
 									</div>
 
 									<div class="card-body">
+										<label for="customer">Customer</label>
+										<input type="text" class="form-control" value="<?= $customer ?>" disabled>
 										<div class="table-responsive">
-											<table class="table" id="table1">
+											<table class="table" id="table">
 												<thead>
 													<tr>
-														<th>No Putaway</th>
-														<th>No Inbound</th>
-														<th>Assign to</th>
-														<th>Status</th>
-														<th>Created At</th>
-														<th>Action</th>
+														<th>SKU</th>
+														<th>Nama Barang</th>
+														<th>Batch</th>
+														<th>ED</th>
+														<th>Qty</th>
+
+
 													</tr>
 												</thead>
 												<tbody>
-													<?php foreach ($putaway as $p) : ?>
+													<?php foreach ($detailPo->result_array() as $detailPo1) { ?>
 														<tr>
-															<td><?= $p->no_putaway ?></td>
-															<td><?= $p->no_inbound ?></td>
-															<td><?= $p->user_name ?></td>
-															<td>
-																<?php if ($p->status == 1) : ?>
-																	<span class="badge bg-success">Active</span>
-																<?php else : ?>
-																	<span class="badge bg-danger">Inactive</span>
-																<?php endif; ?>
-															</td>
-															<td><?= $p->created_at ?></td>
-															<td>
-																<a href="<?= base_url('user/putaway/create/' . $p->uuid) ?>" class="btn btn-primary">Put</a>
-																<a href="<?= base_url('user/putaway/detail/' . $p->uuid) ?>" class="btn btn-primary">Detail</a>
-															</td>
+															<td><?= $detailPo1['sku'] ?></td>
+															<td><?= $detailPo1['nama_barang'] ?></td>
+															<td><?= $detailPo1['batchnumber'] ?></td>
+															<td><?= $detailPo1['expiration_date'] ?></td>
+															<td><?= $detailPo1['qty'] ?></td>
+
 														</tr>
-													<?php endforeach; ?>
+													<?php } ?>
 												</tbody>
 											</table>
 										</div>
+
 									</div>
 								</div>
 
@@ -97,18 +93,65 @@
 					<!-- // Basic Vertical form layout section end -->
 				</div>
 			</div>
+
+			<?php $this->load->view('templates/footer') ?>
 		</div>
+	</div>
 
-		<script src="<?= base_url() . '/' ?>assets/static/js/components/dark.js"></script>
-		<script src="<?= base_url() . '/' ?>assets/static/js/pages/horizontal-layout.js"></script>
-		<script src="<?= base_url() . '/' ?>assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 
-		<script src="<?= base_url() . '/' ?>assets/compiled/js/app.js"></script>
-		<script src="<?= base_url() . '/' ?>assets/extensions/jquery/jquery.min.js"></script>
-		<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
-		<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
-		<script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
-		<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
+
+	<script src="<?= base_url() . '/' ?>assets/static/js/components/dark.js"></script>
+	<script src="<?= base_url() . '/' ?>assets/static/js/pages/horizontal-layout.js"></script>
+	<script src="<?= base_url() . '/' ?>assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+
+	<script src="<?= base_url() . '/' ?>assets/compiled/js/app.js"></script>
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
+	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
+	<script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
+	<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+	<script>
+		$(document).ready(function() {
+			$('.assignPicker').select2();
+		});
+	</script>
+
+	<script>
+		$('#assignPickerForm').on('submit', function(e) {
+			e.preventDefault();
+			var $submitBtn = $(this).find('button[type="submit"]'); // get the submit button
+			$submitBtn.prop('disabled', true); // disable the submit button
+			$.ajax({
+				url: "<?= base_url('user/purchaseorder/processpickingslip/' . $uuid) ?>",
+				type: "POST",
+				data: $(this).serialize(),
+				dataType: 'json',
+				success: function(response) {
+					Swal.fire({
+						title: response.status === 'success' ? 'Success' : 'Error',
+						text: response.message,
+						icon: response.status === 'success' ? 'success' : 'error',
+						confirmButtonText: 'OK'
+					}).then(() => {
+						if (response.status === 'success') {
+							window.location.href = "<?= base_url('user/pickingslip') ?>";
+						}
+					});
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					Swal.fire({
+						title: 'Error',
+						text: 'Something went wrong: ' + textStatus,
+						icon: 'error',
+						confirmButtonText: 'OK'
+					});
+				}
+			});
+		});
+	</script>
+
 
 
 </body>

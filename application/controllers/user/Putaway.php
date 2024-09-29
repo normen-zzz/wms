@@ -80,7 +80,6 @@ class Putaway extends CI_Controller
 			'uuid' => $uuid,
 		];
 
-		// var_dump($data);exit;
 
 		$this->load->view('user/putaway/createPutaway', $data);
 	}
@@ -108,71 +107,69 @@ class Putaway extends CI_Controller
 			echo json_encode(['success' => false, 'message' => 'Failed to assign rack']);
 		}
 	}
-
 	public function create_putaway()
 	{
-		$putaway_data = $this->input->post('putaway_field');
+		$putaway_data = json_decode(file_get_contents('php://input'), true);
 
-		// Mulai DB transaction
-		$this->db->trans_start();
+		if (!empty($putaway_data) && isset($putaway_data['putaway_field'])) {
+			foreach ($putaway_data['putaway_field'] as $id_barang => $item_data) {
+				if (isset($item_data['id_barang'], $item_data['batch_id'], $item_data['id_inbound'], $item_data['rack_ids'], $item_data['quantities'], $item_data['id_putaway'])) {
 
-		foreach ($putaway_data as $item) {
-			// Ambil data per item
-			$id_barang = $item['id_barang'];
-			$batch_id = $item['batch_id'];
-			$id_inbound = $item['id_inbound'];
-			$rack_ids = $item['id_rack'];
-			$quantities = $item['quantity'];
-			$id_putaway = $item['id_putaway'];
+					$rack_ids = $item_data['rack_ids'];
+					$quantities = $item_data['quantities'];
 
-			foreach ($rack_ids as $index => $rack_id) {
-				$quantity = isset($quantities[$index]) ? $quantities[$index] : 0;
+					if (count($rack_ids) === count($quantities)) {
+						foreach ($rack_ids as $index => $rack_id) {
+							$quantity = isset($quantities[$index]) ? $quantities[$index] : 0;
+							$get_Rack_id = $this->db->get_where('rack', ['sloc' => $rack_id])->row()->id_rack;
 
-				// Validasi quantity
-				if ($quantity <= 0) {
-					// Batalkan transaksi dan kirimkan respons error
-					$this->db->trans_rollback();
+							$insert_data = [
+								'id_putaway' => $item_data['id_putaway'],
+								'id_inbound' => $item_data['id_inbound'],
+								'id_rack' => $get_Rack_id,
+								'qty_putaway' => $quantity,
+								'created_at' => date('Y-m-d H:i:s'),
+								'created_by' => $this->session->userdata('id_users'),
+								'uuid' => uniqid(),
+								'id_barang' => $item_data['id_barang'],
+								'batch_id' => $item_data['batch_id'],
+								'status' => 1
+							];
+
+							if ($this->db->insert('dataputaway', $insert_data)) {
+								$this->Putaway_model->assign_rack_to_item($get_Rack_id, $item_data['id_barang'], $quantity, $item_data['batch_id']);
+							} else {
+								echo json_encode([
+									'status' => 'error',
+									'message' => 'Failed to insert data into dataputaway table.'
+								]);
+								return;
+							}
+						}
+					} else {
+						echo json_encode([
+							'status' => 'error',
+							'message' => 'Rack IDs and Quantities count do not match for item ' . $id_barang
+						]);
+						return;
+					}
+				} else {
 					echo json_encode([
 						'status' => 'error',
-						'message' => "Invalid quantity for id_barang: $id_barang and rack_id: $rack_id"
+						'message' => 'Invalid data structure for item ' . $id_barang
 					]);
-					return; // Keluar dari fungsi jika ada kesalahan
+					return;
 				}
-
-				// Insert data ke dalam tabel dataputaway
-				$this->db->insert('dataputaway', [
-					'id_putaway' => $id_putaway,
-					'id_inbound' => $id_inbound,
-					'id_rack' => $rack_id,
-					'qty_putaway' => $quantity,
-					'created_at' => date('Y-m-d H:i:s'),
-					'created_by' => $this->session->userdata('id_users'),
-					'uuid' => uniqid(),
-					'id_barang' => $id_barang,
-					'batch_id' => $batch_id,
-					'status' => 1
-				]);
-
-				// Assign rack ke item
-				$this->Putaway_model->assign_rack_to_item($rack_id, $id_barang, $quantity, $batch_id);
 			}
-		}
 
-		// Selesaikan transaksi DB
-		$this->db->trans_complete();
-
-		// Cek status transaksi
-		if ($this->db->trans_status() === FALSE) {
-			// Jika transaksi gagal, kirimkan respons error
-			echo json_encode([
-				'status' => 'error',
-				'message' => 'Error occurred while processing the transaction.'
-			]);
-		} else {
-			// Jika sukses, kirimkan respons sukses
 			echo json_encode([
 				'status' => 'success',
 				'message' => 'Putaway and DataPutaway processed successfully.'
+			]);
+		} else {
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Invalid or empty putaway data received.'
 			]);
 		}
 	}

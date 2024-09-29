@@ -24,13 +24,18 @@ class Putaway_model extends CI_Model
 		$this->db->select('putaway.*, users.nama as user_name, ib.no_inbound, ib.batch_id, ib.good_qty, barang.id_barang, barang.nama_barang, barang.sku');
 		$this->db->from('putaway');
 		$this->db->join('users', 'putaway.id_users = users.id_users', 'left');
-
 		$this->db->join('inbound ib', 'putaway.id_inbound = ib.id_inbound', 'left');
 		$this->db->join('barang', 'ib.id_barang = barang.id_barang', 'left');
-
+		$this->db->where('putaway.uuid', $uuid);
 		$this->db->order_by('putaway.created_at', 'DESC');
 
-		return $this->db->get()->result_array();
+		$result = $this->db->get()->result_array();
+
+		foreach ($result as &$item) {
+			$item['existing_racks'] = $this->get_existing_racks($item['id_barang'], $item['batch_id']);
+		}
+
+		return $result;
 	}
 
 	public function get_rack_recommendations()
@@ -77,9 +82,26 @@ class Putaway_model extends CI_Model
 				'id_rack' => $rack_id,
 				'quantity' => $quantity,
 				'created_at' => date('Y-m-d H:i:s'),
-				'created_by' => $this->session->userdata('user_id')
+				'created_by' => $this->session->userdata('id_users')
 			];
 			return $this->db->insert('rack_items', $data);
+		}
+	}
+
+	public function get_existing_racks($id_barang, $batch_id)
+	{
+		$this->db->select('r.sloc, ri.quantity as rack_quantity, r.id_rack as rack_id');
+		$this->db->from('rack_items ri');
+		$this->db->join('rack r', 'r.id_rack = ri.id_rack');
+		$this->db->where('ri.id_barang', $id_barang);
+		$this->db->where('ri.id_batch', $batch_id);
+
+		$query = $this->db->get();
+
+		if ($query->num_rows() > 0) {
+			return $query->result_array();
+		} else {
+			return array();
 		}
 	}
 

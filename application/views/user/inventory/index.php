@@ -69,9 +69,6 @@
 															<td><?= $item->batchnumber ?></td>
 															<td><?= $item->sloc ?></td>
 															<td><?= $item->quantity ?></td>
-															<td>
-																<a href="<?= site_url('inventory/delete/' . $item->id) ?>" onclick="return confirm('Are you sure?')">Delete</a>
-															</td>
 														</tr>
 													<?php endforeach; ?>
 												</tbody>
