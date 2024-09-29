@@ -70,11 +70,7 @@
 															<td><?= $p->no_inbound ?></td>
 															<td><?= $p->user_name ?></td>
 															<td>
-																<?php if ($p->status == 1) : ?>
-																	<span class="badge bg-success">Active</span>
-																<?php else : ?>
-																	<span class="badge bg-danger">Inactive</span>
-																<?php endif; ?>
+																<?= getStatusPutaway($p->status) ?>
 															</td>
 															<td><?= $p->created_at ?></td>
 															<td>

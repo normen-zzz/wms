@@ -173,4 +173,39 @@ class Putaway extends CI_Controller
 			]);
 		}
 	}
+
+	public function detail($uuid)
+	{
+		$putaway_details = $this->Putaway_model->get_details_putaway($uuid);
+
+
+		$data = [
+			'title' => 'Putaway',
+			'subtitle' => 'Detail Putaway',
+			'subtitle2' => 'Detail Putaway',
+			'putaway_details' => $putaway_details,
+		];
+
+		// Load the view with the data
+		$this->load->view('user/putaway/detailPutaway', $data);
+	}
+
+	public function update_status()
+	{
+		$id = $this->input->post('id_dataputaway');
+
+		if ($id) {
+			$this->db->where('id_dataputaway', $id);
+			$this->db->update('dataputaway', ['status' => 2]);
+			echo json_encode([
+				'status' => 'success',
+				'message' => 'Status updated successfully.'
+			]);
+		} else {
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'No ID provided.'
+			]);
+		}
+	}
 }

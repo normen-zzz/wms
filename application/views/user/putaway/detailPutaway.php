@@ -45,43 +45,56 @@
 
 								<div class="card">
 									<div class="card-header">
-										<h5 class="card-title">
-											<?= $subtitle2 ?>
-										</h5>
-
+										<h5 class="card-title"><?= $subtitle2 ?></h5>
 									</div>
 
 									<div class="card-body">
-										<label for="customer">Customer</label>
-										<input type="text" class="form-control" value="<?= $customer ?>" disabled>
+										<div class="mb-3">
+											<label for="no_putaway" class="form-label">No Putaway</label>
+											<input type="text" class="form-control" id="no_putaway" value="<?= $putaway_details[0]['no_putaway'] ?>" disabled>
+										</div>
+
 										<div class="table-responsive">
-											<table class="table" id="table">
+											<table class="table table-striped table-hover" id="putawayTable">
 												<thead>
 													<tr>
 														<th>SKU</th>
 														<th>Nama Barang</th>
 														<th>Batch</th>
-														<th>ED</th>
 														<th>Qty</th>
-
-
+														<th>Existing Racks</th>
+														<th>Action</th>
 													</tr>
 												</thead>
 												<tbody>
-													<?php foreach ($detailPo->result_array() as $detailPo1) { ?>
+													<?php foreach ($putaway_details as $item) : ?>
 														<tr>
-															<td><?= $detailPo1['sku'] ?></td>
-															<td><?= $detailPo1['nama_barang'] ?></td>
-															<td><?= $detailPo1['batchnumber'] ?></td>
-															<td><?= $detailPo1['expiration_date'] ?></td>
-															<td><?= $detailPo1['qty'] ?></td>
-
+															<td><?= $item['sku'] ?></td>
+															<td><?= $item['nama_barang'] ?></td>
+															<td><?= $item['batchnumber'] ?></td>
+															<td><?= $item['qty_putaway'] ?></td>
+															<td>
+																<?php if (!empty($item['existing_racks'])) : ?>
+																	<?php foreach ($item['existing_racks'] as $rack) : ?>
+																		<p>SLOC: <?= $rack['sloc'] ?>, Qty: <?= $rack['rack_quantity'] ?></p>
+																	<?php endforeach; ?>
+																<?php else : ?>
+																	<p>Not assigned</p>
+																<?php endif; ?>
+															</td>
+															<td>
+																<input type="hidden" class="id_dataputaway" value="<?= $item['id_dataputaway'] ?>">
+																<?php if ($item['status'] == 2) : ?>
+																	<button type="button" class="btn btn-primary done-button" disabled>Done</button>
+																<?php else : ?>
+																	<button type="button" class="btn btn-primary done-button">Done</button>
+																<?php endif; ?>
+															</td>
 														</tr>
-													<?php } ?>
+													<?php endforeach; ?>
 												</tbody>
 											</table>
 										</div>
-
 									</div>
 								</div>
 
@@ -114,45 +127,40 @@
 
 	<script>
 		$(document).ready(function() {
-			$('.assignPicker').select2();
-		});
-	</script>
+			$('.done-button').on('click', function() {
+				var idDataputaway = $(this).closest('tr').find('.id_dataputaway').val();
+				var button = $(this);
 
-	<script>
-		$('#assignPickerForm').on('submit', function(e) {
-			e.preventDefault();
-			var $submitBtn = $(this).find('button[type="submit"]'); // get the submit button
-			$submitBtn.prop('disabled', true); // disable the submit button
-			$.ajax({
-				url: "<?= base_url('user/purchaseorder/processpickingslip/' . $uuid) ?>",
-				type: "POST",
-				data: $(this).serialize(),
-				dataType: 'json',
-				success: function(response) {
-					Swal.fire({
-						title: response.status === 'success' ? 'Success' : 'Error',
-						text: response.message,
-						icon: response.status === 'success' ? 'success' : 'error',
-						confirmButtonText: 'OK'
-					}).then(() => {
+				$.ajax({
+					url: '<?= base_url('user/putaway/update_status') ?>',
+					type: 'POST',
+					data: {
+						id_dataputaway: idDataputaway
+					},
+					dataType: 'json',
+					success: function(response) {
 						if (response.status === 'success') {
-							window.location.href = "<?= base_url('user/pickingslip') ?>";
+							button.text('Completed').prop('disabled', true);
+							Swal.fire({
+								icon: 'success',
+								title: 'Success',
+								text: response.message
+							});
+						} else {
+							Swal.fire({
+								icon: 'error',
+								title: 'Error',
+								text: response.message
+							});
 						}
-					});
-				},
-				error: function(jqXHR, textStatus, errorThrown) {
-					Swal.fire({
-						title: 'Error',
-						text: 'Something went wrong: ' + textStatus,
-						icon: 'error',
-						confirmButtonText: 'OK'
-					});
-				}
+					},
+					error: function() {
+						alert('An error occurred while processing your request.');
+					}
+				});
 			});
 		});
 	</script>
-
-
 
 </body>
 
