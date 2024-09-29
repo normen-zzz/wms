@@ -251,7 +251,7 @@
 					});
 				});
 				$('.qty').on('keyup', function() {
-					var qty = $(this).val();
+					var qty = parseInt($(this).val()) ;
 					var row = $(this).closest('tr'); // Get the current row
 					var barangId = row.find('.selectBarang');
 					var batchId = row.find('.selectBatch'); // Get the selectBatch element in the current row

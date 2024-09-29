@@ -172,7 +172,7 @@ class Purchaseorder extends CI_Controller
 		$barangId = $this->input->post('barangId');
 		$batchId = $this->input->post('batchId');
 		$qty = $this->purchaseorder->checkQty($barangId, $batchId)->row_array();
-		echo json_encode($qty['qty']);
+		echo json_encode($qty['total_quantity']);
 	}
 
 	public function createPickingSlip($uuidPo)

@@ -50,7 +50,7 @@ function getStatusPickingslip($status)
 			break;
 
 		case '1':
-			return '<span class="badge bg-primary">Processed</span>';
+			return '<span class="badge bg-primary">Picked</span>';
 			break;
 
 		default:

@@ -12,15 +12,7 @@ class Pickingslip_model extends CI_Model
 		return $this->db->get();
 	}
 
-	function getDetailPurchaseOrder($uuidPo) {
-		$id_pickingslip = $this->db->query('SELECT id_pickingslip FROM pickingslip WHERE uuid = "'.$uuidPo.'" ')->row_array();
-		$this->db->select('sku,nama_barang,batchnumber,expiration_date,a.qty');
-		$this->db->from('datapickingslip a');
-		$this->db->join('barang b','a.id_barang = b.id_barang');
-		$this->db->join('batch c','a.id_batch = c.id_batch');
-		$this->db->where('id_pickingslip', $id_pickingslip['id_pickingslip']);
-		return $this->db->get();
-	}
+	
 
 	function getCustomerPickingslipByUuid($uuid)  {
 		
@@ -31,6 +23,8 @@ class Pickingslip_model extends CI_Model
 		$this->db->where('a.is_deleted', 0);
 		return $this->db->get()->row_array();
 	}
+
+	
 
 	// Fetch users
     function selectBarang($searchTerm = NULL)
@@ -105,12 +99,15 @@ class Pickingslip_model extends CI_Model
 	}
 
 	public function get_items_by_pickingslip($id_pickingslip) {
-			$this->db->select('b.sku, b.nama_barang, c.expiration_date, c.batchnumber, c.id_batch,b.id_barang,dp.qty');
+			$this->db->select('dp.id_datapurchaseorder,b.sku, b.nama_barang, c.expiration_date, c.batchnumber, c.id_batch,b.id_barang,dp.qty');
 			$this->db->from('pickingslip a'); 
 			$this->db->join('datapurchaseorder dp', 'a.id_purchaseorder = dp.id_purchaseorder'); 
 			$this->db->join('barang b', 'dp.id_barang = b.id_barang'); 
 			$this->db->join('batch c', 'dp.id_batch = c.id_batch');
-			$this->db->where('a.id_pickingslip', $id_pickingslip); 
+			$this->db->where('a.id_pickingslip', $id_pickingslip);
+			$this->db->where('dp.status', 0); 
+
+
 			
 			$query = $this->db->get(); 
 			return $query->result_array(); 
@@ -127,6 +124,51 @@ class Pickingslip_model extends CI_Model
 			$query = $this->db->get();
 			return $query->result_array(); 
 	}
+	
+
+	public function getIdRackFromSloc($sloc) {
+		$this->db->select('id_rack');
+		$this->db->from('rack');
+		$this->db->where('sloc', $sloc);
+		$query = $this->db->get();
+		return $query->row_array();
+		
+	}
+
+	public function getIdPickingslipFromUuid($uuid) {
+		$this->db->select('id_pickingslip');
+		$this->db->from('pickingslip');
+		$this->db->where('uuid', $uuid);
+		$query = $this->db->get();
+		return $query->row_array();
+		
+	}
+
+	public function getLastQtyRackItems($id_barang,$id_batch,$id_rack) {
+		$this->db->select('quantity');
+		$this->db->from('rack_items');
+		$this->db->where('id_barang', $id_barang);
+		$this->db->where('id_batch', $id_batch);
+		$this->db->where('id_rack', $id_rack);
+		$query = $this->db->get()->row_array();
+		return $query['quantity'];
+	}
+
+	function getDetailPickingslip($uuid) {
+		
+		$id_pickingslip = $this->db->query('SELECT id_pickingslip FROM pickingslip WHERE uuid = "'.$uuid.'" ')->row_array();
+		$id = $id_pickingslip['id_pickingslip'];
+		$this->db->select('b.sku,b.nama_barang,c.batchnumber,d.sloc,a.qty,a.pick_at,e.nama');
+		$this->db->from('datapickingslip a');
+		$this->db->join('barang b','a.id_barang = b.id_barang',);
+		$this->db->join('batch c','a.id_batch = c.id_batch');
+		$this->db->join('rack d','a.id_rack = d.id_rack');
+		$this->db->join('users e','a.pick_by = e.id_users');
+		$this->db->where('a.id_pickingslip', $id);
+		return $this->db->get();
+	}
+
+	
 
 
 

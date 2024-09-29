@@ -33,24 +33,36 @@
 			</header>
 			<style>
 				/* Default width for desktop screens */
-				#addRackRow {
-					width: 300px;
+				.addRackRow {
+					width: 200px;
 					/* adjust this value to your liking */
+				}
+
+				#availableRacks {
+					width: 200px;
 				}
 
 				/* For tablet screens */
 				@media only screen and (max-width: 768px) {
-					#addRackRow {
-						width: 300px;
+					.addRackRow {
+						width: 200px;
 						/* adjust this value to your liking */
+					}
+
+					#availableRacks {
+						width: 200px;
 					}
 				}
 
 				/* For mobile screens */
 				@media only screen and (max-width: 480px) {
-					#addRackRow {
-						width: 300px;
+					.addRackRow {
+						width: 200px;
 						/* adjust this value to your liking */
+					}
+
+					#availableRacks {
+						width: 200px;
 					}
 				}
 			</style>
@@ -74,6 +86,13 @@
 											<?= $subtitle2 ?>
 										</h5>
 
+										<form action="<?= base_url('user/Pickingslip/finishPickingSlip/' . $uuid) ?>" method="POST">
+
+											<button id="buttonFinishPickingslip" type="submit" class="btn btn-primary">Finish Picking</button>
+											<span class="text-danger">*Pastikan sudah terpick semua jika ingin menyelesaikan</span>
+
+										</form>
+
 									</div>
 
 									<div class="card-body">
@@ -86,18 +105,25 @@
 														<th>Item Name</th>
 														<th>Batch</th>
 														<th>Qty</th>
-														<th>Available Racks</th>
+														<th id="availableRacks">Available Racks</th>
 														<th>Rack & qty</th>
 														<th>Action</th>
 													</tr>
 												</thead>
 												<tbody>
 													<?php foreach ($items as $item) : ?>
+
 														<tr>
 															<td><?= $item['sku'] ?></td>
-															<td><?= $item['nama_barang'] ?></td>
-															<td><?= $item['batchnumber'] ?></td>
-															<td><?= $item['qty'] ?></td>
+															<td><?= $item['nama_barang'] ?>
+																<input type="number" hidden name="id_barang" value="<?= $item['id_barang'] ?>">
+																<input type="number" hidden name="id_datapurchaseorder" hidden value="<?= $item['id_datapurchaseorder'] ?>">
+															</td>
+
+
+															<td><?= $item['batchnumber'] ?><input type="number" name="id_batch" value="<?= $item['id_batch'] ?>"></td>
+
+															<td><?= $item['qty'] ?> <input hidden type="number" name="requiredQty" value="<?= $item['qty'] ?>"></td>
 															<td>
 																<button type="button" class="btn btn-sm btn-primary get-recommendations" data-id-barang="<?= $item['id_barang'] ?>" data-id_batch="<?= $item['id_batch'] ?>">
 																	Get Available On Rack
@@ -105,6 +131,7 @@
 																<div class="recommendations-list" style="display:none;"></div>
 															</td>
 															<td>
+
 																<table class="addRackRow">
 																	<thead>
 																		<tr>
@@ -112,23 +139,30 @@
 																			<th>Qty</th>
 																		</tr>
 																	</thead>
+
 																	<tbody>
 																		<tr>
 																			<td><input type="text" name="rack[]" id="rack" class="form-control rack"></td>
-																			<td><input type="number" name="qty[]" id="qty" class="form-control qty"></td>
+																			<td><input type="number" name="qty[]" id="qty" class="form-control qty">
+																				<input type="number" name="id_batch" hidden value="<?= $item['id_batch'] ?>">
+																				<input type="number" name="id_barang" hidden value="<?= $item['id_barang'] ?>">
+																			</td>
 																		</tr>
 																	</tbody>
 
+
 																	<tfoot>
 																		<tr>
-																			<td><button class="addRowRackBtn btn btn-primary">Add Row</button></td>
+																			<td colspan="2"><button class="addRowRackBtn btn btn-primary">Add Row</button></td>
 																		</tr>
 																	</tfoot>
 																</table>
 
+
 															</td>
 															<td><button type="button" id="submitRow" class="submitRow btn btn-primary">Submit</button></td>
 														</tr>
+
 													<?php endforeach; ?>
 												</tbody>
 											</table>
@@ -207,8 +241,26 @@
 	<script>
 		$(document).ready(function() {
 			$('.assignPicker').select2();
+			checkQtyOnRack();
+
+			$('#buttonFinishPickingslip').on('click', function(e) {
+				e.preventDefault();
+				Swal.fire({
+					title: 'Confirm',
+					text: 'Are you sure you want to finish this picking slip?',
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonText: 'Yes',
+					cancelButtonText: 'No',
+				}).then((result) => {
+					if (result.isConfirmed) {
+						$(this).closest('form').submit();
+					}
+				});
+			});
 		});
 	</script>
+
 
 	<script>
 		$('.addRowRackBtn').on('click', function() {
@@ -216,9 +268,15 @@
     <tr>
       <td><input type="text" name="rack[]" id="rack" class="form-control rack"></td>
       <td><input type="number" name="qty[]" id="qty" class="form-control qty"></td>
+      <td><button class="deleteRowBtn btn btn-danger">Hapus</button></td>
     </tr>
   `;
 			$(this).closest('table').find('tbody').append(newRow);
+			checkQtyOnRack();
+		});
+
+		$(document).on('click', '.deleteRowBtn', function() {
+			$(this).closest('tr').remove();
 		});
 	</script>
 
@@ -258,6 +316,88 @@
 		});
 	</script>
 
+
+
+	<script>
+		$('.submitRow').on('click', function() {
+
+
+			var data = [];
+			var row = $(this).closest('tr');
+			var id_datapurchaseorder = $(this).closest('tr').find('input[name="id_datapurchaseorder"]').val();
+			var id_barang = $(this).closest('tr').find('input[name="id_barang"]').val();
+			var id_batch = $(this).closest('tr').find('input[name="id_batch"]').val();
+			var requiredQty = $(this).closest('tr').find('input[name="requiredQty"]').val();
+
+			var totalQty = 0;
+			$(this).closest('td').prev('td').find('table.addRackRow').find('tbody tr').each(function() {
+				var row = $(this);
+				var rack = row.find('input[name="rack[]"]').val();
+				var qty = row.find('input[name="qty[]"]').val();
+				totalQty += parseInt(qty);
+				data.push({
+					id_datapurchaseorder: id_datapurchaseorder,
+					id_barang: id_barang,
+					id_batch: id_batch,
+					rack: rack,
+					qty: qty
+				});
+			});
+
+			if (totalQty < requiredQty) {
+				alert('Total qty tidak mencukupi');
+				return false;
+			} else if (totalQty > requiredQty) {
+				alert('Total qty melebihi yang dibutuhkan');
+				return false;
+			}
+			Swal.fire({
+				title: 'Loading',
+				text: 'Please wait...',
+				icon: 'info',
+				showCancelButton: false,
+				showConfirmButton: false,
+			});
+
+			console.log(data);
+
+			//Post the data using jQuery
+			$.ajax({
+				type: 'POST',
+				url: '<?= base_url('user/Pickingslip/pickFromRackProcess/' . $uuid) ?>',
+				data: {
+					data: data
+				},
+				dataType: 'json',
+				success: function(response) {
+
+
+					Swal.fire({
+						title: response.status === 'success' ? 'Success' : 'Error',
+						text: response.message,
+						icon: response.status === 'success' ? 'success' : 'error',
+						confirmButtonText: 'OK'
+					}).then(() => {
+						if (response.status === 'success') {
+
+							row.remove();
+						}
+					});
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					Swal.fire({
+						title: 'Error',
+						text: 'Something went wrong: ' + textStatus,
+						icon: 'error',
+						confirmButtonText: 'OK'
+					});
+				}
+			});
+		});
+	</script>
+
+
+
 	<script>
 		$(document).ready(function() {
 			$('.clickable-row').on('click', function() {
@@ -288,7 +428,7 @@
 			var id_batch = button.data('id_batch');
 			var recommendationsList = button.siblings('.recommendations-list');
 
-			recommendationsList.html('<p>Loading recommendations...</p>').show();
+			recommendationsList.html('<p>Loading Available...</p>').show();
 
 			$.ajax({
 				url: '<?= base_url("user/Pickingslip/getAvailableRack") ?>',
@@ -303,7 +443,7 @@
 					if (response.length > 0) {
 						var ul = $('<ul>');
 						response.forEach(function(rack) {
-							var li = $('<li class="mt-2">').text('(SLOC: ' + rack.sloc + ') =' + rack.quantity + ' pcs');
+							var li = $('<li class="mt-2">').text('(' + rack.sloc + ') =' + rack.quantity + ' pcs');
 							ul.append(li);
 						});
 						recommendationsList.append(ul);
@@ -313,8 +453,46 @@
 				}
 			});
 		});
-		F
 	</script>
+
+	<script>
+		function checkQtyOnRack() {
+			$('input[name="qty[]"]').on('keyup', function() {
+				var rack = $(this).closest('tr').find('input[name="rack[]"]').val();
+				var qty = parseInt($(this).val());
+				var id_barang = $(this).closest('tr').parent().find('input[name="id_barang"]').val();
+				var id_batch = $(this).closest('tr').parent().find('input[name="id_batch"]').val();
+				var inputQty = $(this); // Simpan referensi ke input qty[]
+				console.log(id_barang, id_batch, rack, qty);
+
+				$.ajax({
+					url: '<?= base_url("user/Pickingslip/getQuantityRackItems") ?>',
+					method: 'POST',
+					data: {
+						id_barang: id_barang,
+						id_batch: id_batch,
+						rack: rack
+					},
+					dataType: 'json',
+					success: function(response) {
+						console.log(qty, response);
+						if (qty > response) {
+							alert('Qty yang diinputkan melebihi qty yang tersedia di rack!');
+							inputQty.val(response); // Gunakan variabel inputQty untuk mengakses input qty[]
+						}
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+						alert('Barang tidak ditemukan di rack ini');
+						inputQty.val('');
+					}
+				});
+			});
+		}
+	</script>
+
+
+
+
 
 </body>
 
