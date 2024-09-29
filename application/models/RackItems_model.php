@@ -1,0 +1,34 @@
+<?php
+defined('BASEPATH') or exit('No direct script access allowed');
+
+class RackItems_model extends CI_Model
+{
+
+	public function __construct()
+	{
+		parent::__construct();
+	}
+
+	public function get_all_rack_items()
+	{
+		$this->db->select('rack_items.*, rack.sloc, barang.nama_barang, batch.batchnumber');
+		$this->db->from('rack_items');
+		$this->db->join('rack', 'rack_items.id_rack = rack.id_rack', 'left');
+		$this->db->join('barang', 'rack_items.id_barang = barang.id_barang', 'left');
+		$this->db->join('batch', 'rack_items.id_batch = batch.id_batch', 'left');
+		$query = $this->db->get();
+		return $query->result();
+	}
+
+	public function delete_rack_item($id)
+	{
+		return $this->db->delete('rack_items', array('id' => $id));
+	}
+
+	public function get_rack_item($id)
+	{
+		$this->db->where('id', $id);
+		$query = $this->db->get('rack_items');
+		return $query->row();
+	}
+}

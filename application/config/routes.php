@@ -140,3 +140,5 @@ $route['user/profile'] = 'user/profile';
 $route['user/change_password'] = 'user/change_password';
 $route['user/setting'] = 'user/setting';
 
+// inventory
+$route['inventory'] = 'user/inventory';
