@@ -53,7 +53,8 @@
 											<table class="table" id="table1">
 												<thead>
 													<tr>
-														<th>ID</th>
+														<th>No</th>
+														<th>SKU</th>
 														<th>Nama Barang</th>
 														<th>ID Batch</th>
 														<th>Sloc Rack</th>
@@ -62,13 +63,18 @@
 													</tr>
 												</thead>
 												<tbody>
-													<?php foreach ($rack_items as $item) : ?>
+													<?php $number = 1;
+													foreach ($rack_items as $item) : ?>
 														<tr>
-															<td><?= $item->id ?></td>
+															<td><?= $number++ ?></td>
+															<td><?= $item->sku ?></td>
 															<td><?= $item->nama_barang ?></td>
 															<td><?= $item->batchnumber ?></td>
 															<td><?= $item->sloc ?></td>
 															<td><?= $item->quantity ?></td>
+															<td>
+																<!-- Add action buttons or links here -->
+															</td>
 														</tr>
 													<?php endforeach; ?>
 												</tbody>
