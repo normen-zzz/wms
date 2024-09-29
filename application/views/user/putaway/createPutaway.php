@@ -115,11 +115,11 @@
 																<input type="hidden" name="putaway_field[<?= $dtl['id_barang'] ?>][id_barang]" value="<?= $dtl['id_barang'] ?>">
 																<input type="hidden" name="putaway_field[<?= $dtl['id_barang'] ?>][batch_id]" value="<?= $dtl['batch_id'] ?>">
 																<input type="hidden" name="putaway_field[<?= $dtl['id_barang'] ?>][id_inbound]" value="<?= $dtl['id_inbound'] ?>">
+																<input type="hidden" name="putaway_field[<?= $dtl['id_barang'] ?>][id_putaway]" value="<?= $dtl['id_putaway'] ?>">
 															</tr>
 														<?php } ?>
 													</tbody>
 												</table>
-												<button type="button" id="submitPutawayData" class="btn btn-primary mt-2">Submit</button>
 											</form>
 										</div>
 									</div>
@@ -148,6 +148,7 @@
 	<script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 
 	<script>
 		$(document).ready(function() {
@@ -186,50 +187,122 @@
 			});
 
 
-			$('#submitPutawayData').on('click', function() {
-				var formData = [];
+			$('.submitPutawayData').on('click', function() {
+				let id_barang = $(this).data('id-barang');
+				let good_qty = $(this).data('quantity');
+				let batch_id = $(this).data('batch-id');
 
-				// Gather data from each row
-				$('#table tbody tr').each(function() {
-					var id_barang = $(this).find('input[name^="putaway_field["]').val(); // Get the id_barang
-					var id_inbound = $(this).find('input[name="putaway_field[' + id_barang + '][id_inbound]"]').val();
-					var batch_id = $(this).find('input[name="putaway_field[' + id_barang + '][batch_id]"]').val();
-
-					// Get the chosen racks and quantities
-					$(this).find('#choosenRack tbody tr').each(function() {
-						var id_rack = $(this).find('input[name^="putaway_field[' + id_barang + '][id_rack]"]').val();
-						var quantity = $(this).find('input[name^="putaway_field[' + id_barang + '][quantity]"]').val();
-
-						if (id_rack && quantity) {
-							formData.push({
-								id_barang: id_barang,
-								id_inbound: id_inbound,
-								batch_id: batch_id,
-								id_rack: id_rack,
-								qty_putaway: quantity
-							});
-						}
-					});
+				let rack_ids = [];
+				let quantities = [];
+				let totalQuantity = 0;
+				$(`input[name="putaway_field[${id_barang}][id_rack][]"]`).each(function() {
+					rack_ids.push($(this).val());
 				});
 
-				// Send data as JSON
+
+				$(`input[name="putaway_field[${id_barang}][quantity][]"]`).each(function() {
+					let quantity = parseInt($(this).val()) || 0;
+					quantities.push(quantity);
+					totalQuantity += quantity;
+				});
+
+
+				if (totalQuantity < good_qty) {
+					Swal.fire({
+						icon: 'error',
+						title: 'Oops...',
+						text: `Total quantity yang diinputkan (${totalQuantity}) kurang dari jumlah yang dibutuhkan (${good_qty}).`
+					});
+					return;
+				}
+
+				if (totalQuantity > good_qty) {
+					Swal.fire({
+						icon: 'error',
+						title: 'Oops...',
+						text: `Total quantity yang diinputkan (${totalQuantity}) lebih dari jumlah yang dibutuhkan (${good_qty}).`
+					});
+					return;
+				}
+
+				let data = {
+					'id_barang': id_barang,
+					'batch_id': batch_id,
+					'id_inbound': $(`input[name="putaway_field[${id_barang}][id_inbound]"]`).val(),
+					'id_putaway': $(`input[name="putaway_field[${id_barang}][id_putaway]"]`).val(),
+					'rack_ids': rack_ids,
+					'quantities': quantities
+				};
+
 				$.ajax({
-					url: '<?= base_url("user/putaway/create_putaway") ?>',
-					method: 'POST',
-					contentType: 'application/json', // Specify the content type as JSON
-					data: JSON.stringify(formData), // Convert to JSON string
+					url: '<?= site_url('user/putaway/create_putaway') ?>',
+					type: 'POST',
+					data: data,
 					success: function(response) {
-						alert('Submitted successfully');
+						Swal.fire({
+							icon: 'success',
+							title: 'Success',
+							text: 'Putaway berhasil disubmit!'
+						});
 					},
 					error: function(xhr, status, error) {
-						alert('Error submitting form: ' + error);
+						Swal.fire({
+							icon: 'error',
+							title: 'Oops...',
+							text: 'Ada masalah saat menyimpan data. Silakan coba lagi.'
+						});
 					}
 				});
 			});
 
 
+			$('#table').on('click', '.add-row', function() {
+				var id_barang = $(this).closest('tr').find('input').attr('name').match(/\[(.*?)\]/)[1]; // Ambil id_barang dari row
 
-			// add row add-row table choosenRack
+				var row = '<tr>' +
+					'<td><input type="text" name="putaway_field[' + id_barang + '][id_rack][]" class="form-control" placeholder="Enter Rack"></td>' +
+					'<td><input type="text" name="putaway_field[' + id_barang + '][quantity][]" class="form-control quantity-input" placeholder="Enter Quantity"></td>' +
+					'<td><button type="button" class="btn btn-sm btn-primary add-row">Add Row</button></td>' +
+					'<td><button type="button" class="btn btn-sm btn-danger remove-row">Remove</button></td>' +
+					'</tr>';
+				$('#choosenRack tbody').append(row);
+			});
+
+			$('#table').on('click', '.remove-row', function() {
+				$(this).closest('tr').remove();
+				calculateTotalQuantity();
+			});
+
+			$('#table').on('input', '.quantity-input', function() {
+				calculateTotalQuantity();
+			});
+
+
+			function calculateTotalQuantity() {
+				let totalQuantity = 0;
+				let good_qty = $('.submitPutawayData').data('quantity');
+
+
+				$('input[name^="putaway_field"][name$="[quantity][]"]').each(function() {
+					totalQuantity += parseInt($(this).val()) || 0;
+				});
+
+				if (totalQuantity < good_qty) {
+					Swal.fire({
+						icon: 'warning',
+						title: 'Warning',
+						text: `Total quantity yang diinputkan (${totalQuantity}) kurang dari jumlah yang dibutuhkan (${good_qty}).`
+					});
+				}
+				if (totalQuantity > good_qty) {
+					Swal.fire({
+						icon: 'warning',
+						title: 'Warning',
+						text: `Total quantity yang diinputkan (${totalQuantity}) lebih dari jumlah yang dibutuhkan (${good_qty}).`
+					});
+				}
+			}
+
 			$('#table').on('click', '.add-row', function() {
 				var row = '<tr>' +
 					'<td><input type="text" name="putaway_field[' + $(this).data('id-barang') + '][id_rack][]" class="form-control" placeholder="Enter Rack"></td>' +
@@ -244,11 +317,6 @@
 			$('#table').on('click', '.remove-row', function() {
 				$(this).closest('tr').remove();
 			});
-
-
-
-
-
 		});
 	</script>
 </body>

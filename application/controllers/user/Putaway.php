@@ -113,38 +113,67 @@ class Putaway extends CI_Controller
 	{
 		$putaway_data = $this->input->post('putaway_field');
 
-		var_dump($putaway_data);
-		exit;
+		// Mulai DB transaction
+		$this->db->trans_start();
 
 		foreach ($putaway_data as $item) {
+			// Ambil data per item
 			$id_barang = $item['id_barang'];
 			$batch_id = $item['batch_id'];
 			$id_inbound = $item['id_inbound'];
-
-			// Assuming `id_rack` and `quantity` are arrays
 			$rack_ids = $item['id_rack'];
 			$quantities = $item['quantity'];
+			$id_putaway = $item['id_putaway'];
 
-			// Loop through each rack and its corresponding quantity
 			foreach ($rack_ids as $index => $rack_id) {
-				$quantity = isset($quantities[$index]) ? $quantities[$index] : 0; // default to 0 if quantity not set
+				$quantity = isset($quantities[$index]) ? $quantities[$index] : 0;
 
-				// Insert into the `putaway` table
-				$this->db->insert('putaway', [
-					'id_putaway' => generate_putaway_number(),
+				// Validasi quantity
+				if ($quantity <= 0) {
+					// Batalkan transaksi dan kirimkan respons error
+					$this->db->trans_rollback();
+					echo json_encode([
+						'status' => 'error',
+						'message' => "Invalid quantity for id_barang: $id_barang and rack_id: $rack_id"
+					]);
+					return; // Keluar dari fungsi jika ada kesalahan
+				}
+
+				// Insert data ke dalam tabel dataputaway
+				$this->db->insert('dataputaway', [
+					'id_putaway' => $id_putaway,
 					'id_inbound' => $id_inbound,
 					'id_rack' => $rack_id,
 					'qty_putaway' => $quantity,
 					'created_at' => date('Y-m-d H:i:s'),
 					'created_by' => $this->session->userdata('id_users'),
-					'uuid' => uniqid(),  // generating a unique UUID for this entry
+					'uuid' => uniqid(),
 					'id_barang' => $id_barang,
 					'batch_id' => $batch_id,
 					'status' => 1
 				]);
+
+				// Assign rack ke item
+				$this->Putaway_model->assign_rack_to_item($rack_id, $id_barang, $quantity, $batch_id);
 			}
 		}
 
-		echo json_encode(['status' => 'success', 'message' => 'Putaway and DataPutaway processed successfully']);
+		// Selesaikan transaksi DB
+		$this->db->trans_complete();
+
+		// Cek status transaksi
+		if ($this->db->trans_status() === FALSE) {
+			// Jika transaksi gagal, kirimkan respons error
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Error occurred while processing the transaction.'
+			]);
+		} else {
+			// Jika sukses, kirimkan respons sukses
+			echo json_encode([
+				'status' => 'success',
+				'message' => 'Putaway and DataPutaway processed successfully.'
+			]);
+		}
 	}
 }
