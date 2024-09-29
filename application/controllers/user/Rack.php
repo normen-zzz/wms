@@ -36,7 +36,6 @@ class Rack extends CI_Controller
         $uuid = $this->uuid->v4(true);
 
         $checkSloc = $this->db->query('SELECT sloc FROM rack WHERE sloc = "' . $this->input->post('sloc') . '" ');
-
         if ($checkSloc->num_rows() == 0) {
             $data = [
                 'uuid' => $uuid,

@@ -21,6 +21,8 @@
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/compiled/css/table-datatable-jquery.css">
 </head>
 
+
+
 <body>
 	<script src="<?= base_url() . '/' ?>assets/static/js/initTheme.js"></script>
 	<div id="app">
@@ -29,6 +31,29 @@
 				<?php $this->load->view('templates/header') ?>
 				<?php $this->load->view('templates/navbar') ?>
 			</header>
+			<style>
+				/* Default width for desktop screens */
+				#addRackRow {
+					width: 300px;
+					/* adjust this value to your liking */
+				}
+
+				/* For tablet screens */
+				@media only screen and (max-width: 768px) {
+					#addRackRow {
+						width: 300px;
+						/* adjust this value to your liking */
+					}
+				}
+
+				/* For mobile screens */
+				@media only screen and (max-width: 480px) {
+					#addRackRow {
+						width: 300px;
+						/* adjust this value to your liking */
+					}
+				}
+			</style>
 
 			<div class="content-wrapper container">
 				<div class="page-heading">
@@ -54,40 +79,55 @@
 									<div class="card-body">
 										<h1>Picking Slip: <?= $picking_slip['no_pickingslip'] ?></h1>
 										<div class="table-responsive mt-4">
-											<table class="table" id="inboundDetailsTable">
+											<table class="table table-striped" id="inboundDetailsTable">
 												<thead>
 													<tr>
 														<th>SKU</th>
 														<th>Item Name</th>
 														<th>Batch</th>
+														<th>Qty</th>
 														<th>Available Racks</th>
+														<th>Rack & qty</th>
+														<th>Action</th>
 													</tr>
 												</thead>
 												<tbody>
 													<?php foreach ($items as $item) : ?>
-														<tr class="clickable-row">
+														<tr>
 															<td><?= $item['sku'] ?></td>
 															<td><?= $item['nama_barang'] ?></td>
 															<td><?= $item['batchnumber'] ?></td>
+															<td><?= $item['qty'] ?></td>
 															<td>
-																<?php if (isset($rack_info[$item['sku']])) : ?>
-																	<ul>
-																		<?php foreach ($rack_info[$item['sku']] as $rack) : ?>
-																			<?php if ($rack['id_barang'] == $item['id_barang']) {
-																				if ($rack['id_batch'] == $item['id_batch']) { ?>
-																					<li>
-																						<?= $rack['sloc'] ?>
-																					</li>
-																			<?php }
-																			}  ?>
-
-
-																		<?php endforeach; ?>
-																	</ul>
-																<?php else : ?>
-																	No available racks
-																<?php endif; ?>
+																<button type="button" class="btn btn-sm btn-primary get-recommendations" data-id-barang="<?= $item['id_barang'] ?>" data-id_batch="<?= $item['id_batch'] ?>">
+																	Get Available On Rack
+																</button>
+																<div class="recommendations-list" style="display:none;"></div>
 															</td>
+															<td>
+																<table class="addRackRow">
+																	<thead>
+																		<tr>
+																			<th>Rack</th>
+																			<th>Qty</th>
+																		</tr>
+																	</thead>
+																	<tbody>
+																		<tr>
+																			<td><input type="text" name="rack[]" id="rack" class="form-control rack"></td>
+																			<td><input type="number" name="qty[]" id="qty" class="form-control qty"></td>
+																		</tr>
+																	</tbody>
+
+																	<tfoot>
+																		<tr>
+																			<td><button class="addRowRackBtn btn btn-primary">Add Row</button></td>
+																		</tr>
+																	</tfoot>
+																</table>
+
+															</td>
+															<td><button type="button" id="submitRow" class="submitRow btn btn-primary">Submit</button></td>
 														</tr>
 													<?php endforeach; ?>
 												</tbody>
@@ -95,6 +135,9 @@
 										</div>
 									</div>
 								</div>
+
+								<!-- create view form -->
+
 
 
 								<!-- Basic Tables end -->
@@ -168,6 +211,18 @@
 	</script>
 
 	<script>
+		$('.addRowRackBtn').on('click', function() {
+			var newRow = `
+    <tr>
+      <td><input type="text" name="rack[]" id="rack" class="form-control rack"></td>
+      <td><input type="number" name="qty[]" id="qty" class="form-control qty"></td>
+    </tr>
+  `;
+			$(this).closest('table').find('tbody').append(newRow);
+		});
+	</script>
+
+	<script>
 		$('#inboundForm').on('submit', function(e) {
 			e.preventDefault();
 
@@ -222,6 +277,43 @@
 				$('#status').val('0'); // Set the status field to "Created"
 			});
 		});
+	</script>
+
+	<script>
+		$('.get-recommendations').on('click', function(e) {
+			e.preventDefault();
+			var button = $(this);
+			var id_barang = button.data('id-barang');
+
+			var id_batch = button.data('id_batch');
+			var recommendationsList = button.siblings('.recommendations-list');
+
+			recommendationsList.html('<p>Loading recommendations...</p>').show();
+
+			$.ajax({
+				url: '<?= base_url("user/Pickingslip/getAvailableRack") ?>',
+				method: 'POST',
+				data: {
+					id_barang: id_barang,
+					id_batch: id_batch
+				},
+				dataType: 'json',
+				success: function(response) {
+					recommendationsList.empty();
+					if (response.length > 0) {
+						var ul = $('<ul>');
+						response.forEach(function(rack) {
+							var li = $('<li class="mt-2">').text('(SLOC: ' + rack.sloc + ') =' + rack.quantity + ' pcs');
+							ul.append(li);
+						});
+						recommendationsList.append(ul);
+					} else {
+						recommendationsList.text('No recommendations available');
+					}
+				}
+			});
+		});
+		F
 	</script>
 
 </body>

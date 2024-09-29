@@ -74,7 +74,7 @@
                                                             <td>
                                                                 
 																
-                                                                <a href="<?= base_url('user/Pickingslip/detail/' . $ps1['uuid']) ?>" class="btn btn-warning btn-sm mb-1">Detail</a>
+                                                                <a href="<?= base_url('user/Pickingslip/pick/' . $ps1['uuid']) ?>" class="btn btn-warning btn-sm mb-1">Pick</a>
 															</td>
                                                         </tr>
                                                     <?php } ?>
