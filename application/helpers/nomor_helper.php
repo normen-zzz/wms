@@ -108,3 +108,21 @@ function generate_putaway_number($prefix = 'PUT')
 
 	return $inbound_number;
 }
+
+function generate_packing_number($prefix = 'PACK')
+{
+	$CI = &get_instance();
+	$CI->load->model('Packing_model');
+
+	$date = date('ymd');
+
+	$last_counter = $CI->Packing_model->get_last_counter();
+	$new_counter = $last_counter + 1;
+
+	$formatted_counter = str_pad($new_counter, 1, '0', STR_PAD_LEFT);
+
+
+	$packing_number = "{$prefix}/{$date}/{$formatted_counter}";
+
+	return $packing_number;
+}

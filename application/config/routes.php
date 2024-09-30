@@ -101,6 +101,10 @@ $route['picklist/delete'] = 'user/picklist/delete';
 $route['picklist/get_picklist_details'] = 'user/picklist/get_picklist_details';
 $route['picklist/update'] = 'user/picklist/update';
 
+// packing
+$route['packing'] = 'user/packing';
+
+
 // goodsorder
 $route['goodsorder'] = 'user/goodsorder';
 $route['goodsorder/add'] = 'user/goodsorder/add';
