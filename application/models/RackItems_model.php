@@ -9,19 +9,32 @@ class RackItems_model extends CI_Model
 		parent::__construct();
 	}
 
-	public function get_all_rack_items()
+	public function get_all_rack_items($filters = [])
 	{
 		$this->db->select('rack_items.*, rack.sloc, barang.nama_barang, batch.batchnumber, barang.sku, SUM(rack_items.quantity) AS total_quantity');
 		$this->db->from('rack_items');
 		$this->db->join('rack', 'rack_items.id_rack = rack.id_rack', 'left');
 		$this->db->join('barang', 'rack_items.id_barang = barang.id_barang', 'left');
 		$this->db->join('batch', 'rack_items.id_batch = batch.id_batch', 'left');
-		//group by
-		$this->db->group_by(array('id_barang','id_batch','id_rack'));
+
+		if (!empty($filters['sku'])) {
+			$this->db->like('barang.sku', $filters['sku']);
+		}
+
+		if (!empty($filters['batchnumber'])) {
+			$this->db->like('batch.batchnumber', $filters['batchnumber']);
+		}
+
+		if (!empty($filters['sloc'])) {
+			$this->db->like('rack.sloc', $filters['sloc']);
+		}
+
+		$this->db->group_by(array('id_barang', 'id_batch', 'id_rack'));
 
 		$query = $this->db->get();
 		return $query->result();
 	}
+
 
 	public function delete_rack_item($id)
 	{

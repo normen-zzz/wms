@@ -12,16 +12,23 @@ class Inventory extends CI_Controller
 
 	public function index()
 	{
+		$filters = [
+			'sku' => $this->input->get('sku'),
+			'batchnumber' => $this->input->get('batchnumber'),
+			'sloc' => $this->input->get('sloc')
+		];
+
 		$data = [
 			'title' => 'Inventory',
 			'subtitle' => 'Data Inventory',
 			'subtitle2' => 'Data Inventory',
-			'rack_items' =>  $this->RackItems_model->get_all_rack_items()
+			'rack_items' => $this->RackItems_model->get_all_rack_items($filters)
 		];
+
 		$this->load->view('user/inventory/index', $data);
 	}
 
-	// Delete a rack item
+
 	public function delete($id)
 	{
 		$this->RackItems_model->delete_rack_item($id);

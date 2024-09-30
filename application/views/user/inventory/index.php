@@ -47,8 +47,26 @@
 											<?= $subtitle2 ?>
 										</h5>
 									</div>
+									<div class="card-body mb-4">
+										<form method="GET" action="">
+											<div class="row">
+												<div class="col-md-4">
+													<label for="sku">SKU</label>
+													<input type="text" name="sku" class="form-control" id="sku" value="<?= isset($_GET['sku']) ? $_GET['sku'] : '' ?>">
+												</div>
+												<div class="col-md-4">
+													<label for="batchnumber">Batch Number</label>
+													<input type="text" name="batchnumber" class="form-control" id="batchnumber" value="<?= isset($_GET['batchnumber']) ? $_GET['batchnumber'] : '' ?>">
+												</div>
+												<div class="col-md-4">
+													<label for="sloc">Sloc</label>
+													<input type="text" name="sloc" class="form-control" id="sloc" value="<?= isset($_GET['sloc']) ? $_GET['sloc'] : '' ?>">
+												</div>
+											</div>
+											<button type="submit" class="btn btn-primary mt-3 mb-3">Filter</button>
+										</form>
 
-									<div class="card-body">
+
 										<div class="table-responsive">
 											<table class="table" id="table1">
 												<thead>
@@ -59,22 +77,26 @@
 														<th>ID Batch</th>
 														<th>Sloc Rack</th>
 														<th>Quantity</th>
-														
 													</tr>
 												</thead>
 												<tbody>
-													<?php $number = 1;
-													foreach ($rack_items as $item) : ?>
+													<?php if (!empty($rack_items)) : ?>
+														<?php $number = 1; ?>
+														<?php foreach ($rack_items as $item) : ?>
+															<tr>
+																<td><?= $number++ ?></td>
+																<td><?= $item->sku ?></td>
+																<td><?= $item->nama_barang ?></td>
+																<td><?= $item->batchnumber ?></td>
+																<td><?= $item->sloc ?></td>
+																<td><?= $item->total_quantity ?></td>
+															</tr>
+														<?php endforeach; ?>
+													<?php else : ?>
 														<tr>
-															<td><?= $number++ ?></td>
-															<td><?= $item->sku ?></td>
-															<td><?= $item->nama_barang ?></td>
-															<td><?= $item->batchnumber ?></td>
-															<td><?= $item->sloc ?></td>
-															<td><?= $item->total_quantity ?></td>
-															
+															<td colspan="6" class="text-center">No results found</td>
 														</tr>
-													<?php endforeach; ?>
+													<?php endif; ?>
 												</tbody>
 											</table>
 										</div>
