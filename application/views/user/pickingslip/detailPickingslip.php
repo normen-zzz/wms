@@ -76,7 +76,7 @@
                                                             <td><?= $detailPs1['batchnumber'] ?></td>
                                                             <td><?= $detailPs1['sloc'] ?></td>
                                                             <td><?= $detailPs1['qty'] ?></td>
-                                                            <td><?= $detailPs1['pick_at'] ?></td>
+                                                            <td><?= date('d-m-Y H:i:s',strtotime($detailPs1['pick_at']))  ?></td>
                                                             <td><?= $detailPs1['nama'] ?></td>
                                                         </tr>
                                                     <?php } ?>

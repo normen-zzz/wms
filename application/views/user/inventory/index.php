@@ -59,7 +59,7 @@
 														<th>ID Batch</th>
 														<th>Sloc Rack</th>
 														<th>Quantity</th>
-														<th>Action</th>
+														
 													</tr>
 												</thead>
 												<tbody>
@@ -71,10 +71,8 @@
 															<td><?= $item->nama_barang ?></td>
 															<td><?= $item->batchnumber ?></td>
 															<td><?= $item->sloc ?></td>
-															<td><?= $item->quantity ?></td>
-															<td>
-																<!-- Add action buttons or links here -->
-															</td>
+															<td><?= $item->total_quantity ?></td>
+															
 														</tr>
 													<?php endforeach; ?>
 												</tbody>
