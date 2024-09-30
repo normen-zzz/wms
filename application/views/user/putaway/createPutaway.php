@@ -74,7 +74,7 @@
 															<tr>
 																<td><?= $dtl['sku'] ?></td>
 																<td><?= $dtl['nama_barang'] ?></td>
-																<td><?= $dtl['batch_id'] ?></td>
+																<td><?= getBatchById($dtl['batch_id'])  ?></td>
 																<td><?= $dtl['good_qty'] ?></td>
 																<td>
 																	<?php if (!empty($dtl['existing_racks'])) : ?>

@@ -95,6 +95,7 @@ class Putaway_model extends CI_Model
 		$this->db->join('rack r', 'r.id_rack = ri.id_rack');
 		$this->db->where('ri.id_barang', $id_barang);
 		$this->db->where('ri.id_batch', $batch_id);
+		$this->db->group_by('ri.id_rack');
 
 		$query = $this->db->get();
 

@@ -49,6 +49,12 @@
                                             <?= $subtitle2 ?> 
                                         </h5>
 
+                                        <div style="float: right;">
+                                            <!-- create button tag a to process ke packing -->
+                                             <a href="<?= base_url('user/Packing/processPickingslipToPacking/'.$uuid) ?>" class="btn btn-primary">Process To Packing</a>
+
+                                        </div>
+
                                     </div>
 
                                     <div class="card-body">
