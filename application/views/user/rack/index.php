@@ -80,10 +80,7 @@
 												<tbody>
 													<?php foreach ($rack->result_array() as $rack1) { ?>
 														<tr>
-															<td>
-																<?= $rack1['sloc'] ?>
-																<?= generate_barcode($rack1['sloc']) ?>
-															</td>
+															<td><?= $rack1['sloc'] ?></td>
 															<td><?= $rack1['zone'] ?></td>
 															<td><?= $rack1['rack'] ?></td>
 															<td><?= $rack1['row'] ?></td>
@@ -92,35 +89,17 @@
 															<td><?= $rack1['uom'] ?></td>
 															<td><?= getStatusRack($rack1['status']) ?></td>
 															<td>
-																<button class="btn btn-primary edit-btn" data-id="<?= $rack1['id_rack'] ?>">Edit</button>
-																<button class="btn btn-danger delete-btn" data-id="<?= $rack1['id_rack'] ?>">Delete</button>
-																<button class="btn btn-success print-sloc-barcode" data-sloc="<?= $rack1['sloc'] ?>">Print SLOC Barcode</button>
+																<a href="<?= site_url('user/rack/generate_qrcode/' . $rack1['sloc']) ?>" class="btn btn-primary text-white btn-sm">Print SLOC QR Code</a>
+																<a href="<?= site_url('user/rack/generate_qrcode_items/' . $rack1['sloc']) ?>" class="btn btn-info text-white btn-sm">Print Item QR Codes</a>
 															</td>
 														</tr>
-														<?php
-														$barangGrouped = getGroupedItemsBySloc($rack1['sloc']);
-														if (!empty($barangGrouped)) { ?>
-															<tr>
-																<td colspan="9">
-																	<strong>Barcodes for Items in SLOC <?= $rack1['sloc'] ?>:</strong>
-																	<div class="barcode-list">
-																		<?php foreach ($barangGrouped as $barang) { ?>
-																			<p>SKU: <?= $barang['sku'] ?>, Batch: <?= $barang['batchnumber'] ?></p>
-																			<?= generate_barcode($barang['sku'] . '-' . $barang['batchnumber']) ?>
-																		<?php } ?>
-																	</div>
-																	<button class="btn btn-info print-item-barcodes text-white" data-sloc="<?= $rack1['sloc'] ?>">Print Item Barcodes</button>
-																</td>
-															</tr>
-														<?php } ?>
 													<?php } ?>
 												</tbody>
 											</table>
 										</div>
 									</div>
-
-
 								</div>
+
 
 
 								<!-- Basic Tables end -->
@@ -427,42 +406,6 @@
 					});
 				}
 			});
-		});
-
-		document.addEventListener('DOMContentLoaded', function() {
-			document.querySelectorAll('.print-sloc-barcode').forEach(function(button) {
-				button.addEventListener('click', function() {
-					var sloc = this.getAttribute('data-sloc');
-					var barcodeHtml = generateBarcodeForPrint(sloc);
-
-					printContent(barcodeHtml);
-				});
-			});
-
-			document.querySelectorAll('.print-item-barcodes').forEach(function(button) {
-				button.addEventListener('click', function() {
-					var sloc = this.getAttribute('data-sloc');
-					var barcodeContainer = this.closest('tr').querySelector('.barcode-list').innerHTML;
-
-					printContent(barcodeContainer);
-				});
-			});
-
-			function generateBarcodeForPrint(sloc) {
-				return '<div style="font-family: \'Libre Barcode 128\'; font-size: 48px; letter-spacing: 5px;">*' + sloc + '*</div>';
-			}
-
-			function printContent(content) {
-				var newWindow = window.open('', '', 'width=800,height=600');
-				newWindow.document.write('<html><head><title>Print Barcodes</title>');
-				newWindow.document.write('<link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+128&display=swap" rel="stylesheet">');
-				newWindow.document.write('<style>body { font-family: Arial, sans-serif; }</style>');
-				newWindow.document.write('</head><body>');
-				newWindow.document.write(content);
-				newWindow.document.write('</body></html>');
-				newWindow.document.close();
-				newWindow.print();
-			}
 		});
 	</script>
 
