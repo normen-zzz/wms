@@ -88,6 +88,7 @@ class Inbound extends CI_Controller
 					'no_inbound' => $no_inbound,
 					'id_barang' => $id_barang[$index],
 					'id_batch' => $batch_id[$index],
+					'qty' => $bad_qty[$index],
 					'uuid' => uniqid(),
 					'created_at' => date('Y-m-d H:i:s'),
 					'updated_at' => date('Y-m-d H:i:s'),
