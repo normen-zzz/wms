@@ -18,6 +18,18 @@
 
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/compiled/css/table-datatable-jquery.css">
 </head>
+<style>
+	@font-face {
+		font-family: 'Libre Barcode 128';
+		src: url('<?= base_url('assets/fonts/LibreBarcode128-Regular.ttf'); ?>') format('truetype');
+	}
+
+	.barcode {
+		font-family: 'Libre Barcode 128';
+		font-size: 48px;
+		letter-spacing: 5px;
+	}
+</style>
 
 <body>
 	<script src="<?= base_url() . '/' ?>assets/static/js/initTheme.js"></script>
@@ -68,7 +80,9 @@
 												<tbody>
 													<?php foreach ($rack->result_array() as $rack1) { ?>
 														<tr>
-															<td><?= $rack1['sloc'] ?></td>
+															<td><?= $rack1['sloc'] ?>
+																<?= generate_barcode($rack1['sloc']) ?>
+															</td>
 															<td><?= $rack1['zone'] ?></td>
 															<td><?= $rack1['rack'] ?></td>
 															<td><?= $rack1['row'] ?></td>
@@ -322,36 +336,36 @@
 		});
 
 		$('#addRack').on('submit', function(e) {
-                e.preventDefault();
-                $.ajax({
-                    url: "<?= base_url('user/rack/processaddrack') ?>",
-                    type: "POST",
-                    data: $(this).serialize(),
-                    dataType: 'json',
-                    success: function(response) {
-                        Swal.fire({
-                            title: response.status === 'success' ? 'Success' : 'Error',
-                            text: response.message,
-                            icon: response.status === 'success' ? 'success' : 'error',
-                            confirmButtonText: 'OK'
-                        }).then(() => {
-                            if (response.status === 'success') {
-                                
-                                window.location.href = "<?= base_url('user/rack') ?>";
-                            }
-                        });
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        Swal.fire({
-                            title: 'Error',
-                            text: 'Something went wrong: ' + textStatus,
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
-						window.location.href = "<?= base_url('user/rack') ?>";
-                    }
-                });
-            });
+			e.preventDefault();
+			$.ajax({
+				url: "<?= base_url('user/rack/processaddrack') ?>",
+				type: "POST",
+				data: $(this).serialize(),
+				dataType: 'json',
+				success: function(response) {
+					Swal.fire({
+						title: response.status === 'success' ? 'Success' : 'Error',
+						text: response.message,
+						icon: response.status === 'success' ? 'success' : 'error',
+						confirmButtonText: 'OK'
+					}).then(() => {
+						if (response.status === 'success') {
+
+							window.location.href = "<?= base_url('user/rack') ?>";
+						}
+					});
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					Swal.fire({
+						title: 'Error',
+						text: 'Something went wrong: ' + textStatus,
+						icon: 'error',
+						confirmButtonText: 'OK'
+					});
+					window.location.href = "<?= base_url('user/rack') ?>";
+				}
+			});
+		});
 
 		$('.delete-btn').click(function() {
 			var id = $(this).data('id');
