@@ -55,46 +55,6 @@
 										<label for="customer">NO PL</label>
 										<input type="text" class="form-control mb-4" value="<?= $picklist->no_picklist ?>" disabled>
 										<div class="table-responsive">
-<<<<<<< Updated upstream
-												<form id="inboundForm" method="POST" action="your-processing-url">
-														<table class="table" id="table">
-																<thead>
-																		<tr>
-																				<th>SKU</th>
-																				<th>Nama Barang</th>
-																				<th>Batch</th>
-																				<th>ED</th>
-																				<th>Qty</th>
-																				<th>Good</th>
-																				<th>Bad</th>
-																		</tr>
-																</thead>
-																<tbody>
-																		<?php foreach ($detailPl as $dtl) { ?>
-																		<tr>
-																				<td><?= $dtl['sku'] ?></td>
-																				<td><?= $dtl['nama_barang'] ?></td>
-																				<td><?= getBatchById($dtl['batch']) ?></td>
-																				<td><?= $dtl['expiration_date'] ?></td>
-																				<td><?= $dtl['qty'] ?></td>
-																				<td>
-																						<input type="number" name="good_qty[]" class="form-control" required>
-																				</td>
-																				<td>
-																						<input type="number" name="bad_qty[]" class="form-control" required>
-																				</td>
-																				<!-- Optional hidden fields to keep track of batch or ID per row -->
-																				<input type="hidden" name="sku[]" value="<?= $dtl['sku'] ?>">
-																				<input type="hidden" name="batch_id[]" value="<?= $dtl['batch'] ?>">
-																		</tr>
-																		<?php } ?>
-																</tbody>
-														</table>
-														<input type="hidden" name="id_picklist" value="<?= $picklist->id_picklist ?>">
-														<input type="hidden" name="received_qty" value="<?= $picklist->qty ?>">
-														<button type="submit" class="btn btn-primary mt-2">Process Inbound</button>
-												</form>
-=======
 											<form id="inboundForm" method="POST" action="">
 												<table class="table" id="table">
 													<thead>
@@ -134,7 +94,6 @@
 												<input type="hidden" name="received_qty" value="<?= $picklist->qty ?>">
 												<button type="submit" class="btn btn-primary mt-2">Process Inbound</button>
 											</form>
->>>>>>> Stashed changes
 										</div>
 									</div>
 									<!-- Basic Tables end -->
