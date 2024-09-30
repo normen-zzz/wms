@@ -70,7 +70,6 @@
 														<th>Nama Barang</th>
 														<th>UOM</th>
 														<th>Status</th>
-														<th>Barcode</th>
 														<th>Action</th>
 													</tr>
 												</thead>
