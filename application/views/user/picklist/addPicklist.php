@@ -71,11 +71,9 @@
 																</select>
 															</td>
 															<td>
-																<select name="batch[]" class="form-select selectBatch">
-																	<option selected value="-">Select Batch</option>
-																</select>
-																<input type="text" name="batch_manual[]" class="form-control inputBatchManual mt-2" style="display:none;" placeholder="Input Batch Manually">
-																<button type="button" class="btn btn-primary btn-save-batch mt-2" style="display:none;">Save Batch</button>
+																
+																<input type="text" name="batch[]" class="form-control mt-2"  placeholder="Input Batch Manually">
+																
 															</td>
 															<td>
 																<input type="text" class="form-control qty" name="qty[]">

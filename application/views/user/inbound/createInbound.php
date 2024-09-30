@@ -76,7 +76,7 @@
 																		<tr>
 																				<td><?= $dtl['sku'] ?></td>
 																				<td><?= $dtl['nama_barang'] ?></td>
-																				<td><?= getBatchById($dtl['batch'])  ?></td>
+																				<td><?= getBatchById($dtl['batch']) ?></td>
 																				<td><?= $dtl['expiration_date'] ?></td>
 																				<td><?= $dtl['qty'] ?></td>
 																				<td>

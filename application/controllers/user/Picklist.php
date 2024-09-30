@@ -65,12 +65,29 @@ class Picklist extends CI_Controller
 			$batches = $this->input->post('batch');
 			$expired_dates = $this->input->post('ed');
 
+
+
 			if (is_array($barang_ids) && !empty($barang_ids)) {
 				foreach ($barang_ids as $key => $barang_id) {
+					$checkBatchItem = $this->db->query('SELECT id_batchitem,batch.id_batch FROM batchitem INNER JOIN batch ON batchitem.id_batch = batch.id_batch WHERE batch.batchnumber = "' . $batches[$key] . '" AND batchitem.id_barang = ' . $barang_id . ' ');
+
+					if ($checkBatchItem->num_rows() == 0) {
+						$this->db->insert('batch', ['uuid' => uniqid(),'batchnumber' => $batches[$key], 'expiration_date' => date('Y-m-d H:i:s', strtotime($expired_dates[$key]))]);
+						$id_batch =  $this->db->insert_id();
+						$dataBatchItem = [
+							'id_barang' => $barang_id,
+							'id_batch' => $id_batch,
+							'qty' => 0
+						];
+						$this->db->insert('batchitem', $dataBatchItem);
+					} else {
+						$checkBatchItem = $checkBatchItem->row_array();
+						$id_batch = $checkBatchItem['id_batch'];
+					}
 					$datapicklist_data = array(
 						'id_picklist' => $insert_id,
 						'id_barang' => $barang_id,
-						'batch' => $batches[$key],
+						'batch' => $id_batch,
 						'qty' => $qtys[$key],
 						'created_at' => date('Y-m-d H:i:s'),
 						'created_by' => $created_by,
