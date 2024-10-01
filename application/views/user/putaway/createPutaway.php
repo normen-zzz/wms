@@ -310,22 +310,6 @@
 					});
 				}
 			}
-
-			// add row add-row table choosenRack
-			$('#table').on('click', '.add-row', function() {
-				var row = '<tr>' +
-					'<td><input type="text" name="putaway_field[' + $(this).data('id-barang') + '][id_rack][]" class="form-control" placeholder="Enter Rack"></td>' +
-					'<td><input type="text" name="putaway_field[' + $(this).data('id-barang') + '][quantity][]" class="form-control" placeholder="Enter Quantity"></td>' +
-					'<td><button type="button" class="btn btn-sm btn-primary add-row">Add Row</button></td>' +
-					'<td><button type="button" class="btn btn-sm btn-danger remove-row">Remove</button></td>' +
-					'</tr>';
-				$('#choosenRack tbody').append(row);
-			});
-
-			// delete row remove-row table choosenRack
-			$('#table').on('click', '.remove-row', function() {
-				$(this).closest('tr').remove();
-			});
 		});
 	</script>
 </body>
