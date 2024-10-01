@@ -10,7 +10,6 @@ class Rack extends CI_Controller
 		is_login();
 		date_default_timezone_set('Asia/Jakarta');
 		$this->load->model('Rack_model', 'rack');
-		$this->load->library('ciqrcode');
 	}
 
 	public function index()
@@ -96,18 +95,7 @@ class Rack extends CI_Controller
 		echo json_encode(['status' => 'success']);
 	}
 
-	public function generate_qrcode($data)
-	{
-		$params['data'] = $data;
-		$params['level'] = 'H';
-		$params['size'] = 10;
-		$params['savename'] = FCPATH . 'assets/uploads/qrcodes/' . $data . '.png';
-		$this->ciqrcode->generate($params);
-
-		redirect(base_url('assets/uploads/qrcodes/' . $data . '.png'));
-	}
-
-	public function generate_qrcode_items($sloc)
+	public function get_grouped_items($sloc)
 	{
 		$barangGrouped = getGroupedItemsBySloc($sloc);
 
@@ -118,6 +106,7 @@ class Rack extends CI_Controller
 
 		redirect(base_url('assets/uploads/qrcodes/' . $data . '.png'));
 	}
+
 }
 
 /* End of file User.php */

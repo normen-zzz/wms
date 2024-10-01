@@ -18,18 +18,7 @@
 
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/compiled/css/table-datatable-jquery.css">
 </head>
-<style>
-	@font-face {
-		font-family: 'Libre Barcode 128';
-		src: url('<?= base_url('assets/fonts/LibreBarcode128-Regular.ttf'); ?>') format('truetype');
-	}
 
-	.barcode {
-		font-family: 'Libre Barcode 128';
-		font-size: 48px;
-		letter-spacing: 5px;
-	}
-</style>
 
 <body>
 	<script src="<?= base_url() . '/' ?>assets/static/js/initTheme.js"></script>
@@ -89,8 +78,13 @@
 															<td><?= $rack1['uom'] ?></td>
 															<td><?= getStatusRack($rack1['status']) ?></td>
 															<td>
-																<a href="<?= site_url('user/rack/generate_qrcode/' . $rack1['sloc']) ?>" class="btn btn-primary text-white btn-sm">Print SLOC QR Code</a>
-																<a href="<?= site_url('user/rack/generate_qrcode_items/' . $rack1['sloc']) ?>" class="btn btn-info text-white btn-sm">Print Item QR Codes</a>
+																  <button class="btn btn-sm btn-primary print-sloc-barcode" 
+																			data-sloc="<?= htmlspecialchars($rack1['sloc'], ENT_QUOTES, 'UTF-8') ?>" 
+																			data-zone="<?= htmlspecialchars($rack1['zone'], ENT_QUOTES, 'UTF-8') ?>" 
+																			data-rack="<?= htmlspecialchars($rack1['rack'], ENT_QUOTES, 'UTF-8') ?>"
+																			data-column="<?= htmlspecialchars($rack1['column_rack'], ENT_QUOTES, 'UTF-8') ?>"> 
+																			Print SLOC QR Code
+																	</button>
 															</td>
 														</tr>
 													<?php } ?>
@@ -99,9 +93,6 @@
 										</div>
 									</div>
 								</div>
-
-
-
 								<!-- Basic Tables end -->
 							</div>
 						</div>
@@ -407,6 +398,34 @@
 				}
 			});
 		});
+
+		$('.print-sloc-barcode').click(function() {
+        const sloc = $(this).data('sloc'); 
+        const zone = $(this).data('zone'); 
+        const rack = $(this).data('rack'); 
+        const column_rack = $(this).data('column'); 
+        
+        const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(`SLOC:${sloc}`)}&size=150x150`; // Ensure SLOC is prefixed correctly
+
+        const qrCodeImage = new Image();
+        qrCodeImage.src = qrCodeUrl;
+
+        qrCodeImage.onload = function() {
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write('<html><head><title>Print QR Code</title></head><body>');
+            printWindow.document.write(`<img src="${qrCodeImage.src}" alt="QR Code">`);
+            printWindow.document.write(`<p><strong>SLOC:</strong> ${sloc}, <strong>Zone:</strong> ${zone}, <strong>Rack:</strong> ${rack}, <strong>Column:</strong> ${column_rack}</p>`);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print(); 
+        };
+
+        qrCodeImage.onerror = function() {
+            alert('Error generating QR code. Please check the SLOC value.');
+        };
+    });
+		
+		
 	</script>
 
 </body>
