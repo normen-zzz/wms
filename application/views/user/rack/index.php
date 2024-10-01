@@ -67,27 +67,32 @@
 													</tr>
 												</thead>
 												<tbody>
-													<?php foreach ($rack->result_array() as $rack1) { ?>
-														<tr>
-															<td><?= $rack1['sloc'] ?></td>
-															<td><?= $rack1['zone'] ?></td>
-															<td><?= $rack1['rack'] ?></td>
-															<td><?= $rack1['row'] ?></td>
-															<td><?= $rack1['column_rack'] ?></td>
-															<td><?= $rack1['max_qty'] ?></td>
-															<td><?= $rack1['uom'] ?></td>
-															<td><?= getStatusRack($rack1['status']) ?></td>
-															<td>
-																  <button class="btn btn-sm btn-primary print-sloc-barcode" 
-																			data-sloc="<?= htmlspecialchars($rack1['sloc'], ENT_QUOTES, 'UTF-8') ?>" 
-																			data-zone="<?= htmlspecialchars($rack1['zone'], ENT_QUOTES, 'UTF-8') ?>" 
-																			data-rack="<?= htmlspecialchars($rack1['rack'], ENT_QUOTES, 'UTF-8') ?>"
-																			data-column="<?= htmlspecialchars($rack1['column_rack'], ENT_QUOTES, 'UTF-8') ?>"> 
-																			Print SLOC QR Code
-																	</button>
-															</td>
-														</tr>
-													<?php } ?>
+														<?php foreach ($rack->result_array() as $rack1) { ?>
+																<tr>
+																		<td><?= $rack1['sloc'] ?></td>
+																		<td><?= $rack1['zone'] ?></td>
+																		<td><?= $rack1['rack'] ?></td>
+																		<td><?= $rack1['row'] ?></td>
+																		<td><?= $rack1['column_rack'] ?></td>
+																		<td><?= $rack1['max_qty'] ?></td>
+																		<td><?= $rack1['uom'] ?></td>
+																		<td><?= getStatusRack($rack1['status']) ?></td>
+																		<td>
+																				<button class="btn btn-sm btn-primary print-sloc-barcode" 
+																						data-sloc="<?= htmlspecialchars($rack1['sloc'], ENT_QUOTES, 'UTF-8') ?>" 
+																						data-zone="<?= htmlspecialchars($rack1['zone'], ENT_QUOTES, 'UTF-8') ?>" 
+																						data-rack="<?= htmlspecialchars($rack1['rack'], ENT_QUOTES, 'UTF-8') ?>"
+																						data-column="<?= htmlspecialchars($rack1['column_rack'], ENT_QUOTES, 'UTF-8') ?>"> 
+																						Print SLOC QR Code
+																				</button>
+
+																				<button class="btn btn-sm btn-secondary print-sloc-barcode-items"
+																								data-sloc="<?= htmlspecialchars($rack1['sloc'], ENT_QUOTES, 'UTF-8') ?>"> 
+																						Print Items QR Code
+																				</button>
+																		</td>
+																</tr>
+														<?php } ?>
 												</tbody>
 											</table>
 										</div>
@@ -424,8 +429,58 @@
             alert('Error generating QR code. Please check the SLOC value.');
         };
     });
-		
-		
+
+		$('.print-sloc-barcode-items').click(function() {
+				const sloc = $(this).data('sloc'); 
+
+				$.ajax({
+						url: 'user/rack/get_items_by_sloc',
+						method: 'POST',
+						data: { sloc: sloc },
+						dataType: 'json',  // Explicitly parse the response as JSON
+						success: function(response) {
+								console.log('Response:', response);  // For debugging
+
+								if (response && response.status === 'success' && Array.isArray(response.items)) {
+										const itemsData = response.items; 
+										const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(`SLOC:${sloc}`)}&size=150x150`;
+										const qrCodeImage = new Image();
+										qrCodeImage.src = qrCodeUrl;
+
+										qrCodeImage.onload = function() {
+												const printWindow = window.open('', '_blank');
+												printWindow.document.write('<html><head><title>Print QR Code with Items</title></head><body>');
+												printWindow.document.write(`<img src="${qrCodeImage.src}" alt="QR Code">`);
+												printWindow.document.write(`<h3>SLOC: ${sloc}</h3>`);
+
+												if (itemsData.length > 0) {
+														printWindow.document.write('<h3>Grouped Items:</h3><ul>');
+														itemsData.forEach(function(item) {
+																printWindow.document.write(`<li>SKU: ${item.sku}, Batch: ${item.batchnumber}, Total Quantity: ${item.total_quantity}</li>`);
+														});
+														printWindow.document.write('</ul>');
+												} else {
+														printWindow.document.write('<p>No items found for this SLOC.</p>');
+												}
+												printWindow.document.write('</body></html>');
+												printWindow.document.close();
+												printWindow.print();
+										};
+
+										qrCodeImage.onerror = function() {
+												alert('Error generating QR code. Please check the SLOC value.');
+										};
+								} else {
+										console.error('Unexpected response format:', response);
+										alert('Unexpected response format. Please try again.');
+								}
+						},
+						error: function(jqXHR, textStatus, errorThrown) {
+								console.error('AJAX error:', textStatus, errorThrown);
+								alert('Error fetching item data. Please try again.');
+						}
+				});
+		});
 	</script>
 
 </body>

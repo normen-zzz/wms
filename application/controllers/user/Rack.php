@@ -107,6 +107,22 @@ class Rack extends CI_Controller
 		redirect(base_url('assets/uploads/qrcodes/' . $data . '.png'));
 	}
 
+	public function get_items_by_sloc() {
+      $sloc = $this->input->post('sloc');
+      $items = $this->rack->getGroupedItemsBySloc($sloc);
+      if (!empty($items)) {
+          echo json_encode([
+              'status' => 'success',
+              'items' => $items
+          ]);
+      } else {
+          echo json_encode([
+              'status' => 'error',
+              'message' => 'Grouped items not found for the given SLOC.'
+          ]);
+      }
+    }
+
 }
 
 /* End of file User.php */
