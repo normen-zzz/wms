@@ -34,6 +34,7 @@ class Customer extends CI_Controller
             $data = [
                 'uuid' => $uuid,
                 'nama_customer' => $this->input->post('name'),
+                'alamat' =>  $this->input->post('alamat'),
                 'created_at' => date('Y-m-d H:i:s'),
                 'created_by' => $this->session->userdata('id_users')
             ];

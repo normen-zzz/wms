@@ -49,8 +49,7 @@
 										<h5 class="card-title">
 											<?= $subtitle2 ?>
 										</h5>
-										<button type="button" data-bs-toggle="modal" data-bs-target="#modalAddCustomer"
-											class="btn btn-primary">Add <?= $title ?></button>
+										<button id="btnModalAdd" type="button" data-bs-toggle="modal" data-bs-target="#modalAddCustomer" class="btn btn-primary">Add <?= $title ?></button>
 									</div>
 
 									<div class="card-body">
@@ -60,6 +59,7 @@
 													<tr>
 														<th>No</th>
 														<th>Name <?= $title ?></th>
+														<th>Address</th>
 														<th>Created At</th>
 														<th>Action</th>
 													</tr>
@@ -69,6 +69,7 @@
 													<tr>
 														<td><?= $customer1['id_customer'] ?></td>
 														<td><?= $customer1['nama_customer'] ?></td>
+														<td><?= $customer1['alamat'] ?></td>
 														<td><?= dateindo($customer1['created_at']) ?></td>
 														 <td>
 																<button class="btn btn-warning btn-edit" data-id="<?= $customer1['id_customer'] ?>">Edit</button>
@@ -111,6 +112,11 @@
 						<label for="name">Name</label>
 						<div class="form-group">
 							<input id="name" type="text" placeholder="Name" name="name" class="form-control">
+						</div>
+
+						<label for="ALAMAT">Address</label>
+						<div class="form-group">
+							<textarea id="alamat" type="text" placeholder="Address" name="alamat" class="form-control"></textarea>
 						</div>
 
 
@@ -213,6 +219,7 @@
 							}
 					});
 			});
+			
 
 			$('#editForm').submit(function(e) {
 					e.preventDefault();
@@ -268,6 +275,8 @@
 
 
 	</script>
+
+	
 
 </body>
 

@@ -30,7 +30,8 @@ class Pickingslip extends CI_Controller
 			'subtitle' => 'Data Pickingslip',
 			'subtitle2' => 'Data Pickingslip',
 			'detailPs' => $this->pickingslip->getDetailPickingslip($uuid),
-			'uuid' => $uuid
+			'uuid' => $uuid,
+			'status1' =>  $this->pickingslip->getStatusPickingslipByUuid($uuid),
 		];
 		// var_dump($data['detailPs']);
 		$this->load->view('user/pickingslip/detailPickingslip', $data);

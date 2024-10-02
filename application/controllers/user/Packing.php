@@ -23,17 +23,18 @@ class Packing extends CI_Controller
 		$this->load->view('user/packing/index', $data);
 	}
 
-	public function detail($uuid)
+	public function detail($uuidPacking)
 	{
 		$data = [
-			'title' => 'Pickingslip',
-			'subtitle' => 'Data Pickingslip',
-			'subtitle2' => 'Data Pickingslip',
-			'detailPs' => $this->pickingslip->getDetailPickingslip($uuid),
-			'uuid' => $uuid
+			'title' => 'Packing',
+			'subtitle' => 'Data Packing',
+			'subtitle2' => 'Data Packing',
+			'detailPs' => $this->packing->getDetailPacking($uuidPacking),
+			'uuid' => $uuidPacking,
+			
 		];
 		// var_dump($data['detailPs']);
-		$this->load->view('user/pickingslip/detailPickingslip', $data);
+		$this->load->view('user/packing/detailPacking', $data);
 	}
 
     public function processPickingslipToPacking($uuid) {

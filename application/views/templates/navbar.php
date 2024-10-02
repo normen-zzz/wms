@@ -205,9 +205,7 @@
 								<a href="#" class='submenu-link'>PACKING</a>
 								<!-- 3 Level Submenu -->
 								<ul class="subsubmenu">
-									<li class="subsubmenu-item ">
-										<a href="<?= base_url('packing/add') ?>" class="subsubmenu-link">Add Packing</a>
-									</li>
+									
 
 									<li class="subsubmenu-item ">
 										<a href="<?= base_url('packing') ?>" class="subsubmenu-link">Data Packing</a>
@@ -221,13 +219,10 @@
 								<a href="#" class='submenu-link'>Delivery Order</a>
 								<!-- 3 Level Submenu -->
 								<ul class="subsubmenu">
-									<li class="subsubmenu-item ">
-										<a href="<?= base_url('deliveryorder/add') ?>" class="subsubmenu-link">Add
-											DO</a>
-									</li>
+									
 
 									<li class="subsubmenu-item ">
-										<a href="<?= base_url('deliveryorder') ?>" class="subsubmenu-link">Data
+										<a href="<?= base_url('user/deliveryorder') ?>" class="subsubmenu-link">Data
 											DO</a>
 									</li>
 								</ul>

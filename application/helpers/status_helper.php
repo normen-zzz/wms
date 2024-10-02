@@ -53,6 +53,10 @@ function getStatusPickingslip($status)
 			return '<span class="badge bg-primary">Picked</span>';
 			break;
 
+			case '2':
+				return '<span class="badge bg-success">On Packing</span>';
+				break;
+
 		default:
 			# code...
 			break;

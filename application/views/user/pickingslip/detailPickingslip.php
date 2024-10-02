@@ -48,12 +48,14 @@
                                         <h5 class="card-title">
                                             <?= $subtitle2 ?>
                                         </h5>
+                                        <?php if ($status1 != 2) { ?>
 
-                                        <div style="float: right;">
-                                            <!-- create button tag a to process ke packing -->
-                                            <button type="button" class="btn btn-primary" id="btnProcessToPacking">Process To Packing</button>
+                                            <div style="float: right;">
+                                                <!-- create button tag a to process ke packing -->
+                                                <button type="button" class="btn btn-primary" id="btnProcessToPacking">Process To Packing</button>
 
-                                        </div>
+                                            </div>
+                                        <?php } ?>
 
                                     </div>
 

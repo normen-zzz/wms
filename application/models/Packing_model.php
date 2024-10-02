@@ -8,11 +8,18 @@ class Packing_model extends CI_Model
         $this->db->select('a.*,b.no_pickingslip');
         $this->db->from('packing a');
         $this->db->join('pickingslip b', 'a.id_pickingslip =  b.id_pickingslip');
-        return $this->db->get();
-
-        
-        
+        return $this->db->get(); 
     }
+
+    function getDetailPacking($uuidPacking) {
+        
+        $this->db->select('a.*,b.no_pickingslip');
+        $this->db->from('packing a');
+        $this->db->join('pickingslip b', 'a.id_pickingslip =  b.id_pickingslip');
+        $this->db->where('a.uuid', $uuidPacking);
+        return $this->db->get(); 
+    }
+
 	function dataPickingslipToPacking($id_pickingslip)
 	{
 		 $this->db->select('a.*,SUM(a.qty) AS total_quantity');

@@ -168,6 +168,14 @@ class Pickingslip_model extends CI_Model
 		return $this->db->get();
 	}
 
+	public function getStatusPickingslipByUuid($uuid) {
+		 $this->db->select('status');
+		 $this->db->from('pickingslip');
+		 $this->db->where('uuid', $uuid);
+		 $query = $this->db->get()->row_array();
+		 return $query['status'];
+	}
+
 	
 
 

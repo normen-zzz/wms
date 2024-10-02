@@ -126,3 +126,21 @@ function generate_packing_number($prefix = 'PACK')
 
 	return $packing_number;
 }
+
+function generate_deliveryorder_number($prefix = 'DO')
+{
+	$CI = &get_instance();
+	$CI->load->model('Deliveryorder_model');
+
+	$date = date('ymd');
+
+	$last_counter = $CI->Deliveryorder_model->get_last_counter();
+	$new_counter = $last_counter + 1;
+
+	$formatted_counter = str_pad($new_counter, 1, '0', STR_PAD_LEFT);
+
+
+	$deliveryorder_number = "{$prefix}/{$date}/{$formatted_counter}";
+
+	return $deliveryorder_number;
+}

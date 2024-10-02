@@ -88,7 +88,7 @@
 
 										<form action="<?= base_url('user/Pickingslip/finishPickingSlip/' . $uuid) ?>" method="POST">
 
-											<button id="buttonFinishPickingslip" type="submit" class="btn btn-primary">Finish Picking</button>
+											<button id="buttonFinishPickingslip" type="submit" class="btn btn-success">Finish Picking</button>
 											<span class="text-danger">*Pastikan sudah terpick semua jika ingin menyelesaikan</span>
 
 										</form>
@@ -121,7 +121,7 @@
 															</td>
 
 
-															<td><?= $item['batchnumber'] ?><input type="number" name="id_batch" value="<?= $item['id_batch'] ?>"></td>
+															<td><?= $item['batchnumber'] ?><input type="number" hidden name="id_batch" value="<?= $item['id_batch'] ?>"></td>
 
 															<td><?= $item['qty'] ?> <input hidden type="number" name="requiredQty" value="<?= $item['qty'] ?>"></td>
 															<td>
@@ -457,7 +457,7 @@
 
 	<script>
 		function checkQtyOnRack() {
-			$('input[name="qty[]"]').on('keyup', function() {
+			$('table.addRackRow tbody').off('keyup', 'input[name="qty[]"]').on('keyup', 'input[name="qty[]"]', function() {
 				var rack = $(this).closest('tr').find('input[name="rack[]"]').val();
 				var qty = parseInt($(this).val());
 				var id_barang = $(this).closest('tr').parent().find('input[name="id_barang"]').val();
@@ -477,12 +477,12 @@
 					success: function(response) {
 						console.log(qty, response);
 						if (qty > response) {
-							alert('Qty yang diinputkan melebihi qty yang tersedia di rack!');
+
 							inputQty.val(response); // Gunakan variabel inputQty untuk mengakses input qty[]
 						}
 					},
 					error: function(jqXHR, textStatus, errorThrown) {
-						alert('Barang tidak ditemukan di rack ini');
+
 						inputQty.val('');
 					}
 				});

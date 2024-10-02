@@ -54,6 +54,7 @@
                                             <table class="table" id="table1">
                                                 <thead>
                                                     <tr>
+                                                        <th>No Do</th>
                                                         <th>No Packing</th>
                                                         <th>No Pickingslip</th>
                                                         <th>Created At</th>
@@ -63,15 +64,17 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <?php foreach ($packing->result_array() as $packing1) { ?>
+                                                    <?php foreach ($deliveryorder->result_array() as $deliveryorder1) { ?>
                                                         <tr>
-                                                            <td><?= $packing1['no_packing'] ?></td>
-                                                            <td><?= $packing1['no_pickingslip'] ?></td>
-                                                            <td><?= dateindo($packing1['created_at']) ?></td>
-                                                            <td><?= getNamaUserById($packing1['created_by']) ?></td>
+                                                            <td><?= $deliveryorder1['ext_deliveryorder'] ?></td>
+                                                            <td><?= $deliveryorder1['no_packing'] ?></td>
+                                                            <td><?= $deliveryorder1['no_pickingslip'] ?></td>
+                                                            <td><?= dateindo($deliveryorder1['created_at']) ?></td>
+                                                            <td><?= getNamaUserById($deliveryorder1['created_by']) ?></td>
                                                             <td>
-                                                                <a href="<?= base_url('user/Packing/detail/' . $packing1['uuid']) ?>" class="btn btn-primary btn-sm mb-1">Detail</a>
-                                                                <a href="<?= base_url('user/Deliveryorder/createDeliveryorder/' . $packing1['uuid']) ?>" class="btn btn-warning btn-sm mb-1">Create Delivery Order</a>
+                                                                <a href="<?= base_url('user/Deliveryorder/detail/' . $deliveryorder1['uuid']) ?>" class="btn btn-primary btn-sm mb-1">Detail</a>
+                                                                <a target="_blank" href="<?= base_url('user/Deliveryorder/printDeliveryOrder/' . $deliveryorder1['uuid']) ?>" class="btn btn-primary btn-sm mb-1">Print Delivery Order</a>
+                                                                
 
 
                                                             </td>
