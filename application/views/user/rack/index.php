@@ -523,11 +523,6 @@
 															<head>
 																	<title>Print QR Code with Items</title>
 																	<style>
-																	@media print {
-																			@page {
-																							size: landscape; 
-																					}
-																			}
 																			body {
 																					display: flex;
 																					justify-content: center;
