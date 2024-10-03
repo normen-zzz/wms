@@ -135,55 +135,56 @@
 
 	<script>
 		$('#table tbody tr').each(function () {
-				var $row = $(this);
-				
-				$row.find('.submit-row').on('click', function(e) {
-						e.preventDefault();
-						
-						var rowData = {
-								id_picklist: $('input[name="id_picklist"]').val(),
-								received_qty: $('input[name="received_qty"]').val(),
-								good_qty: $row.find('input[name="good_qty[]"]').val(),
-								bad_qty: $row.find('input[name="bad_qty[]"]').val(),
-								sku: $row.find('input[name="sku[]"]').val(),
-								batch_id: $row.find('input[name="batch_id[]"]').val(),
-								id_barang: $row.find('input[name="id_barang[]"]').val(),
-						};
+			var $row = $(this);
+			
+			$row.find('.submit-row').on('click', function(e) {
+					e.preventDefault();
+					
+					var rowData = {
+							id_picklist: $('input[name="id_picklist"]').val(),
+							received_qty: $('input[name="received_qty"]').val(),
+							good_qty: $row.find('input[name="good_qty[]"]').val(),
+							bad_qty: $row.find('input[name="bad_qty[]"]').val(),
+							sku: $row.find('input[name="sku[]"]').val(),
+							batch_id: $row.find('input[name="batch_id[]"]').val(),
+							id_barang: $row.find('input[name="id_barang[]"]').val(),
+					};
 
+					var $submitBtn = $(this);
+					$submitBtn.prop('disabled', true);
 
-						var $submitBtn = $(this);
-						$submitBtn.prop('disabled', true);
-
-						$.ajax({
-								url: "<?= base_url('user/inbound/processRow') ?>",  
-								type: "POST",
-								data: rowData,
-								dataType: 'json',
-								success: function(response) {
-										Swal.fire({
-												title: response.status === 'success' ? 'Success' : 'Error',
-												text: response.message,
-												icon: response.status === 'success' ? 'success' : 'error',
-												confirmButtonText: 'OK'
-										}).then(() => {
-												$submitBtn.prop('disabled', false);
-												if (response.status === 'success') {
-														$row.addClass('submitted-row'); 
-												}
-										});
-								},
-								error: function(jqXHR, textStatus, errorThrown) {
-										Swal.fire({
-												title: 'Error',
-												text: 'Something went wrong: ' + textStatus,
-												icon: 'error',
-												confirmButtonText: 'OK'
-										});
-										$submitBtn.prop('disabled', false);
+					$.ajax({
+							url: "<?= base_url('user/inbound/processRow') ?>",
+							type: "POST",
+							data: rowData,
+							dataType: 'json',
+							success: function(response) {
+									Swal.fire({
+											title: response.status === 'success' ? 'Success' : 'Error',
+											text: response.message,
+											icon: response.status === 'success' ? 'success' : 'error',
+											confirmButtonText: 'OK'
+									}).then(() => {
+											$submitBtn.prop('disabled', false);
+											if (response.status === 'success') {
+													$row.addClass('submitted-row'); 
+													$row.remove();
+											}
+									});
+							},
+							error: function(jqXHR, textStatus, errorThrown) {
+									Swal.fire({
+											title: 'Error',
+											text: 'Something went wrong: ' + textStatus,
+											icon: 'error',
+											confirmButtonText: 'OK'
+									});
+									$submitBtn.prop('disabled', false);
 								}
 						});
 				});
 		});
+
 
 		$('#finishInbound').on('click', function(e) {
 				e.preventDefault(); 
