@@ -49,6 +49,7 @@ class Putaway_model extends CI_Model
 		$this->db->having('available_space >', 0);
 		$this->db->order_by('available_space', 'DESC');
 		$this->db->limit(5);
+		
 		return $this->db->get()->result_array();
 	}
 
@@ -96,6 +97,7 @@ class Putaway_model extends CI_Model
 		$this->db->join('rack r', 'r.id_rack = ri.id_rack');
 		$this->db->where('ri.id_barang', $id_barang);
 		$this->db->where('ri.id_batch', $batch_id);
+		$this->db->where('ri.quantity >', 0);
 		$this->db->group_by('ri.id_rack');
 
 		$query = $this->db->get();
