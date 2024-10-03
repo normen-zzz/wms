@@ -108,8 +108,6 @@ class ReceivingInbound_model extends CI_Model
 		$this->db->join('batch c', 'a.batch = c.id_batch');
 		$this->db->join('inbound i', 'i.id_picklist = a.id_picklist');
 		$this->db->where('a.id_picklist', $id_picklist['id_picklist']);
-
-		// Return the result as an array
 		return $this->db->get()->result_array();
 	}
 
@@ -117,4 +115,17 @@ class ReceivingInbound_model extends CI_Model
 	{
 		return $this->db->insert('damage', $data);
 	}
+
+	public function get_inbound_items_by_picklist($id_picklist)
+	{
+			$this->db->select('*'); 
+			$this->db->from('inbound');  
+			$this->db->where('id_picklist', $id_picklist);
+			$query = $this->db->get();
+
+
+			return $query->result_array(); 
+	}
+
+
 }

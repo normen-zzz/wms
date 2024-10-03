@@ -55,7 +55,7 @@
 										<label for="customer">NO PL</label>
 										<input type="text" class="form-control mb-4" value="<?= $picklist->no_picklist ?>" disabled>
 										<div class="table-responsive">
-											<form id="inboundForm" method="POST" action="">
+											<form id="InboundForm" method="POST" action="#">
 												<table class="table" id="table">
 													<thead>
 														<tr>
@@ -66,6 +66,7 @@
 															<th>Qty</th>
 															<th>Good</th>
 															<th>Bad</th>
+															<th>Submit</th> <!-- New column for row submission -->
 														</tr>
 													</thead>
 													<tbody>
@@ -77,22 +78,26 @@
 																<td><?= $dtl['expiration_date'] ?></td>
 																<td><?= $dtl['qty'] ?></td>
 																<td>
-																	<input type="number" name="good_qty[]" class="form-control" required>
+																	<input type="number" name="good_qty[]" class="form-control good_qty" required>
 																</td>
 																<td>
-																	<input type="number" name="bad_qty[]" class="form-control" required>
+																	<input type="number" name="bad_qty[]" class="form-control bad_qty" required>
 																</td>
-																<!-- Optional hidden fields to keep track of batch or ID per row -->
-																<input type="hidden" name="sku[]" value="<?= $dtl['sku'] ?>">
-																<input type="hidden" name="batch_id[]" value="<?= $dtl['batch'] ?>">
-																<input type="hidden" name="id_barang[]" value="<?= $dtl['id_barang'] ?>">
+																<td>
+																	<button type="button" class="btn btn-sm btn-primary submit-row">Submit Row</button>
+																</td>
+																<input type="hidden" name="sku[]" value="<?= $dtl['sku'] ?>" class="sku">
+																<input type="hidden" name="batch_id[]" value="<?= $dtl['batch'] ?>" class="batch_id">
+																<input type="hidden" name="id_barang[]" value="<?= $dtl['id_barang'] ?>" class="id_barang">
 															</tr>
 														<?php } ?>
 													</tbody>
 												</table>
+
 												<input type="hidden" name="id_picklist" value="<?= $picklist->id_picklist ?>">
 												<input type="hidden" name="received_qty" value="<?= $picklist->qty ?>">
-												<button type="submit" class="btn btn-primary mt-2">Process Inbound</button>
+
+												<button id="finishInbound" class="btn btn-primary mt-2">Finish Inbound</button>
 											</form>
 										</div>
 									</div>
@@ -129,39 +134,84 @@
 	</script>
 
 	<script>
-		$('#inboundForm').on('submit', function(e) {
-			e.preventDefault();
+		$('#table tbody tr').each(function () {
+				var $row = $(this);
+				
+				$row.find('.submit-row').on('click', function(e) {
+						e.preventDefault();
+						
+						var rowData = {
+								id_picklist: $('input[name="id_picklist"]').val(),
+								received_qty: $('input[name="received_qty"]').val(),
+								good_qty: $row.find('input[name="good_qty[]"]').val(),
+								bad_qty: $row.find('input[name="bad_qty[]"]').val(),
+								sku: $row.find('input[name="sku[]"]').val(),
+								batch_id: $row.find('input[name="batch_id[]"]').val(),
+								id_barang: $row.find('input[name="id_barang[]"]').val(),
+						};
 
-			var $submitBtn = $(this).find('button[type="submit"]');
-			$submitBtn.prop('disabled', true);
 
-			$.ajax({
-				url: "<?= base_url('user/inbound/process/' . $uuid) ?>",
-				type: "POST",
-				data: $(this).serialize(),
-				dataType: 'json',
-				success: function(response) {
-					Swal.fire({
-						title: response.status === 'success' ? 'Success' : 'Error',
-						text: response.message,
-						icon: response.status === 'success' ? 'success' : 'error',
-						confirmButtonText: 'OK'
-					}).then(() => {
-						if (response.status === 'success') {
-							window.location.href = "<?= base_url('user/inbound') ?>";
-						}
-					});
-				},
-				error: function(jqXHR, textStatus, errorThrown) {
-					Swal.fire({
-						title: 'Error',
-						text: 'Something went wrong: ' + textStatus,
-						icon: 'error',
-						confirmButtonText: 'OK'
-					});
-				}
-			});
+						var $submitBtn = $(this);
+						$submitBtn.prop('disabled', true);
+
+						$.ajax({
+								url: "<?= base_url('user/inbound/processRow') ?>",  
+								type: "POST",
+								data: rowData,
+								dataType: 'json',
+								success: function(response) {
+										Swal.fire({
+												title: response.status === 'success' ? 'Success' : 'Error',
+												text: response.message,
+												icon: response.status === 'success' ? 'success' : 'error',
+												confirmButtonText: 'OK'
+										}).then(() => {
+												$submitBtn.prop('disabled', false);
+												if (response.status === 'success') {
+														$row.addClass('submitted-row'); 
+												}
+										});
+								},
+								error: function(jqXHR, textStatus, errorThrown) {
+										Swal.fire({
+												title: 'Error',
+												text: 'Something went wrong: ' + textStatus,
+												icon: 'error',
+												confirmButtonText: 'OK'
+										});
+										$submitBtn.prop('disabled', false);
+								}
+						});
+				});
 		});
+
+		$('#finishInbound').on('click', function(e) {
+				e.preventDefault(); 
+
+				Swal.fire({
+						title: 'Are you sure?',
+						text: "This will finish the inbound process.",
+						icon: 'warning',
+						showCancelButton: true,
+						confirmButtonText: 'Yes, finish it!'
+				}).then((result) => {
+						if (result.isConfirmed) {
+								$.ajax({
+										url: "<?= base_url('user/inbound/finishInbound') ?>",
+										type: "POST",
+										data: { id_picklist: $('input[name="id_picklist"]').val() },
+										success: function(response) {
+												Swal.fire('Finished!', response.message, 'success');
+												redirectTo('<?= base_url('user/inbound') ?>');
+										},
+										error: function() {
+												Swal.fire('Error', 'Something went wrong.', 'error');
+										}
+								});
+						}
+				});
+		});
+
 	</script>
 
 </body>

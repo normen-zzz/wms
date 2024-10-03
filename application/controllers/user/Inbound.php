@@ -105,6 +105,75 @@ class Inbound extends CI_Controller
 	}
 
 
+	public function processRow()
+	{
+			$id_picklist = $this->input->post('id_picklist');
+			$received_qty = $this->input->post('received_qty');
+			$good_qty = $this->input->post('good_qty');
+			$bad_qty = $this->input->post('bad_qty');
+			$batch_id = $this->input->post('batch_id');
+			$id_barang = $this->input->post('id_barang');
+			$created_by = $this->session->userdata('id_users');
+			$no_inbound = generate_inbound_number();
+
+			$data_inbound = array(
+					'id_picklist' => $id_picklist,
+					'no_inbound' => $no_inbound,
+					'received_qty' => $received_qty,
+					'received_date' => date('Y-m-d'),
+					'status' => 'received',
+					'good_qty' => $good_qty,
+					'bad_qty' => $bad_qty,
+					'batch_id' => $batch_id,
+					'created_at' => date('Y-m-d H:i:s'),
+					'created_by' => $created_by,
+					'uuid' => uniqid(),
+			);
+
+			$this->ReceivingInbound_model->insert_inbound($data_inbound);
+
+			if ($bad_qty > 0) {
+					$data_damage = array(
+							'no_picklist' => $id_picklist,
+							'no_inbound' => $no_inbound,
+							'id_barang' => $id_barang,
+							'id_batch' => $batch_id,
+							'qty' => $bad_qty,
+							'uuid' => uniqid(),
+							'created_at' => date('Y-m-d H:i:s'),
+							'updated_at' => date('Y-m-d H:i:s'),
+					);
+
+					$this->ReceivingInbound_model->insert_damage($data_damage);
+			}
+
+			$response = array('status' => 'success', 'message' => 'Inbound processed successfully.');
+			echo json_encode($response);
+	}
+
+
+	public function finishInbound()
+	{
+			$id_picklist = $this->input->post('id_picklist');
+
+			$inboundItems = $this->ReceivingInbound_model->get_inbound_items_by_picklist($id_picklist);
+			if (empty($inboundItems)) {
+					$response = array('status' => 'error', 'message' => 'No inbound items found for this picklist.');
+					echo json_encode($response);
+					return;
+			}
+
+			$update_status = $this->ReceivingInbound_model->update_status_picklist($id_picklist, 2);  
+
+			if ($update_status) {
+					$response = array('status' => 'success', 'message' => 'Inbound process has been successfully completed.');
+			} else {
+					$response = array('status' => 'error', 'message' => 'Failed to update the picklist status.');
+			}
+
+			echo json_encode($response);
+	}
+
 
 	public function getDataPicklist()
 	{
