@@ -509,19 +509,19 @@
 															</head>
 															<body>
 																	<div class="content">
-																			<img src="${qrCodeImage.src}" alt="QR Code">
 																			<h3>SLOC: ${sloc}</h3>
-											`);
+																			<img src="${qrCodeImage.src}" alt="QR Code">
+																			`);
 
-											if (itemsData.length > 0) {
-													printWindow.document.write('<h3>Grouped Items:</h3><ul>');
-													itemsData.forEach(function(item) {
-															printWindow.document.write(`<li>SKU: ${item.sku}, Batch: ${item.batchnumber}, Total Quantity: ${item.total_quantity}</li>`);
-													});
-													printWindow.document.write('</ul>');
-											} else {
-													printWindow.document.write('<p>No items found for this SLOC.</p>');
-											}
+																			if (itemsData.length > 0) {
+																					printWindow.document.write('<h3>Grouped Items:</h3><ul>');
+																					itemsData.forEach(function(item) {
+																							printWindow.document.write(`<li>SKU: ${item.sku}, Batch: ${item.batchnumber}, Total Quantity: ${item.total_quantity}</li>`);
+																					});
+																					printWindow.document.write('</ul>');
+																			} else {
+																					printWindow.document.write('<p>No items found for this SLOC.</p>');
+																			}
 
 											printWindow.document.write(`
 																	</div>
