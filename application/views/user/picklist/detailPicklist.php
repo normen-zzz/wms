@@ -14,6 +14,8 @@
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/compiled/css/iconly.css" />
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.min.css">
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 
 
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/compiled/css/table-datatable-jquery.css">
@@ -34,110 +36,66 @@
 				</div>
 				<div class="page-content">
 					<!-- Basic Vertical form layout section start -->
-					<section id="basic-vertical-layouts">
+					<section id="picklist-detail">
 						<div class="row match-height">
+								<div class="col">
+										<div class="card">
+												<div class="card-header">
+														<h5 class="card-title"><?= $subtitle2 ?></h5>
+												</div>
 
-							<div class="col">
-								<!-- Minimal jQuery Datatable end -->
-								<!-- Basic Tables start -->
+												<div class="card-body">
+														<div class="mb-3">
+																<label for="picklist_id" class="form-label">ID Picklist</label>
+																<input type="text" class="form-control" id="picklist_id" value="<?= $pl[0]['id_picklist'] ?>" disabled>
+														</div>
 
-								<div class="card">
-									<div class="card-header">
-										<h5 class="card-title">
-											<?= $subtitle2 ?>
-										</h5>
+														<div class="mb-3">
+																<label for="picklist_date" class="form-label">Picklist Date</label>
+																<input type="text" class="form-control" id="picklist_date" value="<?= $pl[0]['created_at'] ?>" disabled>
+														</div>
 
-										<a href="<?= base_url('picklist/add') ?>" class="btn btn-primary btn-sm">Add Picklist</a>
-									</div>
+														<div class="mb-3">
+																<label for="status" class="form-label">Status</label>
+																<input type="text" class="form-control" id="status" value="<?= $pl[0]['status'] ?>" disabled>
+														</div>
 
-									<div class="card-body">
-										<div class="table-responsive">
-											<table class="table" id="table1">
-												<thead>
-													<tr>
-														<th>No PL</th>
-														
-														<th>Total Qty</th>
-														<th>Status</th>
-														<th>Created At</th>
-														<th>Action</th>
-													</tr>
-												</thead>
-												<tbody>
-													<?php foreach ($pl->result_array() as $pl1) { ?>
-														<tr>
-															<td><?= $pl1['no_picklist'] ?></td>
-															
-															<td><?= $pl1['qty'] ?></td>
-															<td><?= getStatusPicklist($pl1['status']) ?></td>
-															<td><?= dateindo($pl1['created_at']) ?></td>
-															<td>
-																<?php if ($pl1['status'] != 1) { ?>
-																	<button type="button" class="btn btn-info btn-sm text-white" onclick="editData(<?= $pl1['id_picklist'] ?>)">Edit</button>
-																	<!-- DELETE -->
-																	<button type="button" class="btn btn-danger btn-sm" onclick="deleteData(<?= $pl1['id_picklist'] ?>)">Void</button>
-																	<a href="<?= base_url('user/inbound/create/' . $pl1['uuid']) ?>" class="btn btn-primary btn-sm">Inbound</a>
-																<?php } ?>
-																<!-- detail picklist -->
-																<a href="<?= base_url('user/picklist/detail/' . $pl1['id_picklist']) ?>" class="btn btn-success btn-sm">Detail</a>
-															</td>
-														</tr>
-													<?php } ?>
-												</tbody>
-											</table>
+														<div class="table-responsive">
+																<table class="table table-striped table-hover" id="detailPicklistTable">
+																		<thead>
+																				<tr>
+																						<th>SKU</th>
+																						<th>Nama Barang</th>
+																						<th>Batch</th>
+																						<th>Quantity</th>
+																				</tr>
+																		</thead>
+																		<tbody>
+																				<?php foreach ($pl as $item) : ?>
+																						<tr>
+																								<td><?= $item['sku'] ?></td>
+																								<td><?= $item['nama_barang'] ?></td>
+																								<td><?= $item['batchnumber'] ?></td>
+																								<td><?= $item['qty'] ?></td>
+																						</tr>
+																				<?php endforeach; ?>
+																		</tbody>
+																</table>
+														</div>
+
+														<div class="mt-3">
+																<a href="<?= base_url('user/picklist') ?>" class="btn btn-primary btn-sm">Back</a>
+														</div>
+												</div>
 										</div>
-									</div>
 								</div>
-
-
-								<!-- Basic Tables end -->
-							</div>
 						</div>
 					</section>
+
 					<!-- // Basic Vertical form layout section end -->
 				</div>
 			</div>
 
-			<!-- Modal Edit -->
-			<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title" id="editModalLabel">Edit Picklist</h5>
-							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-						<div class="modal-body">
-							<form id="editForm">
-								<input type="hidden" id="id_picklist" name="id_picklist">
-								<div class="form-group">
-									<label for="no_picklist">No Picklist</label>
-									<input type="text" class="form-control" id="no_picklist" name="no_picklist" required>
-								</div>
-								<div class="form-group">
-									<label for="batch">Batch</label>
-									<input type="text" class="form-control" id="batch" name="batch" required>
-								</div>
-								<div class="form-group">
-									<label for="qty">Quantity</label>
-									<input type="text" class="form-control" id="qty" name="qty" required>
-								</div>
-								<div class="form-group">
-									<label for="status">Status</label>
-									<select class="form-control" id="status" name="status">
-										<option value="0">Created</option>
-										<option value="1">Completed</option>
-									</select>
-								</div>
-								<button type="submit" class="btn btn-primary">Save Changes</button>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<!-- Modal Inbound -->
 			<?php $this->load->view('templates/footer') ?>
 		</div>
 	</div>
@@ -149,87 +107,49 @@
 	<script src="<?= base_url() . '/' ?>assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 
 	<script src="<?= base_url() . '/' ?>assets/compiled/js/app.js"></script>
-	<script src="<?= base_url() . '/' ?>assets/extensions/jquery/jquery.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 	<script>
-		// onclick deleteData
-		function deleteData(id) {
-			Swal.fire({
-				title: 'Are you sure?',
-				text: "You won't be able to revert this!",
-				icon: 'warning',
-				showCancelButton: true,
-				confirmButtonColor: '#3085d6',
-				cancelButtonColor: '#d33',
-				confirmButtonText: 'Yes, delete it!'
-			}).then((result) => {
-				if (result.isConfirmed) {
-					$.ajax({
-						url: '<?= base_url('picklist/delete') ?>',
-						type: 'POST',
-						data: {
-							id_picklist: id
-						},
-						success: function(data) {
-							Swal.fire(
-								'Deleted!',
-								'Your data has been deleted.',
-								'success'
-							).then((result) => {
-								location.reload();
+		$(document).ready(function() {
+			$('.done-button').on('click', function() {
+				var idDataputaway = $(this).closest('tr').find('.id_dataputaway').val();
+				var button = $(this);
+
+				$.ajax({
+					url: '<?= base_url('user/putaway/update_status') ?>',
+					type: 'POST',
+					data: {
+						id_dataputaway: idDataputaway
+					},
+					dataType: 'json',
+					success: function(response) {
+						if (response.status === 'success') {
+							button.text('Completed').prop('disabled', true);
+							Swal.fire({
+								icon: 'success',
+								title: 'Success',
+								text: response.message
+							});
+						} else {
+							Swal.fire({
+								icon: 'error',
+								title: 'Error',
+								text: response.message
 							});
 						}
-					});
-				}
-			})
-		}
-
-		function editData(id) {
-			$.ajax({
-				url: '<?= base_url('picklist/get_picklist_details') ?>',
-				type: 'GET',
-				data: {
-					id_picklist: id
-				},
-				success: function(data) {
-					var picklist = JSON.parse(data);
-
-					$('#id_picklist').val(picklist.id_picklist);
-					$('#no_picklist').val(picklist.no_picklist);
-					$('#batch').val(picklist.batch);
-					$('#qty').val(picklist.qty);
-					$('#status').val(picklist.status);
-
-
-					$('#editModal').modal('show');
-				}
-			});
-		}
-
-		$('#editForm').on('submit', function(e) {
-			e.preventDefault();
-
-			$.ajax({
-				url: '<?= base_url('picklist/update') ?>',
-				type: 'POST',
-				data: $(this).serialize(),
-				success: function(response) {
-					Swal.fire(
-						'Updated!',
-						'Your data has been updated.',
-						'success'
-					).then((result) => {
-						location.reload();
-					});
-				}
+					},
+					error: function() {
+						alert('An error occurred while processing your request.');
+					}
+				});
 			});
 		});
 	</script>
-
 
 </body>
 

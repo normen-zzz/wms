@@ -206,6 +206,18 @@ class Picklist extends CI_Controller
 			echo json_encode(['status' => 'error', 'message' => 'Invalid input']);
 		}
 	}
+
+	// detail
+	public function detail($id_picklist)
+	{
+		$data = [
+			'title' => 'Picklist',
+			'subtitle' => 'Detail Picklist',
+			'subtitle2' => 'Detail Picklist',
+			'pl' => $this->picklist->get_picklist_by_id($id_picklist),
+		];
+		$this->load->view('user/picklist/detailPicklist', $data);
+	}
 }
 
 /* End of file User.php */
