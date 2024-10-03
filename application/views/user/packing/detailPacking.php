@@ -62,25 +62,24 @@
                                                     <tr>
                                                         <th>SKU</th>
                                                         <th>Nama Barang</th>
-                                                        <th>Batch</th>
-                                                        <th>Rack</th>
+                                                        <th>Batch</th>  
                                                         <th>Qty</th>
-                                                        <th>Pick AT</th>
-                                                        <th>Pick BY</th>
+                                                        <th>Created AT</th>
+                                                        <th>Created BY</th>
 
 
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <?php foreach ($detailPs->result_array() as $detailPs1) { ?>
+                                                    <?php foreach ($detailPacking->result_array() as $detailPacking1) { ?>
                                                         <tr>
-                                                            <td><?= $detailPs1['sku'] ?></td>
-                                                            <td><?= $detailPs1['nama_barang'] ?></td>
-                                                            <td><?= $detailPs1['batchnumber'] ?></td>
-                                                            <td><?= $detailPs1['sloc'] ?></td>
-                                                            <td><?= $detailPs1['qty'] ?></td>
-                                                            <td><?= date('d-m-Y H:i:s', strtotime($detailPs1['pick_at']))  ?></td>
-                                                            <td><?= $detailPs1['nama'] ?></td>
+                                                            <td><?= $detailPacking1['sku'] ?></td>
+                                                            <td><?= $detailPacking1['nama_barang'] ?></td>
+                                                            <td><?= $detailPacking1['batchnumber'] ?></td>
+                                                          
+                                                            <td><?= $detailPacking1['qty'] ?></td>
+                                                            <td><?= date('d-m-Y H:i:s', strtotime($detailPacking1['created_at']))  ?></td>
+                                                            <td><?= $detailPacking1['nama'] ?></td>
                                                         </tr>
                                                     <?php } ?>
                                                 </tbody>

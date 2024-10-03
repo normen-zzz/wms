@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="<?= base_url() . '/' ?>assets/compiled/css/iconly.css" />
     <link rel="stylesheet" href="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.min.css">
     <link rel="stylesheet" href="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 
 
     <link rel="stylesheet" href="<?= base_url() . '/' ?>assets/compiled/css/table-datatable-jquery.css">
@@ -44,47 +46,44 @@
                                 <div class="card">
                                     <div class="card-header">
                                         <h5 class="card-title">
-                                            <?= $subtitle2 ?>
+                                            <?= $subtitle2 ?> <b> (<?= $no_do ?>)</b>
                                         </h5>
-
                                     </div>
 
                                     <div class="card-body">
+
                                         <div class="table-responsive">
-                                            <table class="table" id="table1">
+                                            <table class="table" id="table">
                                                 <thead>
                                                     <tr>
-                                                        <th>No Packing</th>
-                                                        <th>No Pickingslip</th>
-                                                        <th>Created At</th>
-                                                        <th>Created By</th>
-                                                        <th>Action</th>
+                                                        <th>No</th>
+                                                        <th>SKU</th>
+                                                        <th>Nama Barang</th>
+                                                        <th>Batch</th>  
+                                                        <th>Qty</th>
+                                                        <th>Created AT</th>
+                                                        <th>Created BY</th>
+
 
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <?php foreach ($packing->result_array() as $packing1) { ?>
+                                                    <?php $no = 1; foreach ($detailDeliveryorder->result_array() as $detailDeliveryorder1) { ?>
                                                         <tr>
-                                                            <td><?= $packing1['no_packing'] ?></td>
-                                                            <td><?= $packing1['no_pickingslip'] ?></td>
-                                                            <td><?= dateindo($packing1['created_at']) ?></td>
-                                                            <td><?= getNamaUserById($packing1['created_by']) ?></td>
-                                                            <td>
-                                                                <a href="<?= base_url('user/Packing/detail/' . $packing1['uuid']) ?>" class="btn btn-primary btn-sm mb-1">Detail</a>
-                                                                
-                                                                <!-- if role admin  -->
-                                                                 <?php if ($this->session->userdata('role_id') == 6 || $this->session->userdata('role_id') == 1) { ?>
-                                                                    
-                                                                <a href="<?= base_url('user/Deliveryorder/createDeliveryorder/' . $packing1['uuid']) ?>" class="btn btn-warning btn-sm mb-1">Create Delivery Order</a>
-                                                                <?php } ?>
-
-
-                                                            </td>
+                                                            <td><?= $no ?></td>
+                                                            <td><?= $detailDeliveryorder1['sku'] ?></td>
+                                                            <td><?= $detailDeliveryorder1['nama_barang'] ?></td>
+                                                            <td><?= $detailDeliveryorder1['batchnumber'] ?></td>
+                                                          
+                                                            <td><?= $detailDeliveryorder1['qty'] ?></td>
+                                                            <td><?= date('d-m-Y H:i:s', strtotime($detailDeliveryorder1['created_at']))  ?></td>
+                                                            <td><?= $detailDeliveryorder1['nama'] ?></td>
                                                         </tr>
-                                                    <?php } ?>
+                                                    <?php $no++; } ?>
                                                 </tbody>
                                             </table>
                                         </div>
+
                                     </div>
                                 </div>
 
@@ -108,10 +107,72 @@
     <script src="<?= base_url() . '/' ?>assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 
     <script src="<?= base_url() . '/' ?>assets/compiled/js/app.js"></script>
-    <script src="<?= base_url() . '/' ?>assets/extensions/jquery/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
     <script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
+    <script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('.assignPicker').select2();
+        });
+    </script>
+
+    <script>
+        $('#btnProcessToPacking').on('click', function(e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You are about to process this picking slip to packing.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, process to packing',
+                cancelButtonText: 'No, cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "<?= base_url('user/Packing/processPickingslipToPacking/' . $uuid) ?>";
+                }
+            });
+        });
+    </script>
+
+
+
+    <script>
+        $('#assignPickerForm').on('submit', function(e) {
+            e.preventDefault();
+            var $submitBtn = $(this).find('button[type="submit"]'); // get the submit button
+            $submitBtn.prop('disabled', true); // disable the submit button
+            $.ajax({
+                url: "<?= base_url('user/purchaseorder/processpickingslip/' . $uuid) ?>",
+                type: "POST",
+                data: $(this).serialize(),
+                dataType: 'json',
+                success: function(response) {
+                    Swal.fire({
+                        title: response.status === 'success' ? 'Success' : 'Error',
+                        text: response.message,
+                        icon: response.status === 'success' ? 'success' : 'error',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        if (response.status === 'success') {
+                            window.location.href = "<?= base_url('user/pickingslip') ?>";
+                        }
+                    });
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Something went wrong: ' + textStatus,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        });
+    </script>
 
 
 

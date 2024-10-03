@@ -13,10 +13,18 @@ class Packing_model extends CI_Model
 
     function getDetailPacking($uuidPacking) {
         
-        $this->db->select('a.*,b.no_pickingslip');
-        $this->db->from('packing a');
-        $this->db->join('pickingslip b', 'a.id_pickingslip =  b.id_pickingslip');
-        $this->db->where('a.uuid', $uuidPacking);
+        $this->db->select('c.sku,c.nama_barang,d.batchnumber,a.qty,a.created_at,e.nama');
+        $this->db->from('datapacking a');
+        $this->db->join('packing b', 'a.id_packing =  b.id_packing');
+        // join barang 
+        $this->db->join('barang c', 'a.id_barang =  c.id_barang');
+        // join batch 
+        $this->db->join('batch d', 'a.id_batch =  d.id_batch');
+        // join user 
+        $this->db->join('users e', 'a.created_by =  e.id_users');
+      
+       
+        $this->db->where('b.uuid', $uuidPacking);
         return $this->db->get(); 
     }
 

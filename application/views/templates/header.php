@@ -26,7 +26,9 @@
                 <ul class="dropdown-menu dropdown-menu-end shadow-lg" aria-labelledby="topbarUserDropdown">
                     <li><a class="dropdown-item" href="<?= base_url('user/Profile') ?>">My Account</a></li>
                     </li>
-                    <li><a class="dropdown-item" href="auth-login.html">Logout</a></li>
+                    
+                    
+                    <li><a class="dropdown-item" href="<?= base_url('user/Users/Logout') ?>">Logout</a></li>
                 </ul>
             </div>
 

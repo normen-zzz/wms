@@ -75,12 +75,15 @@ class Users extends CI_Controller {
 
 
     public function edit($id) {
+		
         $data = [
             'nama' => $this->input->post('nama'),
-            'jenis_kelamin' => $this->input->post('jenis_kelamin'),
-            'email' => $this->input->post('email'),
+            'username' => $this->input->post('username'),
             'role_id' => $this->input->post('role_id'),
         ];
+		if ($this->input->post('password')) {
+			$data['password'] = password_hash($this->input->post('password'), PASSWORD_BCRYPT);
+		}
         $result = $this->User_model->update_user($id, $data);
         echo json_encode(['success' => $result]);
     }
@@ -89,4 +92,13 @@ class Users extends CI_Controller {
         $result = $this->User_model->delete_user($id);
         echo json_encode(['success' => $result]);
     }
+
+	// logout 
+	public function logout()
+	{
+		if ($this->session->sess_destroy() == TRUE) {
+			$this->session->set_flashdata('message', 'swal("Berhasil!", "Berhasil Logout!", "success");');
+		}
+		redirect(base_url('auth'));
+	}
 }

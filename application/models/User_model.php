@@ -10,11 +10,12 @@ class User_model extends CI_Model
 		$this->db->join('roles', 'users.role_id = roles.id');
         // where 
         $this->db->where('users.role_id !=', 1);
+        $this->db->where('users.is_deleted !=', 1);
 		return $this->db->get()->result();
     }
 
     public function get_user($id) {
-        return $this->db->get_where('users', ['id_users' => $id])->row();
+        return $this->db->get_where('users', ['id_users' => $id,'is_deleted' => 0])->row();
     }
 
     public function insert_user($data) {
@@ -27,7 +28,7 @@ class User_model extends CI_Model
     }
 
     public function delete_user($id) {
-        return $this->db->delete('users', ['id_users' => $id]);
+        return $this->db->update('users', ['is_deleted' => 1], ['id_users' => $id]);
     }
 
 	public function getDetailUsers($id)

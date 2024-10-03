@@ -19,8 +19,23 @@ class Deliveryorder extends CI_Controller
             'subtitle' => 'Data Delivery Order',
             'subtitle2' => 'Data Delivery Order',
             'deliveryorder' => $this->deliveryorder->getDeliveryorder(),
+            
         ];
         $this->load->view('user/deliveryorder/index', $data);
+    }
+
+    // detail 
+    public function detail($uuidDeliveryorder)
+    {
+        $data = [
+            'title' => 'Delivery Order',
+            'subtitle' => 'Detail Delivery Order',
+            'subtitle2' => 'Detail Delivery Order',
+            'detailDeliveryorder' => $this->deliveryorder->getItemsDeliveryorder($uuidDeliveryorder),
+            'no_do' => $this->deliveryorder->getNoDoExt($uuidDeliveryorder),
+            'uuid' => $uuidDeliveryorder,
+        ];
+        $this->load->view('user/deliveryorder/detailDeliveryorder', $data);
     }
 
     public function createDeliveryorder($uuidPacking)

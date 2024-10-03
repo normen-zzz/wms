@@ -43,6 +43,17 @@
                                             <form method="POST" action="<?= base_url('user/Profile') ?>" class="form form-vertical">
                                                 <div class="form-body">
                                                     <div class="row">
+                                                    <div class="col-12">
+                                                            <div class="form-group has-icon-left">
+                                                                <label for="email-id-icon">Username</label>
+                                                                <div class="position-relative">
+                                                                    <input type="text" class="form-control" value="<?= $users['username'] ?>" name="username" placeholder="Email" readonly id="email-id-icon">
+                                                                    <div class="form-control-icon">
+                                                                        <i class="bi bi-envelope"></i>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                         <div class="col-12">
                                                             <div class="form-group has-icon-left">
                                                                 <label for="first-name-icon">Name</label>
@@ -55,19 +66,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-12">
-
-                                                            <div class="form-group has-icon-left">
-                                                                <label for="email-id-icon">Email</label>
-                                                                <div class="position-relative">
-                                                                    <input type="text" class="form-control" value="<?= $users['email'] ?>" name="email" placeholder="Email" id="email-id-icon">
-                                                                    <div class="form-control-icon">
-                                                                        <i class="bi bi-envelope"></i>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
+                                                
                                                         <div class="col-12">
                                                             <div class="form-group has-icon-left">
                                                                 <label for="password-id-icon">Password</label>
@@ -79,31 +78,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-12">
-                                                            <div class="form-group has-icon-left">
-                                                                <label for="password-id-icon">Jenis Kelamin</label>
-                                                                <div class="position-relative">
-                                                                    <select name="jenis_kelamin" id="jenis_kelamin" class="form-control">
-                                                                        <option value="L" <?php if ($users['jenis_kelamin'] == 'L') {
-                                                                                                echo 'selected';
-                                                                                            } ?>>Laki Laki</option>
-                                                                        <option value="P" <?php if ($users['jenis_kelamin'] == 'P') {
-                                                                                                echo 'selected';
-                                                                                            } ?>>Perempuan</option>
-                                                                    </select>
-                                                                    <div class="form-control-icon">
-                                                                        <?php if ($users['jenis_kelamin'] == 'P') {
-                                                                            echo ' <i class="bi bi-gender-female"></i>';
-                                                                        } ?>
 
-                                                                        <?php if ($users['jenis_kelamin'] == 'L') {
-                                                                            echo ' <i class="bi bi-gender-male"></i>';
-                                                                        } ?>
-
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
 
                                                         <div class="col-12 d-flex justify-content-end">
                                                             <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
@@ -125,13 +100,13 @@
             <?php $this->load->view('templates/footer') ?>
         </div>
     </div>
-   
+
     <script src="<?= base_url() . '/' ?>assets/static/js/components/dark.js"></script>
     <script src="<?= base_url() . '/' ?>assets/static/js/pages/horizontal-layout.js"></script>
     <script src="<?= base_url() . '/' ?>assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 
     <script src="<?= base_url() . '/' ?>assets/compiled/js/app.js"></script>
-    
+
 </body>
 
 </html>

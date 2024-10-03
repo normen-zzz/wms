@@ -153,14 +153,26 @@
 							<div class="modal-body">
 								<input type="hidden" name="id" id="editUserId">
 								<div class="form-group">
+									<label for="edit_username">Username</label>
+									<input type="text" class="form-control" name="username" id="edit_username" readonly required>
+								</div>
+								<div class="form-group">
 									<label for="edit_nama">Name</label>
 									<input type="text" class="form-control" name="nama" id="edit_nama" required>
 								</div>
 								
+								
+								<!-- password -->
 								<div class="form-group">
-									<label for="edit_username">Username</label>
-									<input type="text" class="form-control" name="username" id="edit_username" required>
-								</div>
+									<label for="edit_password">Password <span class="text-danger">*isi jika ingin  mengubah password</span></label>
+									<div class="input-group">
+										<input type="password" class="form-control" name="password" id="edit_password">
+										<div class="input-group-append">
+											<button type="button" class="btn btn-outline-secondary" id="toggleEditPassword">
+												<i class="bi bi-eye"></i>
+											</button>
+										</div>
+									</div>
 								<div class="form-group">
 									<label for="edit_role_id">Role</label>
 									<select class="form-control" name="role_id" id="edit_role_id">

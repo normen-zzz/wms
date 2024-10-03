@@ -30,9 +30,17 @@ class Deliveryorder_model extends CI_Model
         return $this->db->get()->row_array();
     }
 
+    function getNoDoExt($uuidDeliveryorder) {
+        $this->db->select('ext_deliveryorder');
+        $this->db->from('deliveryorder');
+        $this->db->where('uuid', $uuidDeliveryorder);
+        $do = $this->db->get()->row_array();
+        return $do['ext_deliveryorder'];
+    }
+
     function getItemsDeliveryorder($uuidDeliveryorder)
     {
-        $this->db->select('a.*,d.expiration_date,c.sku,c.nama_barang,d.batchnumber,a.qty,a.created_at,a.created_by');
+        $this->db->select('a.*,d.expiration_date,c.sku,c.nama_barang,d.batchnumber,a.qty,a.created_at,a.created_by,f.nama');
         $this->db->from('datapacking a');
         $this->db->join('packing b', 'a.id_packing =  b.id_packing');
         //join barang
@@ -41,6 +49,8 @@ class Deliveryorder_model extends CI_Model
         $this->db->join('batch d', 'a.id_batch =  d.id_batch');
         // join deliveryorder  
         $this->db->join('deliveryorder e', 'b.id_packing =  e.id_packing');
+        // join user 
+        $this->db->join('users f', 'a.created_by =  f.id_users');
         $this->db->where('e.uuid', $uuidDeliveryorder);
         return $this->db->get();
     }

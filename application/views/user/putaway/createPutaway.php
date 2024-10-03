@@ -23,46 +23,48 @@
 
 	<style>
 		.table-responsive {
-    	overflow-x: auto; 
+			overflow-x: auto;
 		}
 
 		.table {
-				width: 100%;
-				border-collapse: collapse;
+			width: 100%;
+			border-collapse: collapse;
 		}
 
-		.table th, .table td {
-				padding: 8px;
-				text-align: center;
+		.table th,
+		.table td {
+			padding: 8px;
+			text-align: center;
 		}
 
 		@media (max-width: 768px) {
-				.table {
-						display: block;
-				}
+			.table {
+				display: block;
+			}
 
-				.table thead {
-						display: none; 
-				}
+			.table thead {
+				display: none;
+			}
 
-				.table tr {
-						display: flex; 
-						flex-direction: column; 
-						border: 1px solid #ccc;
-						margin-bottom: 10px; 
-				}
+			.table tr {
+				display: flex;
+				flex-direction: column;
+				border: 1px solid #ccc;
+				margin-bottom: 10px;
+			}
 
-				.table td {
-						display: flex;
-						justify-content: space-between;
-						padding: 10px;
-						border-bottom: 1px solid #ccc; 
-				}
-				.table td::before {
-						content: attr(data-label); 
-						font-weight: bold;
-						margin-right: 10px; 
-				}
+			.table td {
+				display: flex;
+				justify-content: space-between;
+				padding: 10px;
+				border-bottom: 1px solid #ccc;
+			}
+
+			.table td::before {
+				content: attr(data-label);
+				font-weight: bold;
+				margin-right: 10px;
+			}
 		}
 	</style>
 </head>
@@ -101,77 +103,77 @@
 										<!-- <label for="customer">NO Inbound</label> -->
 										<!-- <input type="text" class="form-control mb-4" value="<?= $get_id_inbound->no_inbound ?>" disabled> -->
 										<div class="table-responsive">
-												<form id="putawayForm" method="POST">
-														<table class="table" id="table">
-																<thead>
-																		 <tr>
-																			<th style="width: 10%;">SKU</th>
-																			<th style="width: 10%;">Nama Barang</th>
-																			<th style="width: 10%;">Batch</th>
-																			<th style="width: 10%;">Qty (Good)</th>
-																			<th style="width: 15%;">Existing Rack</th>
-																			<th style="width: 15%;">Recommended Rack</th>
-																			<th style="width: 60%;">Chosen Rack</th>
-																			<th style="width: 10%;">Action</th>
-																	</tr>
-																</thead>
-																<tbody>
-																		<?php foreach ($data_putaway as $dtl) { ?>
-																				<tr>
-																						<td data-label="SKU"><?= $dtl['sku'] ?></td>
-																						<td data-label="Nama Barang"><?= $dtl['nama_barang'] ?></td>
-																						<td data-label="Batch"><?= getBatchById($dtl['batch_id']) ?></td>
-																						<td data-label="Qty (Good)"><?= $dtl['good_qty'] ?></td>
-																						<td data-label="Existing Rack">
-																								<?php if (!empty($dtl['existing_racks'])) : ?>
-																										<?php foreach ($dtl['existing_racks'] as $rack) : ?>
-																												<p>SLOC: <?= $rack['sloc'] ?></p>
-																										<?php endforeach; ?>
-																								<?php else : ?>
-																										<p>Not assigned</p>
-																								<?php endif; ?>
-																						</td>
-																						<td data-label="Recommended Rack">
-																								<button type="button" class="btn btn-sm btn-primary get-recommendations" data-id-barang="<?= $dtl['id_barang'] ?>" data-quantity="<?= $dtl['good_qty'] ?>">
-																										Get Recommendations
-																								</button>
-																								<div class="recommendations-list" style="display:none;"></div>
-																						</td>
-																						<td data-label="Chosen Rack">
-																								<table class="table mt-3" id="choosenRack">
-																										<thead>
-																												<tr>
-																														<th>Rack</th>
-																														<th>Quantity</th>
-																														<th>Action</th>
-																												</tr>
-																										</thead>
-																										<tbody>
-																												<tr>
-																														<td><input type="text" name="putaway_field[<?= $dtl['id_barang'] ?>][id_rack][]" class="form-control" placeholder="Enter Rack"></td>
-																														<td><input type="text" name="putaway_field[<?= $dtl['id_barang'] ?>][quantity][]" class="form-control" placeholder="Enter Quantity"></td>
-																														<td>
-																																<button type="button" class="btn btn-sm btn-primary add-row">Add Row</button>
-																																<button type="button" class="btn btn-sm btn-danger remove-row">Remove</button>
-																														</td>
-																												</tr>
-																										</tbody>
-																								</table>
-																						</td>
-																						<td data-label="Action">
-																								<button type="button" class="btn btn-sm btn-primary submitPutawayData" data-id-barang="<?= $dtl['id_barang'] ?>" data-quantity="<?= $dtl['good_qty'] ?>" data-batch-id="<?= $dtl['batch_id'] ?>">
-																										Submit
-																								</button>
-																								<input type="hidden" name="putaway_field[<?= $dtl['id_barang'] ?>][id_barang]" value="<?= $dtl['id_barang'] ?>">
-																								<input type="hidden" name="putaway_field[<?= $dtl['id_barang'] ?>][batch_id]" value="<?= $dtl['batch_id'] ?>">
-																								<input type="hidden" name="putaway_field[<?= $dtl['id_barang'] ?>][id_inbound]" value="<?= $dtl['id_inbound'] ?>">
-																								<input type="hidden" name="putaway_field[<?= $dtl['id_barang'] ?>][id_putaway]" value="<?= $dtl['id_putaway'] ?>">
-																						</td>
-																				</tr>
-																		<?php } ?>
-																</tbody>
-														</table>
-												</form>
+											<form id="putawayForm" method="POST">
+												<table class="table" id="table">
+													<thead>
+														<tr>
+															<th style="width: 10%;">SKU</th>
+															<th style="width: 10%;">Nama Barang</th>
+															<th style="width: 10%;">Batch</th>
+															<th style="width: 10%;">Qty (Good)</th>
+															<th style="width: 15%;">Existing Rack</th>
+															<th style="width: 15%;">Recommended Rack</th>
+															<th style="width: 60%;">Chosen Rack</th>
+															<th style="width: 10%;">Action</th>
+														</tr>
+													</thead>
+													<tbody>
+														<?php foreach ($data_putaway as $dtl) { ?>
+															<tr>
+																<td data-label="SKU"><?= $dtl['sku'] ?></td>
+																<td data-label="Nama Barang"><?= $dtl['nama_barang'] ?></td>
+																<td data-label="Batch"><?= getBatchById($dtl['batch_id']) ?></td>
+																<td data-label="Qty (Good)"><?= $dtl['good_qty'] ?></td>
+																<td data-label="Existing Rack">
+																	<?php if (!empty($dtl['existing_racks'])) : ?>
+																		<?php foreach ($dtl['existing_racks'] as $rack) : ?>
+																			<p>SLOC: <?= $rack['sloc'] ?></p>
+																		<?php endforeach; ?>
+																	<?php else : ?>
+																		<p>Not assigned</p>
+																	<?php endif; ?>
+																</td>
+																<td data-label="Recommended Rack">
+																	<button type="button" class="btn btn-sm btn-primary get-recommendations" data-id-barang="<?= $dtl['id_barang'] ?>" data-quantity="<?= $dtl['good_qty'] ?>">
+																		Get Recommendations
+																	</button>
+																	<div class="recommendations-list" style="display:none;"></div>
+																</td>
+																<td data-label="Chosen Rack">
+																	<table class="table mt-3" id="choosenRack">
+																		<thead>
+																			<tr>
+																				<th>Rack</th>
+																				<th>Quantity</th>
+																				<th>Action</th>
+																			</tr>
+																		</thead>
+																		<tbody>
+																			<tr>
+																				<td><input type="text" name="putaway_field[<?= $dtl['id_barang'] ?>][id_rack][]" class="form-control" placeholder="Enter Rack"></td>
+																				<td><input type="text" name="putaway_field[<?= $dtl['id_barang'] ?>][quantity][]" class="form-control" placeholder="Enter Quantity"></td>
+																				<td>
+																					<button type="button" class="btn btn-sm btn-primary add-row">Add Row</button>
+																					<button type="button" class="btn btn-sm btn-danger remove-row">Remove</button>
+																				</td>
+																			</tr>
+																		</tbody>
+																	</table>
+																</td>
+																<td data-label="Action">
+																	<button type="button" class="btn btn-sm btn-primary submitPutawayData" data-id-barang="<?= $dtl['id_barang'] ?>" data-quantity="<?= $dtl['good_qty'] ?>" data-batch-id="<?= $dtl['batch_id'] ?>">
+																		Submit
+																	</button>
+																	<input type="hidden" name="putaway_field[<?= $dtl['id_barang'] ?>][id_barang]" value="<?= $dtl['id_barang'] ?>">
+																	<input type="hidden" name="putaway_field[<?= $dtl['id_barang'] ?>][batch_id]" value="<?= $dtl['batch_id'] ?>">
+																	<input type="hidden" name="putaway_field[<?= $dtl['id_barang'] ?>][id_inbound]" value="<?= $dtl['id_inbound'] ?>">
+																	<input type="hidden" name="putaway_field[<?= $dtl['id_barang'] ?>][id_putaway]" value="<?= $dtl['id_putaway'] ?>">
+																</td>
+															</tr>
+														<?php } ?>
+													</tbody>
+												</table>
+											</form>
 										</div>
 									</div>
 									<!-- Basic Tables end -->

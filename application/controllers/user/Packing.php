@@ -29,7 +29,7 @@ class Packing extends CI_Controller
 			'title' => 'Packing',
 			'subtitle' => 'Data Packing',
 			'subtitle2' => 'Data Packing',
-			'detailPs' => $this->packing->getDetailPacking($uuidPacking),
+			'detailPacking' => $this->packing->getDetailPacking($uuidPacking),
 			'uuid' => $uuidPacking,
 			
 		];

@@ -16,8 +16,8 @@ class Profile extends CI_Controller
     public function index()
     {
 
-        $this->form_validation->set_rules('nama', 'Nama Karyawan', 'required|trim', [
-            'required' => 'Nama Karyawan tidak boleh kosong.'
+        $this->form_validation->set_rules('nama', 'Nama', 'required|trim', [
+            'required' => 'Nama tidak boleh kosong.'
         ]);
         if ($this->form_validation->run() == FALSE) {
             $data = [
@@ -31,11 +31,15 @@ class Profile extends CI_Controller
         } else {
             $data = [
                 'nama' => $this->input->post('nama'),
-                'email' => $this->input->post('email'),
-                'password' => hashEncrypt($this->input->post('password')),
-                'jenis_kelamin' => $this->input->post('jenis_kelamin'),
+                'username' => $this->input->post('username'),
             ];
-            $this->user->editKaryawan($this->session->userdata('id_users'), $data);
+            // jika ada password 
+            $password = $this->input->post('password');
+            if ($password) {
+                $data['password'] = password_hash($password, PASSWORD_DEFAULT);
+            }
+           
+            $this->user->update_user($this->session->userdata('id_users'), $data);
             $this->session->set_flashdata("message", "Toast.fire({icon: 'success',title: 'Success'})");
             redirect(base_url('user/profile'));
         }

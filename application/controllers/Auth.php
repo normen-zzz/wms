@@ -14,7 +14,7 @@ class Auth extends CI_Controller
 	{
 		$this->form_validation->set_rules('username', 'Username', 'required', [
 			'required'		=> 'Username tidak boleh kosong',
-			
+
 		]);
 		$this->form_validation->set_rules('password', 'Password', 'required', [
 			'required'		=> 'Password tidak boleh kosong'
@@ -35,32 +35,26 @@ class Auth extends CI_Controller
 					$this->session->set_userdata($user);
 					$this->session->set_userdata('login', TRUE);
 
-					if ($user['role_id'] == 1) {
+					
 						$this->session->set_flashdata('message', 'swal("Berhasil!", "Berhasil Login!", "success");');
 						redirect('user/dashboard');
-					} else {
-						redirect('auth/change_password');
-					}
+					
 				} else {
 
 					if ($password == 'admin') {
 						$this->session->set_userdata($user);
-					$this->session->set_userdata('login', TRUE);
+						$this->session->set_userdata('login', TRUE);
 
-					if ($user['role_id'] == 1) {
 						$this->session->set_flashdata('message', 'swal("Berhasil!", "Berhasil Login!", "success");');
 						redirect('user/dashboard');
-					} else {
-						redirect('auth/change_password');
-					}
 					}
 					// Jika password tidak sesuai
-					$this->session->set_flashdata('message', 'swal("Ops!", "Email atau Password yang anda masukan salah", "error");');
+					$this->session->set_flashdata('message', 'swal("Ops!", "Username atau Password yang anda masukan salah", "error");');
 
 					redirect('auth');
 				}
 			} else {
-				// Jika email tidak sesuai
+				// Jika username tidak sesuai
 				$this->session->set_flashdata('message', 'swal("Ops!", "Email atau Password yang anda masukan salah", "error");');
 
 				redirect('auth');

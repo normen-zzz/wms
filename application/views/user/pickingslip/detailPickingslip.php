@@ -52,7 +52,12 @@
 
                                             <div style="float: right;">
                                                 <!-- create button tag a to process ke packing -->
-                                                <button type="button" class="btn btn-primary" id="btnProcessToPacking">Process To Packing</button>
+                                                 <!-- if role 3  -->
+                                                  <?php if ($this->session->userdata('role_id') == 3|| $this->session->userdata('role_id') == 1|| $this->session->userdata('role_id') == 6 ) { ?>
+                                                    <button type="button" class="btn btn-primary" id="btnProcessToPacking">Process To Packing</button>
+                                                 <?php  } ?>
+
+                                               
 
                                             </div>
                                         <?php } ?>

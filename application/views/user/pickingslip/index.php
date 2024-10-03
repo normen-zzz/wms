@@ -69,16 +69,20 @@
                                                             <td><?= $ps1['no_pickingslip'] ?></td>
                                                             <td><?= $ps1['no_purchaseorder'] ?></td>
                                                             <td><?= getNamaCustomer($ps1['customer']) ?></td>
-															<td><?= getStatusPickingslip($ps1['status']) ?></td> 
+                                                            <td><?= getStatusPickingslip($ps1['status']) ?></td>
                                                             <td><?= dateindo($ps1['created_at']) ?></td>
                                                             <td>
                                                                 <?php if ($ps1['status'] == 0) { ?>
-                                                                    <a href="<?= base_url('user/Pickingslip/pick/' . $ps1['uuid']) ?>" class="btn btn-warning btn-sm mb-1">Pick</a>
-                                                               <?php  } else{ ?>
-                                                                <a href="<?= base_url('user/Pickingslip/detail/' . $ps1['uuid']) ?>" class="btn btn-primary btn-sm mb-1">Detail</a>
+                                                                    <!-- role 4  -->
+                                                                    <?php if ($this->session->userdata('role_id') == 4 || $this->session->userdata('role_id') == 6 || $this->session->userdata('role_id') == 1) { ?>
+                                                                        <a href="<?= base_url('user/Pickingslip/pick/' . $ps1['uuid']) ?>" class="btn btn-warning btn-sm mb-1">Pick</a>
+                                                                    <?php } ?>
+
+                                                                <?php  } else { ?>
+                                                                    <a href="<?= base_url('user/Pickingslip/detail/' . $ps1['uuid']) ?>" class="btn btn-primary btn-sm mb-1">Detail</a>
                                                                 <?php } ?>
-                                                                
-															</td>
+
+                                                            </td>
                                                         </tr>
                                                     <?php } ?>
                                                 </tbody>
@@ -112,7 +116,7 @@
     <script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
     <script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
 
-    
+
 
 </body>
 
