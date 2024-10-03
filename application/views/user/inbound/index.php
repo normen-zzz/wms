@@ -141,6 +141,9 @@
 			});
 		}
 
+		// data table inboundTable
+		$('#inboundTable').DataTable();
+
 		$('#submitInbound').on('click', function () {
 			$('#inboundForm').submit();
 		});

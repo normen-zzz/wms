@@ -96,7 +96,6 @@
 
 												<input type="hidden" name="id_picklist" value="<?= $picklist->id_picklist ?>">
 												<input type="hidden" name="received_qty" value="<?= $picklist->qty ?>">
-
 												<button id="finishInbound" class="btn btn-primary mt-2">Finish Inbound</button>
 											</form>
 										</div>

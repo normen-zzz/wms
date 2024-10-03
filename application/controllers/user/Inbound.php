@@ -105,16 +105,20 @@ class Inbound extends CI_Controller
 	}
 
 
-	public function processRow()
-	{
+	public function processRow() {
 			$id_picklist = $this->input->post('id_picklist');
+			
+			$existingInbound = $this->ReceivingInbound_model->getInboundByPicklistId($id_picklist);
+			// var_dump($existingInbound);exit;
+
 			$received_qty = $this->input->post('received_qty');
 			$good_qty = $this->input->post('good_qty');
 			$bad_qty = $this->input->post('bad_qty');
 			$batch_id = $this->input->post('batch_id');
 			$id_barang = $this->input->post('id_barang');
 			$created_by = $this->session->userdata('id_users');
-			$no_inbound = generate_inbound_number();
+
+			$no_inbound = $existingInbound ? $existingInbound['no_inbound'] : generate_inbound_number();
 
 			$data_inbound = array(
 					'id_picklist' => $id_picklist,
@@ -146,11 +150,9 @@ class Inbound extends CI_Controller
 
 					$this->ReceivingInbound_model->insert_damage($data_damage);
 			}
-
 			$response = array('status' => 'success', 'message' => 'Inbound processed successfully.');
 			echo json_encode($response);
 	}
-
 
 	public function finishInbound()
 	{

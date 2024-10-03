@@ -127,5 +127,19 @@ class ReceivingInbound_model extends CI_Model
 			return $query->result_array(); 
 	}
 
+	public function getInboundByPicklistId($id_picklist) {
+    
+    $this->db->select('*');
+    $this->db->from('inbound');
+    $this->db->where('id_picklist', $id_picklist);
+    $query = $this->db->get();
+
+    if ($query->num_rows() > 0) {
+      return $query->row_array(); 
+    }
+
+    return null; 
+  }
+
 
 }
