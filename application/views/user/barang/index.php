@@ -118,7 +118,7 @@
 							</button>
 							
 						</div>
-						<form action="<?= base_url('user/Barang/import_barang') ?>" method="POST" enctype="multipart/form-data">
+						<form id="addBarangBulky">
 							<div class="modal-body">
 								<label for="file">File</label>
 								<div class="form-group">
@@ -276,6 +276,54 @@
 					}
 				});
 			});
+
+			//add barang bulky form submit jquery with loading
+			$('#addBarangBulky').submit(function(e) {
+				e.preventDefault();
+
+				var formData = new FormData(this);
+
+				$.ajax({
+					url: '<?= base_url("user/Barang/import_barang") ?>',
+					type: 'POST',
+					data: formData,
+					cache: false,
+					contentType: false,
+					processData: false,
+					success: function(response) {
+						$('#modalAddBarangBulky').modal('hide');
+						Swal.fire({
+							title: 'Success!',
+							text: 'Data barang berhasil ditambahkan!',
+							icon: 'success',
+							confirmButtonText: 'OK'
+						}).then((result) => {
+							if (result.isConfirmed) {
+								location.reload();
+							}
+						});
+					},
+					error: function(xhr) {
+						// swal error 
+						Swal.fire({
+							title: 'Error!',
+							text: 'An error occurred while adding the item.',
+							icon: 'error',
+							confirmButtonText: 'OK'
+						}).then((result) => {
+							if (result.isConfirmed) {
+								location.reload();
+							}
+						});
+						
+						
+						
+						
+					}
+				});
+			});
+
+			
 
 			$('#editForm').submit(function(e) {
 				e.preventDefault();

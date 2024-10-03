@@ -1,5 +1,6 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
+
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
@@ -82,7 +83,8 @@ class Barang extends CI_Controller
         echo json_encode(['success' => true]);
     }
 
-    public function download_template() {
+    public function download_template()
+    {
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
@@ -98,8 +100,9 @@ class Barang extends CI_Controller
     }
 
     // input to database from excel file template tanpa save file
-    public function import_barang() {
-        $this->load->library('excel');
+    public function import_barang()
+    {
+
         $file = $_FILES['file']['name'];
         $ext = pathinfo($file, PATHINFO_EXTENSION);
         if ($ext == 'csv') {
@@ -114,30 +117,27 @@ class Barang extends CI_Controller
         $this->load->library('uuid');
         foreach ($sheetData as $key => $value) {
             if ($key > 0) {
-                
-                $data[] = [
-                    'uuid' => uniqid(),
-                    'sku' => $value[0],
-                    'nama_barang' => $value[1],
-                    'uom' => $value[2],
-                    'is_deleted' => 0,
-                    'created_at' => date('Y-m-d H:i:s'),
-                    'created_by' => $this->session->userdata('id_users')
-                ];
+                $checkSku = $this->db->query('SELECT sku FROM barang WHERE sku = "' . $value[0] . '" ');
+                if ($checkSku->num_rows() == 0) {
+                    $data[] = [
+                        'uuid' => uniqid(),
+                        'sku' => $value[0],
+                        'nama_barang' => $value[1],
+                        'uom' => $value[2],
+                        'is_deleted' => 0,
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'created_by' => $this->session->userdata('id_users')
+                    ];
+                }
             }
         }
-        $this->db->insert_batch('barang', $data);
-        $this->session->set_flashdata("message", "Toast.fire({icon: 'success',title: 'Success'})");
-        redirect(base_url('user/Barang'));
+        $insert_data = $this->db->insert_batch('barang', $data);
+        if ($insert_data) {
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['error' => true]);
+        }
     }
-
-
-
-
-
-
-    
-    
 }
 
 /* End of file User.php */

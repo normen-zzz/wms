@@ -123,6 +123,61 @@ class Rack extends CI_Controller
       }
     }
 
+	// input to database from excel file template tanpa save file
+	public function import_rack()
+	{
+
+		$file = $_FILES['file']['name'];
+		$file = explode(".", $file);
+		$ext = end($file);
+		if ($ext == 'xlsx') {
+			$reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+		} else {
+			$reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
+		}
+
+		$spreadsheet = $reader->load($_FILES['file']['tmp_name']);
+		$sheetData = $spreadsheet->getActiveSheet()->toArray();
+
+		$data = [];
+		$success = 0;
+		$failed = 0;
+		$failedData = [];
+		foreach ($sheetData as $key => $value) {
+			if ($key > 0) {
+				$checkSloc = $this->db->query('SELECT sloc FROM rack WHERE sloc = "' . $value[0] . '" ');
+				if ($checkSloc->num_rows() == 0) {
+					$data = [
+						'sloc' => $value[0],
+						'zone' => $value[1],
+						'rack' => $value[2],
+						'row' => $value[3],
+						'column_rack' => $value[4],
+						'max_qty' => $value[5],
+						'uom' => $value[6],
+						'created_at' => date('Y-m-d H:i:s'),
+						'created_by' => $this->session->userdata('id_users'),
+					];
+					$this->db->insert('rack', $data);
+					$success++;
+				} else {
+					$failed++;
+					$failedData[] = $value;
+				}
+			}
+		}
+
+		$response = [
+			'success' => $success,
+			'failed' => $failed,
+			'failedData' => $failedData
+		];
+
+		echo json_encode($response);
+	}
+	
+
+
 }
 
 /* End of file User.php */

@@ -48,6 +48,9 @@
 											<?= $subtitle2 ?>
 										</h5>
 										<button type="button" data-bs-toggle="modal" data-bs-target="#modalAddRack" class="btn btn-primary">Add <?= $subtitle ?></button>
+										<!-- button add rack bulky modal -->
+										<button type="button" data-bs-toggle="modal" data-bs-target="#modalAddRackBulky" class="btn btn-primary">Add <?= $subtitle ?> Bulky</button>
+
 									</div>
 
 									<div class="card-body">
@@ -67,32 +70,27 @@
 													</tr>
 												</thead>
 												<tbody>
-														<?php foreach ($rack->result_array() as $rack1) { ?>
-																<tr>
-																		<td><?= $rack1['sloc'] ?></td>
-																		<td><?= $rack1['zone'] ?></td>
-																		<td><?= $rack1['rack'] ?></td>
-																		<td><?= $rack1['row'] ?></td>
-																		<td><?= $rack1['column_rack'] ?></td>
-																		<td><?= $rack1['max_qty'] ?></td>
-																		<td><?= $rack1['uom'] ?></td>
-																		<td><?= getStatusRack($rack1['status']) ?></td>
-																		<td>
-																				<button class="btn btn-sm btn-primary print-sloc-barcode" 
-																						data-sloc="<?= htmlspecialchars($rack1['sloc'], ENT_QUOTES, 'UTF-8') ?>" 
-																						data-zone="<?= htmlspecialchars($rack1['zone'], ENT_QUOTES, 'UTF-8') ?>" 
-																						data-rack="<?= htmlspecialchars($rack1['rack'], ENT_QUOTES, 'UTF-8') ?>"
-																						data-column="<?= htmlspecialchars($rack1['column_rack'], ENT_QUOTES, 'UTF-8') ?>"> 
-																						Print SLOC QR Code
-																				</button>
+													<?php foreach ($rack->result_array() as $rack1) { ?>
+														<tr>
+															<td><?= $rack1['sloc'] ?></td>
+															<td><?= $rack1['zone'] ?></td>
+															<td><?= $rack1['rack'] ?></td>
+															<td><?= $rack1['row'] ?></td>
+															<td><?= $rack1['column_rack'] ?></td>
+															<td><?= $rack1['max_qty'] ?></td>
+															<td><?= $rack1['uom'] ?></td>
+															<td><?= getStatusRack($rack1['status']) ?></td>
+															<td>
+																<button class="btn btn-sm btn-primary print-sloc-barcode" data-sloc="<?= htmlspecialchars($rack1['sloc'], ENT_QUOTES, 'UTF-8') ?>" data-zone="<?= htmlspecialchars($rack1['zone'], ENT_QUOTES, 'UTF-8') ?>" data-rack="<?= htmlspecialchars($rack1['rack'], ENT_QUOTES, 'UTF-8') ?>" data-column="<?= htmlspecialchars($rack1['column_rack'], ENT_QUOTES, 'UTF-8') ?>">
+																	Print SLOC QR Code
+																</button>
 
-																				<button class="btn btn-sm btn-secondary print-sloc-barcode-items"
-																								data-sloc="<?= htmlspecialchars($rack1['sloc'], ENT_QUOTES, 'UTF-8') ?>"> 
-																						Print Items QR Code
-																				</button>
-																		</td>
-																</tr>
-														<?php } ?>
+																<button class="btn btn-sm btn-secondary print-sloc-barcode-items" data-sloc="<?= htmlspecialchars($rack1['sloc'], ENT_QUOTES, 'UTF-8') ?>">
+																	Print Items QR Code
+																</button>
+															</td>
+														</tr>
+													<?php } ?>
 												</tbody>
 											</table>
 										</div>
@@ -170,6 +168,41 @@
 			</div>
 		</div>
 	</div>
+
+	<!-- modal add rack bulky -->
+	<div class="modal fade text-left" id="modalAddRackBulky" tabindex="-1" role="dialog" aria-labelledby="modalAddRackBulky" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="myModalLabel33">Add Rack Bulky Form</h4>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+						<i data-feather="x"></i>
+					</button>
+				</div>
+				<form id="formAddRackBulky">
+					<div class="modal-body">
+						<!-- input file khusus excel  -->
+						<div class="form-group">
+							<label for="rackBulky">Upload File Excel</label>
+							<input type="file" class="form-control" id="rackBulky" name="rackBulky" accept=".xls, .xlsx">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+							Close
+						</button>
+						<button type="submit" class="btn btn-primary ms-1" id="addRackBulkyButton">
+							Submit
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+
+
 
 	<div class="modal fade" id="editModal" tabindex="-1" role="dialog">
 		<div class="modal-dialog" role="document">
@@ -468,12 +501,14 @@
 			const sloc = $(this).data('sloc'); 
 
 			$.ajax({
-					url: 'user/rack/get_items_by_sloc',
-					method: 'POST',
-					data: { sloc: sloc },
-					dataType: 'json',  
-					success: function(response) {
-							console.log('Response:', response); 
+				url: 'user/rack/get_items_by_sloc',
+				method: 'POST',
+				data: {
+					sloc: sloc
+				},
+				dataType: 'json',
+				success: function(response) {
+					console.log('Response:', response);
 
 							if (response && response.status === 'success' && Array.isArray(response.items)) {
 									const itemsData = response.items; 
@@ -481,9 +516,9 @@
 									const qrCodeImage = new Image();
 									qrCodeImage.src = qrCodeUrl;
 
-									qrCodeImage.onload = function() {
-											const printWindow = window.open('', '_blank');
-											printWindow.document.write(`
+						qrCodeImage.onload = function() {
+							const printWindow = window.open('', '_blank');
+							printWindow.document.write(`
 													<html>
 															<head>
 																	<title>Print QR Code with Items</title>
@@ -538,26 +573,64 @@
 																			</html>
 																			`);
 
-											printWindow.document.close();
-											printWindow.print();
-									};
+							printWindow.document.close();
+							printWindow.print();
+						};
 
-									qrCodeImage.onerror = function() {
-											alert('Error generating QR code. Please check the SLOC value.');
-									};
-							} else {
-									console.error('Unexpected response format:', response);
-									alert('Unexpected response format. Please try again.');
-							}
-					},
-					error: function(jqXHR, textStatus, errorThrown) {
-							console.error('AJAX error:', textStatus, errorThrown);
-							alert('Error fetching item data. Please try again.');
+						qrCodeImage.onerror = function() {
+							alert('Error generating QR code. Please check the SLOC value.');
+						};
+					} else {
+						console.error('Unexpected response format:', response);
+						alert('Unexpected response format. Please try again.');
 					}
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					console.error('AJAX error:', textStatus, errorThrown);
+					alert('Error fetching item data. Please try again.');
+				}
 			});
-	});
-
+		});
 	</script>
+
+
+	<!-- post jquery form formAddRackBulky ketika menunggu akan muncul processing -->
+	<script>
+		$('#formAddRackBulky').on('submit', function(e) {
+			e.preventDefault();
+			$.ajax({
+				url: "<?= base_url('user/rack/processaddrackbulky') ?>",
+				type: "POST",
+				data: new FormData(this),
+				contentType: false,
+				cache: false,
+				processData: false,
+				dataType: 'json',
+				success: function(response) {
+					Swal.fire({
+						title: response.status === 'success' ? 'Success' : 'Error',
+						text: response.message,
+						icon: response.status === 'success' ? 'success' : 'error',
+						confirmButtonText: 'OK'
+					}).then(() => {
+						if (response.status === 'success') {
+							window.location.href = "<?= base_url('user/rack') ?>";
+						}
+					});
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					Swal.fire({
+						title: 'Error',
+						text: 'Something went wrong: ' + textStatus,
+						icon: 'error',
+						confirmButtonText: 'OK'
+					});
+					window.location.href = "<?= base_url('user/rack') ?>";
+				}
+			});
+		});
+	</script>
+
 
 </body>
 
