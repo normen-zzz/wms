@@ -163,7 +163,7 @@ class Inbound extends CI_Controller
 					return;
 			}
 
-			$update_status = $this->ReceivingInbound_model->update_status_picklist($id_picklist, 2);  
+			$update_status = $this->ReceivingInbound_model->update_status_picklist($id_picklist, 1);  
 
 			if ($update_status) {
 					$response = array('status' => 'success', 'message' => 'Inbound process has been successfully completed.');
