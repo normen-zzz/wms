@@ -57,7 +57,7 @@
 
 														<div class="mb-3">
 																<label for="status" class="form-label">Status</label>
-																<input type="text" class="form-control" id="status" value="<?= $pl[0]['status'] ?>" disabled>
+																<input type="text" class="form-control" id="status" value="<?= $pl[0]['status'] == 0 ? 'Created' : 'Done' ?>" disabled>
 														</div>
 
 														<div class="table-responsive">
