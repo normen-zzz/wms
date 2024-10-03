@@ -405,82 +405,149 @@
 		});
 
 		$('.print-sloc-barcode').click(function() {
-        const sloc = $(this).data('sloc'); 
-        const zone = $(this).data('zone'); 
-        const rack = $(this).data('rack'); 
-        const column_rack = $(this).data('column'); 
-        
-        const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(`SLOC:${sloc}`)}&size=150x150`; // Ensure SLOC is prefixed correctly
+			const sloc = $(this).data('sloc'); 
+			const zone = $(this).data('zone'); 
+			const rack = $(this).data('rack'); 
+			const column_rack = $(this).data('column'); 
+			
+			const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${(`${sloc}`)}&size=150x150`;
 
-        const qrCodeImage = new Image();
-        qrCodeImage.src = qrCodeUrl;
+			const qrCodeImage = new Image();
+			qrCodeImage.src = qrCodeUrl;
 
-        qrCodeImage.onload = function() {
-            const printWindow = window.open('', '_blank');
-            printWindow.document.write('<html><head><title>Print QR Code</title></head><body>');
-            printWindow.document.write(`<img src="${qrCodeImage.src}" alt="QR Code">`);
-            printWindow.document.write(`<p><strong>SLOC:</strong> ${sloc}, <strong>Zone:</strong> ${zone}, <strong>Rack:</strong> ${rack}, <strong>Column:</strong> ${column_rack}</p>`);
-            printWindow.document.write('</body></html>');
-            printWindow.document.close();
-            printWindow.print(); 
-        };
+			qrCodeImage.onload = function() {
+					const printWindow = window.open('', '_blank');
+					printWindow.document.write(`
+							<html>
+							<head>
+									<title>Print QR Code</title>
+									<style>
+											body, html {
+													height: 100%;
+													margin: 0;
+													display: flex;
+													justify-content: center;
+													align-items: center;
+													text-align: center;
+											}
+											.container {
+													display: flex;
+													flex-direction: column;
+													justify-content: center;
+													align-items: center;
+											}
+											img {
+													margin-bottom: 20px;
+											}
+									</style>
+							</head>
+							<body>
+									<div class="container">
+											<p><strong>SLOC:</strong> ${sloc}</p>
+											<img src="${qrCodeImage.src}" alt="QR Code">
+											<p><strong>Zone:</strong> ${zone}, <strong>Rack:</strong> ${rack}, <strong>Column:</strong> ${column_rack}</p>
+									</div>
+							</body>
+							</html>
+					`);
+					printWindow.document.close();
+					printWindow.print();
+			};
 
-        qrCodeImage.onerror = function() {
-            alert('Error generating QR code. Please check the SLOC value.');
-        };
-    });
+			qrCodeImage.onerror = function() {
+					alert('Error generating QR code. Please check the SLOC value.');
+			};
+	});
 
-		$('.print-sloc-barcode-items').click(function() {
-				const sloc = $(this).data('sloc'); 
+	$('.print-sloc-barcode-items').click(function() {
+			const sloc = $(this).data('sloc'); 
 
-				$.ajax({
-						url: 'user/rack/get_items_by_sloc',
-						method: 'POST',
-						data: { sloc: sloc },
-						dataType: 'json',  // Explicitly parse the response as JSON
-						success: function(response) {
-								console.log('Response:', response);  // For debugging
+			$.ajax({
+					url: 'user/rack/get_items_by_sloc',
+					method: 'POST',
+					data: { sloc: sloc },
+					dataType: 'json',  
+					success: function(response) {
+							console.log('Response:', response); 
 
-								if (response && response.status === 'success' && Array.isArray(response.items)) {
-										const itemsData = response.items; 
-										const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(`SLOC:${sloc}`)}&size=150x150`;
-										const qrCodeImage = new Image();
-										qrCodeImage.src = qrCodeUrl;
+							if (response && response.status === 'success' && Array.isArray(response.items)) {
+									const itemsData = response.items; 
+									const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(`${sloc}`)}&size=150x150`;
+									const qrCodeImage = new Image();
+									qrCodeImage.src = qrCodeUrl;
 
-										qrCodeImage.onload = function() {
-												const printWindow = window.open('', '_blank');
-												printWindow.document.write('<html><head><title>Print QR Code with Items</title></head><body>');
-												printWindow.document.write(`<img src="${qrCodeImage.src}" alt="QR Code">`);
-												printWindow.document.write(`<h3>SLOC: ${sloc}</h3>`);
+									qrCodeImage.onload = function() {
+											const printWindow = window.open('', '_blank');
+											printWindow.document.write(`
+													<html>
+															<head>
+																	<title>Print QR Code with Items</title>
+																	<style>
+																			body {
+																					display: flex;
+																					justify-content: center;
+																					align-items: center;
+																					height: 100vh;
+																					text-align: center;
+																					margin: 0;
+																			}
+																			.content {
+																					display: inline-block;
+																					text-align: center;
+																			}
+																			h3 {
+																					margin-top: 10px;
+																			}
+																			ul {
+																					list-style-type: none;
+																					padding: 0;
+																			}
+																			li {
+																					margin-bottom: 5px;
+																			}
+																	</style>
+															</head>
+															<body>
+																	<div class="content">
+																			<img src="${qrCodeImage.src}" alt="QR Code">
+																			<h3>SLOC: ${sloc}</h3>
+											`);
 
-												if (itemsData.length > 0) {
-														printWindow.document.write('<h3>Grouped Items:</h3><ul>');
-														itemsData.forEach(function(item) {
-																printWindow.document.write(`<li>SKU: ${item.sku}, Batch: ${item.batchnumber}, Total Quantity: ${item.total_quantity}</li>`);
-														});
-														printWindow.document.write('</ul>');
-												} else {
-														printWindow.document.write('<p>No items found for this SLOC.</p>');
-												}
-												printWindow.document.write('</body></html>');
-												printWindow.document.close();
-												printWindow.print();
-										};
+											if (itemsData.length > 0) {
+													printWindow.document.write('<h3>Grouped Items:</h3><ul>');
+													itemsData.forEach(function(item) {
+															printWindow.document.write(`<li>SKU: ${item.sku}, Batch: ${item.batchnumber}, Total Quantity: ${item.total_quantity}</li>`);
+													});
+													printWindow.document.write('</ul>');
+											} else {
+													printWindow.document.write('<p>No items found for this SLOC.</p>');
+											}
 
-										qrCodeImage.onerror = function() {
-												alert('Error generating QR code. Please check the SLOC value.');
-										};
-								} else {
-										console.error('Unexpected response format:', response);
-										alert('Unexpected response format. Please try again.');
-								}
-						},
-						error: function(jqXHR, textStatus, errorThrown) {
-								console.error('AJAX error:', textStatus, errorThrown);
-								alert('Error fetching item data. Please try again.');
-						}
-				});
-		});
+											printWindow.document.write(`
+																	</div>
+															</body>
+													</html>
+											`);
+
+											printWindow.document.close();
+											printWindow.print();
+									};
+
+									qrCodeImage.onerror = function() {
+											alert('Error generating QR code. Please check the SLOC value.');
+									};
+							} else {
+									console.error('Unexpected response format:', response);
+									alert('Unexpected response format. Please try again.');
+							}
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+							console.error('AJAX error:', textStatus, errorThrown);
+							alert('Error fetching item data. Please try again.');
+					}
+			});
+	});
+
 	</script>
 
 </body>
