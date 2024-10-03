@@ -65,6 +65,89 @@
 				font-weight: bold;
 				margin-right: 10px;
 			}
+
+			 ul.recommendations-list li {
+					flex-direction: column; 
+					align-items: flex-start; 
+					padding: 15px;
+			}
+
+			ul.recommendations-list li span {
+					font-weight: bold;
+					margin-bottom: 5px;
+			}
+
+			ul.recommendations-list li::before {
+					content: attr(data-label);
+					font-weight: bold;
+					display: block;
+					margin-bottom: 5px;
+			}
+
+			.no-recommendations {
+					text-align: center;
+					padding: 10px;
+			}
+		}
+
+		ul.recommendations-list {
+				list-style-type: none; 
+				padding: 0; 
+				margin: 0;
+		}
+
+		ul.recommendations-list li {
+				background-color: #f8f9fa; 
+				border: 1px solid #dee2e6; 
+				padding: 10px;
+				margin-bottom: 8px; 
+				border-radius: 4px; 
+				transition: background-color 0.3s ease; 
+		}
+
+		ul.recommendations-list li:hover {
+				background-color: #e2e6ea;
+				cursor: pointer; 
+		}
+
+		ul.recommendations-list li span {
+				font-weight: bold;
+		}
+
+		.no-recommendations {
+				color: #dc3545; 
+				font-style: italic; 
+		}
+
+		table#choosenRack {
+				width: 100%;
+				border-collapse: collapse;
+		}
+
+		table#choosenRack th, table#choosenRack td {
+				padding: 10px;
+				border: 1px solid #dee2e6; 
+				text-align: center;
+				vertical-align: middle;
+		}
+
+		table#choosenRack th {
+				background-color: #f8f9fa; 
+				font-weight: bold;
+		}
+
+		table#choosenRack .form-control {
+				width: 100%;
+				box-sizing: border-box;
+		}
+
+		table#choosenRack tfoot {
+				background-color: #fff;
+		}
+
+		table#choosenRack .add-row, table#choosenRack .remove-row {
+				margin: 5px;
+				transition: background-color 0.3s ease;
 		}
 	</style>
 </head>
@@ -140,25 +223,31 @@
 																	<div class="recommendations-list" style="display:none;"></div>
 																</td>
 																<td data-label="Chosen Rack">
-																	<table class="table mt-3" id="choosenRack">
-																		<thead>
-																			<tr>
-																				<th>Rack</th>
-																				<th>Quantity</th>
-																				<th>Action</th>
-																			</tr>
-																		</thead>
-																		<tbody>
-																			<tr>
-																				<td><input type="text" name="putaway_field[<?= $dtl['id_barang'] ?>][id_rack][]" class="form-control" placeholder="Enter Rack"></td>
-																				<td><input type="text" name="putaway_field[<?= $dtl['id_barang'] ?>][quantity][]" class="form-control" placeholder="Enter Quantity"></td>
-																				<td>
-																					<button type="button" class="btn btn-sm btn-primary add-row">Add Row</button>
-																					<button type="button" class="btn btn-sm btn-danger remove-row">Remove</button>
-																				</td>
-																			</tr>
-																		</tbody>
-																	</table>
+																		<table class="table mt-3" id="choosenRack">
+																				<thead>
+																						<tr>
+																								<th>Rack</th>
+																								<th>Quantity</th>
+																								<th>Action</th>
+																						</tr>
+																				</thead>
+																				<tbody>
+																						<tr>
+																								<td><input type="text" name="putaway_field[<?= $dtl['id_barang'] ?>][id_rack][]" class="form-control" placeholder="Enter Rack"></td>
+																								<td><input type="text" name="putaway_field[<?= $dtl['id_barang'] ?>][quantity][]" class="form-control" placeholder="Enter Quantity"></td>
+																								<td>
+																										<button type="button" class="btn btn-sm btn-danger remove-row">Remove</button>
+																								</td>
+																						</tr>
+																				</tbody>
+																				<tfoot>
+																						<tr>
+																								<td colspan="3" class="text-right">
+																										<button type="button" class="btn btn-sm btn-primary btn-block add-row">Add Row</button>
+																								</td>
+																						</tr>
+																				</tfoot>
+																		</table>
 																</td>
 																<td data-label="Action">
 																	<button type="button" class="btn btn-sm btn-primary submitPutawayData" data-id-barang="<?= $dtl['id_barang'] ?>" data-quantity="<?= $dtl['good_qty'] ?>" data-batch-id="<?= $dtl['batch_id'] ?>">
@@ -226,15 +315,15 @@
 					success: function(response) {
 						recommendationsList.empty();
 						if (response.length > 0) {
-							var ul = $('<ul>');
-							response.forEach(function(rack) {
-								var li = $('<li class="mt-2">').text('SLOC: ' + rack.sloc);
-								ul.append(li);
-							});
-							recommendationsList.append(ul);
-						} else {
-							recommendationsList.text('No recommendations available');
-						}
+									var ul = $('<ul class="recommendations-list">'); 
+									response.forEach(function(rack) {
+											var li = $('<li class="mt-2">').text('SLOC: ' + rack.sloc);
+											ul.append(li);
+									});
+									recommendationsList.append(ul);
+							} else {
+									recommendationsList.text('No recommendations available').addClass('no-recommendations'); 
+							}
 					}
 				});
 			});
@@ -315,22 +404,20 @@
 
 			});
 
-			$('#table').on('click', '.add-row', function() {
-				var id_barang = $(this).closest('tr').find('input').attr('name').match(/\[(.*?)\]/)[1]; // Ambil id_barang dari row
-
-				var row = '<tr>' +
-					'<td><input type="text" name="putaway_field[' + id_barang + '][id_rack][]" class="form-control" placeholder="Enter Rack"></td>' +
-					'<td><input type="text" name="putaway_field[' + id_barang + '][quantity][]" class="form-control quantity-input" placeholder="Enter Quantity"></td>' +
-					'<td><button type="button" class="btn btn-sm btn-primary add-row">Add Row</button></td>' +
-					'<td><button type="button" class="btn btn-sm btn-danger remove-row">Remove</button></td>' +
-					'</tr>';
-				$('#choosenRack tbody').append(row);
+			$(document).on('click', '.add-row', function() {
+					var id_barang = $('input[name^="putaway_field"]').attr('name').match(/\[(.*?)\]/)[1]; // Get id_barang
+					var newRow = '<tr>' +
+							'<td><input type="text" name="putaway_field[' + id_barang + '][id_rack][]" class="form-control" placeholder="Enter Rack"></td>' +
+							'<td><input type="text" name="putaway_field[' + id_barang + '][quantity][]" class="form-control" placeholder="Enter Quantity"></td>' +
+							'<td><button type="button" class="btn btn-sm btn-danger remove-row">Remove</button></td>' +
+							'</tr>';
+					$('#choosenRack tbody').append(newRow);
 			});
 
-			$('#table').on('click', '.remove-row', function() {
-				$(this).closest('tr').remove();
-				calculateTotalQuantity();
+			$(document).on('click', '.remove-row', function() {
+					$(this).closest('tr').remove();
 			});
+
 
 			$('#table').on('input', '.quantity-input', function() {
 				calculateTotalQuantity();

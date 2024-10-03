@@ -41,17 +41,32 @@ class Putaway_model extends CI_Model
 
 	public function get_rack_recommendations()
 	{
-		$this->db->select('r.id_rack, r.uuid, r.sloc, r.zone, r.rack, r.row, r.column_rack, r.max_qty, COALESCE(SUM(ri.quantity), 0) AS total_quantity, (r.max_qty - COALESCE(SUM(ri.quantity), 0)) AS available_space');
-		$this->db->from('rack r');
-		$this->db->join('rack_items ri', 'r.id_rack = ri.id_rack', 'left');
-		$this->db->where('r.is_deleted', 0);
-		$this->db->group_by('r.id_rack');
-		$this->db->having('available_space >', 0);
-		$this->db->order_by('available_space', 'DESC');
-		$this->db->limit(5);
-		
-		return $this->db->get()->result_array();
+			$this->db->select('r.id_rack, r.uuid, r.sloc, r.zone, r.rack, r.row, r.column_rack, r.max_qty, COALESCE(SUM(ri.quantity), 0) AS total_quantity, (r.max_qty - COALESCE(SUM(ri.quantity), 0)) AS available_space');
+			$this->db->from('rack r');
+			$this->db->join('rack_items ri', 'r.id_rack = ri.id_rack', 'left');
+			$this->db->where('r.is_deleted', 0);
+			$this->db->group_by('r.id_rack');
+			$this->db->having('total_quantity', 0);
+			$this->db->order_by('available_space', 'DESC');
+			$this->db->limit(5);
+			
+			return $this->db->get()->result_array();
 	}
+
+
+	// public function get_rack_recommendations()
+	// {
+	// 	$this->db->select('r.id_rack, r.uuid, r.sloc, r.zone, r.rack, r.row, r.column_rack, r.max_qty, COALESCE(SUM(ri.quantity), 0) AS total_quantity, (r.max_qty - COALESCE(SUM(ri.quantity), 0)) AS available_space');
+	// 	$this->db->from('rack r');
+	// 	$this->db->join('rack_items ri', 'r.id_rack = ri.id_rack', 'left');
+	// 	$this->db->where('r.is_deleted', 0);
+	// 	$this->db->group_by('r.id_rack');
+	// 	$this->db->having('available_space >', 0);
+	// 	$this->db->order_by('available_space', 'DESC');
+	// 	$this->db->limit(5);
+		
+	// 	return $this->db->get()->result_array();
+	// }
 
 	public function get_id_inbound($uuid)
 	{
