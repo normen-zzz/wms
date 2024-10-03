@@ -1,5 +1,10 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Reader\Csv;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ReaderXlsx;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class Barang extends CI_Controller
 {
@@ -52,30 +57,87 @@ class Barang extends CI_Controller
         }
     }
 
-	public function get_barang($id_barang) {
-		$barang = $this->barang->get_barang_by_id($id_barang);
-		echo json_encode($barang);
-	}
+    public function get_barang($id_barang)
+    {
+        $barang = $this->barang->get_barang_by_id($id_barang);
+        echo json_encode($barang);
+    }
 
-	public function update_barang() {
-		$id_barang = $this->input->post('id_barang');
-		$data = array(
-			'sku' => $this->input->post('sku'),
-			'nama_barang' => $this->input->post('nama_barang'),
-			'uom' => $this->input->post('uom')
-		);
-		
-		$this->barang->update_barang($id_barang, $data);
-		echo json_encode(['success' => true]);
-	}
+    public function update_barang()
+    {
+        $id_barang = $this->input->post('id_barang');
+        $data = array(
+            'sku' => $this->input->post('sku'),
+            'nama_barang' => $this->input->post('nama_barang'),
+            'uom' => $this->input->post('uom')
+        );
 
-	public function delete_barang($id_barang) {
-		$this->barang->delete_barang($id_barang);
-		echo json_encode(['success' => true]);
-	}
+        $this->barang->update_barang($id_barang, $data);
+        echo json_encode(['success' => true]);
+    }
+
+    public function delete_barang($id_barang)
+    {
+        $this->barang->delete_barang($id_barang);
+        echo json_encode(['success' => true]);
+    }
+
+    public function download_template() {
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setCellValue('A1', 'SKU');
+        $sheet->setCellValue('B1', 'Nama Barang');
+        $sheet->setCellValue('C1', 'UOM');
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'template_barang.xlsx';
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+        $writer->save('php://output');
+    }
+
+    // input to database from excel file template tanpa save file
+    public function import_barang() {
+        $this->load->library('excel');
+        $file = $_FILES['file']['name'];
+        $ext = pathinfo($file, PATHINFO_EXTENSION);
+        if ($ext == 'csv') {
+            $reader = new Csv();
+        } else {
+            $reader = new ReaderXlsx();
+        }
+        $reader->setReadDataOnly(true);
+        $spreadsheet = $reader->load($_FILES['file']['tmp_name']);
+        $sheetData = $spreadsheet->getActiveSheet()->toArray();
+        $data = [];
+        $this->load->library('uuid');
+        foreach ($sheetData as $key => $value) {
+            if ($key > 0) {
+                
+                $data[] = [
+                    'uuid' => uniqid(),
+                    'sku' => $value[0],
+                    'nama_barang' => $value[1],
+                    'uom' => $value[2],
+                    'is_deleted' => 0,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'created_by' => $this->session->userdata('id_users')
+                ];
+            }
+        }
+        $this->db->insert_batch('barang', $data);
+        $this->session->set_flashdata("message", "Toast.fire({icon: 'success',title: 'Success'})");
+        redirect(base_url('user/Barang'));
+    }
 
 
 
+
+
+
+    
+    
 }
 
 /* End of file User.php */

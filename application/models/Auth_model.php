@@ -9,6 +9,11 @@ class Auth_model extends CI_Model
 		return $this->db->get_where('users', ['email' => $this->input->post('email')])->row_array();
 	}
 
+	public function checkUsername()
+	{
+		return $this->db->get_where('users', ['username' => $this->input->post('username')])->row_array();
+	}
+
 	public function updatePassword($data)
 	{
 		$this->db->update('users', $data, ['id_users' => 1]);

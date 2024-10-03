@@ -59,6 +59,8 @@
 											<?= $subtitle2 ?>
 										</h5>
 										<button type="button" data-bs-toggle="modal" data-bs-target="#modalAddBarang" class="btn btn-primary">Add Barang</button>
+										<!-- btn modal add barang bulky with excel -->
+										<button type="button" data-bs-toggle="modal" data-bs-target="#modalAddBarangBulky" class="btn btn-primary">Add Barang Bulky</button>
 									</div>
 
 									<div class="card-body">
@@ -103,32 +105,26 @@
 				</div>
 			</div>
 
-			<!--login form Modal -->
-			<div class="modal fade text-left" id="modalAddBarang" tabindex="-1" role="dialog" aria-labelledby="modalAddBarang" aria-hidden="true">
+			<!-- Modal Add Barang Bulky -->
+			<div class="modal fade text-left" id="modalAddBarangBulky" tabindex="-1" role="dialog" aria-labelledby="modalAddBarangBulky" aria-hidden="true">
 				<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h4 class="modal-title" id="myModalLabel33">Add Barang Form</h4>
+							<h4 class="modal-title" id="myModalLabel33">Add Barang Bulky Form</h4>
+							<!-- button download template  -->
+							<a href="<?= base_url('user/Barang/download_template') ?>" class="btn btn-primary">Download Template</a>
 							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
 								<i data-feather="x"></i>
 							</button>
+							
 						</div>
-						<form action="<?= base_url('user/Barang') ?>" method="POST">
+						<form action="<?= base_url('user/Barang/import_barang') ?>" method="POST" enctype="multipart/form-data">
 							<div class="modal-body">
-								<label for="sku">Sku</label>
+								<label for="file">File</label>
 								<div class="form-group">
-									<input id="sku" type="text" placeholder="Sku" name="sku" class="form-control">
+									
+									<input id="file" type="file" name="file" class="form-control" accept=".xls,.xlsx">
 								</div>
-								<label for="name">Name</label>
-								<div class="form-group">
-									<input id="name" type="text" placeholder="Name" name="name" class="form-control">
-								</div>
-
-								<label for="uom">Uom</label>
-								<div class="form-group">
-									<input id="uom" type="text" placeholder="Uom" name="uom" class="form-control">
-								</div>
-
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
@@ -144,170 +140,211 @@
 				</div>
 			</div>
 
-			<!-- ediot barang -->
-			<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
-				<div class="modal-dialog" role="document">
-					<div class="modal-content">
-						<form id="editForm">
+				<!--login form Modal -->
+				<div class="modal fade text-left" id="modalAddBarang" tabindex="-1" role="dialog" aria-labelledby="modalAddBarang" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+						<div class="modal-content">
 							<div class="modal-header">
-								<h5 class="modal-title" id="editModalLabel">Edit Barang</h5>
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-									<span aria-hidden="true">&times;</span>
+								<h4 class="modal-title" id="myModalLabel33">Add Barang Form</h4>
+								<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+									<i data-feather="x"></i>
 								</button>
 							</div>
-							<div class="modal-body">
-								<input type="hidden" id="editId" name="id_barang">
-								<div class="form-group">
-									<label for="sku">SKU</label>
-									<input type="text" class="form-control" id="editSku" name="sku" required>
+							<form action="<?= base_url('user/Barang') ?>" method="POST">
+								<div class="modal-body">
+									<label for="sku">Sku</label>
+									<div class="form-group">
+										<input id="sku" type="text" placeholder="Sku" name="sku" class="form-control">
+									</div>
+									<label for="name">Name</label>
+									<div class="form-group">
+										<input id="name" type="text" placeholder="Name" name="name" class="form-control">
+									</div>
+
+									<label for="uom">Uom</label>
+									<div class="form-group">
+										<input id="uom" type="text" placeholder="Uom" name="uom" class="form-control">
+									</div>
+
 								</div>
-								<div class="form-group">
-									<label for="nama_barang">Nama Barang</label>
-									<input type="text" class="form-control" id="editNamaBarang" name="nama_barang" required>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+
+										Close
+									</button>
+									<button type="submit" class="btn btn-primary ms-1">
+										Submit
+									</button>
 								</div>
-								<div class="form-group">
-									<label for="uom">UOM</label>
-									<input type="text" class="form-control" id="editUom" name="uom" required>
-								</div>
-							</div>
-							<div class="modal-footer">
-								<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-								<button type="submit" class="btn btn-primary">Save changes</button>
-							</div>
-						</form>
+							</form>
+						</div>
 					</div>
 				</div>
+
+				<!-- ediot barang -->
+				<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<form id="editForm">
+								<div class="modal-header">
+									<h5 class="modal-title" id="editModalLabel">Edit Barang</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<input type="hidden" id="editId" name="id_barang">
+									<div class="form-group">
+										<label for="sku">SKU</label>
+										<input type="text" class="form-control" id="editSku" name="sku" required>
+									</div>
+									<div class="form-group">
+										<label for="nama_barang">Nama Barang</label>
+										<input type="text" class="form-control" id="editNamaBarang" name="nama_barang" required>
+									</div>
+									<div class="form-group">
+										<label for="uom">UOM</label>
+										<input type="text" class="form-control" id="editUom" name="uom" required>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+									<button type="submit" class="btn btn-primary">Save changes</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+
+
+
+				<?php $this->load->view('templates/footer') ?>
 			</div>
-
-
-
-			<?php $this->load->view('templates/footer') ?>
 		</div>
-	</div>
 
 
 
-	<script src="<?= base_url() . '/' ?>assets/static/js/components/dark.js"></script>
-	<script src="<?= base_url() . '/' ?>assets/static/js/pages/horizontal-layout.js"></script>
-	<script src="<?= base_url() . '/' ?>assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+		<script src="<?= base_url() . '/' ?>assets/static/js/components/dark.js"></script>
+		<script src="<?= base_url() . '/' ?>assets/static/js/pages/horizontal-layout.js"></script>
+		<script src="<?= base_url() . '/' ?>assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 
-	<script src="<?= base_url() . '/' ?>assets/compiled/js/app.js"></script>
-	<script src="<?= base_url() . '/' ?>assets/extensions/jquery/jquery.min.js"></script>
-	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
-	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
-	<script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
-	<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
+		<script src="<?= base_url() . '/' ?>assets/compiled/js/app.js"></script>
+		<script src="<?= base_url() . '/' ?>assets/extensions/jquery/jquery.min.js"></script>
+		<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
+		<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
+		<script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
+		<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
 
-	<script>
-		$('body').on('click', 'button[type="submit"]', function() {
-			var button = $(this);
-			setTimeout(function() {
-				button.prop('disabled', true);
-				Swal.fire({
-					title: 'Processing...',
-					text: 'Please wait while we process your request.',
-					icon: 'info',
-					timer: 10000,
-					timerProgressBar: true,
-					showConfirmButton: false
-				});
+		<script>
+			$('body').on('click', 'button[type="submit"]', function() {
+				var button = $(this);
 				setTimeout(function() {
-					button.prop('disabled', false);
+					button.prop('disabled', true);
 					Swal.fire({
-						title: 'Success!',
-						text: 'Your request has been processed successfully.',
-						icon: 'success',
-						confirmButtonText: 'OK'
+						title: 'Processing...',
+						text: 'Please wait while we process your request.',
+						icon: 'info',
+						timer: 10000,
+						timerProgressBar: true,
+						showConfirmButton: false
 					});
-				}, 10000);
+					setTimeout(function() {
+						button.prop('disabled', false);
+						Swal.fire({
+							title: 'Success!',
+							text: 'Your request has been processed successfully.',
+							icon: 'success',
+							confirmButtonText: 'OK'
+						});
+					}, 10000);
+				});
 			});
-		});
 
-		$('.edit-btn').click(function() {
-			var id = $(this).data('id_barang');
+			$('.edit-btn').click(function() {
+				var id = $(this).data('id_barang');
 
-			$.ajax({
-				url: '<?= base_url("barang/get_barang") ?>/' + id,
-				type: 'GET',
-				dataType: 'json',
-				success: function(data) {
-					$('#editId').val(data.id_barang);
-					$('#editSku').val(data.sku);
-					$('#editNamaBarang').val(data.nama_barang);
-					$('#editUom').val(data.uom);
-					$('#editModal').modal('show');
-				}
+				$.ajax({
+					url: '<?= base_url("barang/get_barang") ?>/' + id,
+					type: 'GET',
+					dataType: 'json',
+					success: function(data) {
+						$('#editId').val(data.id_barang);
+						$('#editSku').val(data.sku);
+						$('#editNamaBarang').val(data.nama_barang);
+						$('#editUom').val(data.uom);
+						$('#editModal').modal('show');
+					}
+				});
 			});
-		});
 
-		$('#editForm').submit(function(e) {
-			e.preventDefault();
+			$('#editForm').submit(function(e) {
+				e.preventDefault();
 
-			$.ajax({
-				url: '<?= base_url("barang/update_barang") ?>',
-				type: 'POST',
-				data: $(this).serialize(),
-				success: function(response) {
-					$('#editModal').modal('hide');
-					Swal.fire({
-						title: 'Success!',
-						text: 'Data barang berhasil diupdate!',
-						icon: 'success',
-						confirmButtonText: 'OK'
-					}).then((result) => {
-						if (result.isConfirmed) {
-							location.reload();
-						}
-					});
-				},
-				error: function(xhr) {
-					alert("An error occurred.");
-				}
+				$.ajax({
+					url: '<?= base_url("barang/update_barang") ?>',
+					type: 'POST',
+					data: $(this).serialize(),
+					success: function(response) {
+						$('#editModal').modal('hide');
+						Swal.fire({
+							title: 'Success!',
+							text: 'Data barang berhasil diupdate!',
+							icon: 'success',
+							confirmButtonText: 'OK'
+						}).then((result) => {
+							if (result.isConfirmed) {
+								location.reload();
+							}
+						});
+					},
+					error: function(xhr) {
+						alert("An error occurred.");
+					}
+				});
 			});
-		});
 
-		$('.delete-btn').click(function() {
-			var id = $(this).data('id_barang');
+			$('.delete-btn').click(function() {
+				var id = $(this).data('id_barang');
 
-			Swal.fire({
-				title: 'Are you sure?',
-				text: "You won't be able to revert this!",
-				icon: 'warning',
-				showCancelButton: true,
-				confirmButtonColor: '#3085d6',
-				cancelButtonColor: '#d33',
-				confirmButtonText: 'Yes, delete it!',
-				cancelButtonText: 'Cancel'
-			}).then((result) => {
-				if (result.isConfirmed) {
-					$.ajax({
-						url: '<?= base_url("barang/delete_barang") ?>/' + id,
-						type: 'POST',
-						success: function(response) {
-							Swal.fire({
-								title: 'Deleted!',
-								text: 'Data barang berhasil dihapus!',
-								icon: 'success',
-								confirmButtonText: 'OK'
-							}).then((result) => {
-								if (result.isConfirmed) {
-									location.reload();
-								}
-							});
-						},
-						error: function(xhr) {
-							Swal.fire({
-								title: 'Error!',
-								text: 'An error occurred while deleting the item.',
-								icon: 'error',
-								confirmButtonText: 'OK'
-							});
-						}
-					});
-				}
+				Swal.fire({
+					title: 'Are you sure?',
+					text: "You won't be able to revert this!",
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonColor: '#3085d6',
+					cancelButtonColor: '#d33',
+					confirmButtonText: 'Yes, delete it!',
+					cancelButtonText: 'Cancel'
+				}).then((result) => {
+					if (result.isConfirmed) {
+						$.ajax({
+							url: '<?= base_url("barang/delete_barang") ?>/' + id,
+							type: 'POST',
+							success: function(response) {
+								Swal.fire({
+									title: 'Deleted!',
+									text: 'Data barang berhasil dihapus!',
+									icon: 'success',
+									confirmButtonText: 'OK'
+								}).then((result) => {
+									if (result.isConfirmed) {
+										location.reload();
+									}
+								});
+							},
+							error: function(xhr) {
+								Swal.fire({
+									title: 'Error!',
+									text: 'An error occurred while deleting the item.',
+									icon: 'error',
+									confirmButtonText: 'OK'
+								});
+							}
+						});
+					}
+				});
 			});
-		});
-	</script>
+		</script>
 
 
 </body>

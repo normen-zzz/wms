@@ -8,6 +8,8 @@ class User_model extends CI_Model
 		$this->db->select('users.*, roles.name as role_name');
 		$this->db->from('users');
 		$this->db->join('roles', 'users.role_id = roles.id');
+        // where 
+        $this->db->where('users.role_id !=', 1);
 		return $this->db->get()->result();
     }
 

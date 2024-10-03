@@ -30,7 +30,7 @@
 
                     <form action="<?= base_url('auth') ?>" method="post">
                         <div class="form-group position-relative has-icon-left mb-4">
-                        <input class="form-control" name="email" type="text" required="" placeholder="Email">
+                        <input class="form-control" name="username" type="text" required="" placeholder="username">
                             <div class="form-control-icon">
                                 <i class="bi bi-person"></i>
                             </div>
