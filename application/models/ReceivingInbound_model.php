@@ -26,12 +26,11 @@ class ReceivingInbound_model extends CI_Model
 	public function get_detils_inbound($uuid)
 	{
 			$id_picklist = $this->db->query('SELECT id_picklist FROM picklist WHERE uuid = "' . $uuid . '" ')->row_array();
-			$this->db->select('sku, nama_barang, a.id_barang, batch, a.expiration_date, a.qty, data_inbound.received_qty, data_inbound.good_qty, data_inbound.bad_qty');
+			$this->db->select('sku, nama_barang, a.id_barang, batch, a.expiration_date, a.qty, data_inbound.received_qty, data_inbound.good_qty, data_inbound.bad_qty, data_inbound.batch_id, data_inbound.status_row');
 			$this->db->from('datapicklist a');
 			$this->db->join('barang b', 'a.id_barang = b.id_barang');
 			$this->db->join('data_inbound', 'a.id_barang = data_inbound.id_barang AND a.batch = data_inbound.batch_id', 'left');
 			$this->db->where('a.id_picklist', $id_picklist['id_picklist']);
-			$this->db->where('(data_inbound.status_row = 0 OR data_inbound.status_row IS NULL)');
 
 			return $this->db->get()->result_array();
 	}

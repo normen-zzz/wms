@@ -22,22 +22,22 @@ class Putaway_model extends CI_Model
 
 	public function get_putaway_details($uuid)
 	{
-		$this->db->select('putaway.*, users.nama as user_name, ib.no_inbound, ib.batch_id, ib.good_qty, barang.id_barang, barang.nama_barang, barang.sku');
-		$this->db->from('putaway');
-		$this->db->join('users', 'putaway.id_users = users.id_users', 'left');
-		$this->db->join('inbound ib', 'putaway.id_inbound = ib.id_inbound', 'left');
-		$this->db->join('barang', 'ib.id_barang = barang.id_barang', 'left');
-		$this->db->where('putaway.uuid', $uuid);
-		$this->db->order_by('putaway.created_at', 'DESC');
+			$this->db->select('putaway.*, users.nama as user_name, di.no_inbound, ib.batch_id, ib.good_qty, barang.id_barang, barang.nama_barang, barang.sku');
+			$this->db->from('putaway');
+			$this->db->join('users', 'putaway.id_users = users.id_users', 'left');
+			$this->db->join('data_inbound ib', 'putaway.id_inbound = ib.id_inbound', 'left');
+			$this->db->join('inbound di', 'ib.id_inbound = di.id_inbound', 'left');
+			$this->db->join('barang', 'ib.id_barang = barang.id_barang', 'left');
+			$this->db->where('putaway.uuid', $uuid);
+			$this->db->order_by('putaway.created_at', 'DESC');
+			$result = $this->db->get()->result_array();
+			foreach ($result as &$item) {
+					$item['existing_racks'] = $this->get_existing_racks($item['id_barang'], $item['batch_id']);
+			}
 
-		$result = $this->db->get()->result_array();
-
-		foreach ($result as &$item) {
-			$item['existing_racks'] = $this->get_existing_racks($item['id_barang'], $item['batch_id']);
-		}
-
-		return $result;
+			return $result;
 	}
+
 
 	public function get_rack_recommendations()
 	{
@@ -136,7 +136,7 @@ class Putaway_model extends CI_Model
 	{
 		$this->db->select('id_users, nama');
 		$this->db->from('users');
-		$this->db->where('role_id', 5);
+		$this->db->where('role_id', 4);
 		return $this->db->get()->result_array();
 	}
 

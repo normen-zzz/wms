@@ -71,6 +71,7 @@ class Putaway extends CI_Controller
 		// $putaway_details = $this->Putaway_model->get_putaway_details($uuid);
 		// $inbound = $this->Putaway_model->get_id_inbound($uuid);
 		$data_putaway = $this->Putaway_model->get_putaway_details($uuid);
+		// var_dump($data_putaway);exit;
 
 		$data = [
 			'title' => 'Putaway',

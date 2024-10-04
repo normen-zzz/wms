@@ -71,25 +71,27 @@
 													</thead>
 													<tbody>
 														<?php foreach ($detailPl as $dtl) { ?>
-															<tr>
-																<td><?= $dtl['sku'] ?></td>
-																<td><?= $dtl['nama_barang'] ?></td>
-																<td><?= getBatchById($dtl['batch'])  ?></td>
-																<td><?= $dtl['expiration_date'] ?></td>
-																<td><?= $dtl['qty'] ?></td>
-																<td>
-																	<input type="number" name="good_qty[]" class="form-control good_qty" required>
-																</td>
-																<td>
-																	<input type="number" name="bad_qty[]" class="form-control bad_qty" required>
-																</td>
-																<td>
-																	<button type="button" class="btn btn-sm btn-primary submit-row">Submit Row</button>
-																</td>
-																<input type="hidden" name="sku[]" value="<?= $dtl['sku'] ?>" class="sku">
-																<input type="hidden" name="batch_id[]" value="<?= $dtl['batch'] ?>" class="batch_id">
-																<input type="hidden" name="id_barang[]" value="<?= $dtl['id_barang'] ?>" class="id_barang">
-															</tr>
+															<?php if ($dtl['status_row'] == 0) { ?>
+																<tr>
+																	<td><?= $dtl['sku'] ?></td>
+																	<td><?= $dtl['nama_barang'] ?></td>
+																	<td><?= getBatchById($dtl['batch']) ?></td>
+																	<td><?= $dtl['expiration_date'] ?></td>
+																	<td><?= $dtl['qty'] ?></td>
+																	<td>
+																		<input type="number" name="good_qty[]" class="form-control good_qty" required>
+																	</td>
+																	<td>
+																		<input type="number" name="bad_qty[]" class="form-control bad_qty" required>
+																	</td>
+																	<td>
+																		<button type="button" class="btn btn-sm btn-primary submit-row">Submit Row</button>
+																	</td>
+																	<input type="hidden" name="sku[]" value="<?= $dtl['sku'] ?>" class="sku">
+																	<input type="hidden" name="batch_id[]" value="<?= $dtl['batch'] ?>" class="batch_id">
+																	<input type="hidden" name="id_barang[]" value="<?= $dtl['id_barang'] ?>" class="id_barang">
+																</tr>
+															<?php } ?>
 														<?php } ?>
 													</tbody>
 												</table>
@@ -202,7 +204,9 @@
 										data: { id_picklist: $('input[name="id_picklist"]').val() },
 										success: function(response) {
 												Swal.fire('Finished!', response.message, 'success');
-												redirectTo('<?= base_url('user/inbound') ?>');
+											 	if (result.isConfirmed) {
+														window.location.href = '<?= base_url('user/inbound') ?>';
+												}
 										},
 										error: function() {
 												Swal.fire('Error', 'Something went wrong.', 'error');
