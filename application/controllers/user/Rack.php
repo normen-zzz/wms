@@ -130,64 +130,58 @@ class Rack extends CI_Controller
 		}
 	}
 
-	
+
 
 	// input to database from excel file template tanpa save file
-    public function import_rack()
-    {
-		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-			// Check for expected form fields
-			if (isset($_POST['field_name'])) {
-				// Process the form data
-			} else {
-				// Handle missing form field
-				echo 'Error: Missing form field';
-			}
-		} else {
-			echo 'Invalid request method';
-		}
-		
+	public function import_rack()
+	{
 
-        $file = $_FILES['file']['name'];
-        $ext = pathinfo($file, PATHINFO_EXTENSION);
-        if ($ext == 'csv') {
-            $reader = new Csv();
-        } else {
-            $reader = new ReaderXlsx();
-        }
-        $reader->setReadDataOnly(true);
-        $spreadsheet = $reader->load($_FILES['file']['tmp_name']);
-        $sheetData = $spreadsheet->getActiveSheet()->toArray();
-        $data = [];
-        $this->load->library('uuid');
-        foreach ($sheetData as $key => $value) {
-            if ($key > 0) {
-                $checkSloc = $this->db->query('SELECT sloc FROM rack WHERE sloc = "' . $data[0] . '" ');
-                if ($checkSloc->num_rows() == 0) {
-                    $data[] = [
-                        'sloc' => $data[0],
-					'zone' => $data[1],
-					'rack' => $data[2],
-					'row' => $data[3],
-					'column_rack' => $data[4],
-					'max_qty' => $data[5],
-					'uom' => $data[6],
-					'created_at' => date('Y-m-d H:i:s'),
-					'created_by' => $this->session->userdata('id_users'),
-                    ];
-                }
-            }
-        }
-        $insert_data = $this->db->insert_batch('rack', $data);
-        if ($insert_data) {
-            echo json_encode(['success' => true]);
-        } else {
-            echo json_encode(['error' => true]);
-        }
-    }
-	
-	
-	
+
+
+		$file = $_FILES['rackBulky'];
+		$ext = pathinfo($file['tmp_name'], PATHINFO_EXTENSION);
+		if ($ext == 'csv') {
+			$reader = new Csv();
+		} else {
+			$reader = new ReaderXlsx();
+		}
+		$reader->setReadDataOnly(true);
+		$spreadsheet = $reader->load($file['tmp_name']);
+		$sheetData = $spreadsheet->getActiveSheet()->toArray();
+		$data = [];
+		$this->load->library('uuid');
+		foreach ($sheetData as $key => $value) {
+			if ($key > 0) {
+				$checkSloc = $this->db->query('SELECT sloc FROM rack WHERE sloc = "' . $value[0] . '" ');
+				if ($checkSloc->num_rows() == 0) {
+					$data[] = [
+						'uuid' => uniqid(),
+						'sloc' => $value[0],
+						'zone' => $value[1],
+						'rack' => $value[2],
+						'row' => $value[3],
+						'column_rack' => $value[4],
+						'max_qty' => $value[5],
+						'uom' => $value[6],
+						'created_at' => date('Y-m-d H:i:s'),
+						'created_by' => $this->session->userdata('id_users'),
+						'is_deleted' =>  0,
+						'status' => 0
+						
+					];
+				}
+			}
+		}
+		$insert_data = $this->db->insert_batch('rack', $data);
+		if ($insert_data) {
+			echo json_encode(['success' => true]);
+		} else {
+			echo json_encode(['error' => true]);
+		}
+	}
+
+
+
 	public function download_template()
 	{
 

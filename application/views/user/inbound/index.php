@@ -55,10 +55,7 @@
 																<tr>
 																		<th>No Inbound</th>
 																		<th>No PL</th>
-																		<th>Batch</th>
-																		<th>Received QTY</th>
-																		<th>Goods</th>
-																		<th>Damage</th>
+																		
 																		<th>Created At</th>
 																		<th>Status</th>
 																		<th>Action</th>
@@ -70,10 +67,7 @@
 																				<tr>
 																						<td><?= $inbound->no_inbound ?></td>
 																						<td><?= $inbound->no_picklist ?></td>
-																						<td><?= $inbound->batch_id ?></td>
-																						<td><?= $inbound->received_qty ?></td>
-																						<td><?= $inbound->good_qty ?></td>
-																						<td><?= $inbound->bad_qty ?></td>
+																						
 																						<td><?= date('Y-m-d H:i:s', strtotime($inbound->created_at)) ?></td>
 																						<td><?= getStatusInbound($inbound->status) ?></td>
 																						<td>

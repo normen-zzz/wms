@@ -25,6 +25,7 @@ class Putaway extends CI_Controller
 	public function assign($uuid)
 	{
 		$inbound = $this->db->get_where('inbound', ['uuid' => $uuid])->row();
+		$inbound_details = $this->Putaway_model->getDataInbound($uuid);
 
 		$data = [
 			'title' => 'Putaway',
@@ -32,6 +33,7 @@ class Putaway extends CI_Controller
 			'subtitle2' => 'Assign Putaway',
 			'putaway_users' => $this->Putaway_model->get_all_user_putaways(),
 			'get_id_inbound' => $inbound,
+			'inbound_details' => $inbound_details
 		];
 
 		// var_dump($data);exit;

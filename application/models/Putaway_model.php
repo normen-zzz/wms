@@ -171,4 +171,19 @@ class Putaway_model extends CI_Model
 
 		return !empty($result) ? $result : [];
 	}
+	public function getDataInbound($uuid) {
+		//from data_inbound where uuid on join inbound,join barang,batch
+		$this->db->select('data_inbound.good_qty,data_inbound.bad_qty,data_inbound.received_qty,inbound.no_inbound, barang.sku, barang.nama_barang, batch.batchnumber');
+		$this->db->from('data_inbound');
+		$this->db->join('inbound', 'inbound.id_inbound = data_inbound.id_inbound');
+		$this->db->join('barang', 'barang.id_barang = data_inbound.id_barang');
+		$this->db->join('batch', 'batch.id_batch = data_inbound.batch_id');
+		$this->db->where('inbound.uuid', $uuid);
+		$query = $this->db->get();
+		return $query;
+	   
+   
+			
+	   
+	 }
 }

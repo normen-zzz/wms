@@ -501,8 +501,13 @@
 															<head>
 																	<title>Print QR Code with Items</title>
 																	<style>
+																	@media print {
+                        @page {
+                            size: portrait; 
+                        }
+                    }
 																			body {
-																					display: flex;
+																					
 																					justify-content: center;
 																					align-items: center;
 																					height: 100vh;
@@ -523,6 +528,7 @@
 																			}
 																			li {
 																					margin-bottom: 5px;
+																					text-align: left;
 																			}
 																	</style>
 															</head>
@@ -530,12 +536,33 @@
 																	<div class="content">
 																			<h3>SLOC: ${sloc}</h3>
 																			<img src="${qrCodeImage.src}" alt="QR Code" class="mb-5">
+																			<table border="1" style="width: 100%; border-collapse: collapse;margin-top:5px">
+																			<tr>
+																					<th>SKU</th>
+																					<th>Batch</th>
+																					<th>Total Quantity</th>
+																			</tr>
 																			`);
 							if (itemsData.length > 0) {
 								itemsData.forEach(function(item) {
-									printWindow.document.write(`<li>SKU: ${item.sku}, Batch: ${item.batchnumber}, Total Quantity: ${item.total_quantity}</li>`);
+									//pakai table
+									printWindow.document.write(`
+																	
+																			<tr>
+																					<td>${item.sku}</td>
+																					<td>${item.batchnumber}</td>
+																					<td>${item.total_quantity}</td>
+																			</tr>
+																	
+																	`);
+
+									// printWindow.document.write(`<li>SKU: ${item.sku}, Batch: ${item.batchnumber}, Total Quantity: ${item.total_quantity}</li>`);
+									
+
+
+
 								});
-								printWindow.document.write('</ul>');
+								printWindow.document.write('</table></ul>');
 							} else {
 								printWindow.document.write('<p>No items found for this SLOC.</p>');
 							}

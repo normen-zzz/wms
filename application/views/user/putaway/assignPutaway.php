@@ -51,6 +51,42 @@
 									</div>
 
 									<div class="card-body">
+										<div class="table-responsive mt-4">
+											<table class="table" id="inboundDetailsTable">
+												<thead>
+													<tr>
+														<th>No Inbound</th>
+														<th>SKU</th>
+														<th>Nama Barang</th>
+														<th>Batch</th>
+														<th>Good</th>
+														<th>Bad</th>
+														<!-- <th>Expiration Date</th> -->
+														<th>Qty</th>
+													</tr>
+												</thead>
+												<tbody>
+													<?php if (!empty($inbound_details)) { ?>
+														<?php foreach ($inbound_details->result_array() as $detail) { ?>
+															<tr>
+																<td><?= $detail['no_inbound'] ?></td>
+																<td><?= $detail['sku'] ?></td>
+																<td><?= $detail['nama_barang'] ?></td>
+																<td><?= $detail['batchnumber'] ?></td>
+																<td><?= $detail['good_qty'] ?></td>
+																<td><?= $detail['bad_qty'] ?></td>
+																<!-- <td><?= $detail['expiration_date'] ?></td> -->
+																<td><?= $detail['received_qty'] ?></td>
+															</tr>
+														<?php } ?>
+													<?php } else { ?>
+														<tr>
+															<td colspan="8">No details available</td>
+														</tr>
+													<?php } ?>
+												</tbody>
+											</table>
+										</div>
 										<form method="POST" action="<?= base_url('user/putaway/assign_putaway') ?>">
 											<label for="assign_user">Assign Putaway to:</label>
 											<select name="assign_user" id="assign_user" class="form-control">
