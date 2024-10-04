@@ -182,9 +182,22 @@ class Putaway_model extends CI_Model
 		$this->db->where('inbound.uuid', $uuid);
 		$query = $this->db->get();
 		return $query;
-	   
-   
-			
-	   
 	 }
+
+	public function get_inbound_items_by_putaway($id_putaway)
+	{
+			$this->db->select('*'); 
+			$this->db->from('putaway');  
+			$this->db->where('id_putaway', $id_putaway);
+			$query = $this->db->get();
+
+
+			return $query->result_array(); 
+	}
+
+	public function update_status_picklist($id_putaway, $status)
+	{
+		$this->db->where('id_putaway', $id_putaway);
+		$this->db->update('putaway', ['status' => $status]);
+	}
 }

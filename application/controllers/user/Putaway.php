@@ -113,7 +113,7 @@ class Putaway extends CI_Controller
 			echo json_encode(['success' => false, 'message' => 'Failed to assign rack']);
 		}
 	}
-	
+
 	public function create_putaway()
 	{
 		$putaway_data = json_decode(file_get_contents('php://input'), true);
@@ -182,19 +182,28 @@ class Putaway extends CI_Controller
 		}
 	}
 
-
-	public function finish_putaway()
+	public function finishPutaway()
 	{
-			$this->db->where('status', 1);
-			$this->db->update('dataputaway', ['status' => 2]); 
+			$id_putaway = $this->input->post('id_putaway');
 
-			if ($this->db->affected_rows() > 0) {
-					echo json_encode(['status' => 'success', 'message' => 'Putaway completed.']);
-			} else {
-					echo json_encode(['status' => 'error', 'message' => 'No putaway records found to update.']);
+			$inboundItems = $this->Putaway_model->get_inbound_items_by_putaway($id_putaway);
+			if (empty($inboundItems)) {
+					$response = array('status' => 'error', 'message' => 'No inbound items found for this picklist.');
+					echo json_encode($response);
+					return;
 			}
-	}
 
+			$update_status = $this->Putaway_model->update_status_putaway($id_putaway, 1);  
+			// $update_status_row = $this->ReceivingInbound_model->update_status_row($id_putaway, 1);
+
+			if ($update_status) {
+					$response = array('status' => 'success', 'message' => 'Putaway process has been successfully completed.');
+			} else {
+					$response = array('status' => 'error', 'message' => 'Failed to update the picklist status.');
+			}
+
+			echo json_encode($response);
+	}
 
 	public function detail($uuid)
 	{

@@ -408,37 +408,33 @@
 				});
 		});
 
-		$('#finishPutaway').on('click', function() {
-					Swal.fire({
-							title: 'Are you sure?',
-							text: "You are about to finish the putaway process!",
-							icon: 'warning',
-							showCancelButton: true,
-							confirmButtonText: 'Yes, finish it!'
-					}).then((result) => {
-							if (result.isConfirmed) {
-									$.ajax({
-											url: '<?= site_url('user/putaway/finish_putaway') ?>',
-											type: 'POST',
-											success: function(response) {
-													Swal.fire({
-															icon: 'success',
-															title: 'Putaway Completed!',
-															text: 'The putaway process has been finished successfully.'
-													});
-													// You could redirect or update the status of all rows to 'done'
-													$('tbody').empty(); // Clear all rows
-											},
-											error: function(xhr, status, error) {
-													Swal.fire({
-															icon: 'error',
-															title: 'Oops...',
-															text: 'There was a problem finishing the putaway. Please try again.'
-													});
-											}
-									});
-							}
-					});
+		$('#finishPutaway').on('click', function(e) {
+				e.preventDefault(); 
+
+				Swal.fire({
+						title: 'Are you sure?',
+						text: "This will finish the putaway process.",
+						icon: 'warning',
+						showCancelButton: true,
+						confirmButtonText: 'Yes, finish it!'
+				}).then((result) => {
+						if (result.isConfirmed) {
+								$.ajax({
+										url: "<?= base_url('user/putaway/finishPutaway') ?>",
+										type: "POST",
+										data: { id_picklist: $('input[name="id_putaway"]').val() },
+										success: function(response) {
+												Swal.fire('Finished!', response.message, 'success');
+											 	if (result.isConfirmed) {
+														window.location.href = '<?= base_url('user/putaway') ?>';
+												}
+										},
+										error: function() {
+												Swal.fire('Error', 'Something went wrong.', 'error');
+										}
+								});
+						}
+				});
 			});
 
 
