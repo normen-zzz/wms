@@ -58,6 +58,8 @@
 													<option value="<?= $user['id_users'] ?>"><?= $user['nama'] ?></option>
 												<?php endforeach; ?>
 											</select>
+											<!-- id inbound -->
+											<input type="hidden" name="id_inbound" value="<?= $get_id_inbound->id_inbound ?>">
 											<input type="submit" class="btn btn-primary mt-5" value="Assign">
 										</form>
 									</div>

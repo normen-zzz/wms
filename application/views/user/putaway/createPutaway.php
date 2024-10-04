@@ -205,16 +205,16 @@
 															<tr>
 																<td data-label="SKU"><?= $dtl['sku'] ?></td>
 																<td data-label="Nama Barang"><?= $dtl['nama_barang'] ?></td>
-																<td data-label="Batch"><?= getBatchById($dtl['batch_id']) ?></td>
+																<td data-label="Batch"><?= $dtl['batchnumber'] ?></td> <!-- Display batchnumber -->
 																<td data-label="Qty (Good)"><?= $dtl['good_qty'] ?></td>
 																<td data-label="Existing Rack">
-																	<?php if (!empty($dtl['existing_racks'])) : ?>
-																		<?php foreach ($dtl['existing_racks'] as $rack) : ?>
-																			<p>SLOC: <?= $rack['sloc'] ?></p>
-																		<?php endforeach; ?>
-																	<?php else : ?>
-																		<p>Not assigned</p>
-																	<?php endif; ?>
+																		<?php if (!empty($dtl['existing_racks'])) : ?>
+																				<?php foreach ($dtl['existing_racks'] as $rack) : ?>
+																						<p>SLOC: <?= $rack['sloc'] ?></p>
+																				<?php endforeach; ?>
+																		<?php else : ?>
+																				<p>Not assigned</p>
+																		<?php endif; ?>
 																</td>
 																<td data-label="Recommended Rack">
 																	<button type="button" class="btn btn-sm btn-primary get-recommendations" data-id-barang="<?= $dtl['id_barang'] ?>" data-quantity="<?= $dtl['good_qty'] ?>">

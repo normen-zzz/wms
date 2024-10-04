@@ -51,7 +51,7 @@
 									<div class="card-body">
 										<div class="mb-3">
 											<label for="no_putaway" class="form-label">No Putaway</label>
-											<input type="text" class="form-control" id="no_putaway" value="<?= $putaway_details[0]['no_putaway'] ?>" disabled>
+											<!-- <input type="text" class="form-control" id="no_putaway" value="<?= $putaway_details[0]['no_putaway'] ?>" disabled> -->
 										</div>
 
 										<div class="table-responsive">

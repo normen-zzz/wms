@@ -50,8 +50,11 @@ class Putaway extends CI_Controller
 			'created_by' => $this->session->userdata('id_users'),
 			'status' => 1,
 			'no_putaway' => $no_putaway,
+			'id_inbound' => $this->input->post('id_inbound'),
 			'uuid' => uniqid()
 		];
+
+		// var_dump($data);exit;s
 
 		$result = $this->Putaway_model->insert_assign_putaway($data);
 
