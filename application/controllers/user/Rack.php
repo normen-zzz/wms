@@ -1,6 +1,12 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Reader\Csv;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ReaderXlsx;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
 class Rack extends CI_Controller
 {
 
@@ -101,83 +107,106 @@ class Rack extends CI_Controller
 
 		foreach ($barangGrouped as $barang) {
 			$data = $barang['sku'] . '-' . $barang['batchnumber'];
-			$this->generate_qrcode($data);
+			// $this->generate_qrcode($data);
 		}
 
 		redirect(base_url('assets/uploads/qrcodes/' . $data . '.png'));
 	}
 
-	public function get_items_by_sloc() {
-      $sloc = $this->input->post('sloc');
-      $items = $this->rack->getGroupedItemsBySloc($sloc);
-      if (!empty($items)) {
-          echo json_encode([
-              'status' => 'success',
-              'items' => $items
-          ]);
-      } else {
-          echo json_encode([
-              'status' => 'error',
-              'message' => 'Grouped items not found for the given SLOC.'
-          ]);
-      }
-    }
-
-	// input to database from excel file template tanpa save file
-	public function import_rack()
+	public function get_items_by_sloc()
 	{
-
-		$file = $_FILES['file']['name'];
-		$file = explode(".", $file);
-		$ext = end($file);
-		if ($ext == 'xlsx') {
-			$reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+		$sloc = $this->input->post('sloc');
+		$items = $this->rack->getGroupedItemsBySloc($sloc);
+		if (!empty($items)) {
+			echo json_encode([
+				'status' => 'success',
+				'items' => $items
+			]);
 		} else {
-			$reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Grouped items not found for the given SLOC.'
+			]);
 		}
-
-		$spreadsheet = $reader->load($_FILES['file']['tmp_name']);
-		$sheetData = $spreadsheet->getActiveSheet()->toArray();
-
-		$data = [];
-		$success = 0;
-		$failed = 0;
-		$failedData = [];
-		foreach ($sheetData as $key => $value) {
-			if ($key > 0) {
-				$checkSloc = $this->db->query('SELECT sloc FROM rack WHERE sloc = "' . $value[0] . '" ');
-				if ($checkSloc->num_rows() == 0) {
-					$data = [
-						'sloc' => $value[0],
-						'zone' => $value[1],
-						'rack' => $value[2],
-						'row' => $value[3],
-						'column_rack' => $value[4],
-						'max_qty' => $value[5],
-						'uom' => $value[6],
-						'created_at' => date('Y-m-d H:i:s'),
-						'created_by' => $this->session->userdata('id_users'),
-					];
-					$this->db->insert('rack', $data);
-					$success++;
-				} else {
-					$failed++;
-					$failedData[] = $value;
-				}
-			}
-		}
-
-		$response = [
-			'success' => $success,
-			'failed' => $failed,
-			'failedData' => $failedData
-		];
-
-		echo json_encode($response);
 	}
+
 	
 
+	// input to database from excel file template tanpa save file
+    public function import_rack()
+    {
+		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+			// Check for expected form fields
+			if (isset($_POST['field_name'])) {
+				// Process the form data
+			} else {
+				// Handle missing form field
+				echo 'Error: Missing form field';
+			}
+		} else {
+			echo 'Invalid request method';
+		}
+		
 
+        $file = $_FILES['file']['name'];
+        $ext = pathinfo($file, PATHINFO_EXTENSION);
+        if ($ext == 'csv') {
+            $reader = new Csv();
+        } else {
+            $reader = new ReaderXlsx();
+        }
+        $reader->setReadDataOnly(true);
+        $spreadsheet = $reader->load($_FILES['file']['tmp_name']);
+        $sheetData = $spreadsheet->getActiveSheet()->toArray();
+        $data = [];
+        $this->load->library('uuid');
+        foreach ($sheetData as $key => $value) {
+            if ($key > 0) {
+                $checkSloc = $this->db->query('SELECT sloc FROM rack WHERE sloc = "' . $data[0] . '" ');
+                if ($checkSloc->num_rows() == 0) {
+                    $data[] = [
+                        'sloc' => $data[0],
+					'zone' => $data[1],
+					'rack' => $data[2],
+					'row' => $data[3],
+					'column_rack' => $data[4],
+					'max_qty' => $data[5],
+					'uom' => $data[6],
+					'created_at' => date('Y-m-d H:i:s'),
+					'created_by' => $this->session->userdata('id_users'),
+                    ];
+                }
+            }
+        }
+        $insert_data = $this->db->insert_batch('rack', $data);
+        if ($insert_data) {
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['error' => true]);
+        }
+    }
+	
+	
+	
+	public function download_template()
+	{
+
+		$spreadsheet = new Spreadsheet();
+		$sheet = $spreadsheet->getActiveSheet();
+		$sheet->setCellValue('A1', 'SLOC');
+		$sheet->setCellValue('B1', 'Zone');
+		$sheet->setCellValue('C1', 'Rack');
+		$sheet->setCellValue('D1', 'Row');
+		$sheet->setCellValue('E1', 'Column');
+		$sheet->setCellValue('F1', 'Max Qty');
+		$sheet->setCellValue('G1', 'UOM');
+		$writer = new Xlsx($spreadsheet);
+		$filename = 'template_rack.xlsx';
+		header('Content-Type: application/vnd.ms-excel');
+		header('Content-Disposition: attachment;filename="' . $filename . '"');
+		header('Cache-Control: max-age=0');
+		$writer->save('php://output');
+	}
 }
 
 /* End of file User.php */

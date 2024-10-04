@@ -175,6 +175,8 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<h4 class="modal-title" id="myModalLabel33">Add Rack Bulky Form</h4>
+					<!-- button download template from controller  -->
+					<a href="<?= base_url('user/Rack/download_template') ?>" class="btn btn-primary">Download Template</a>
 					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
 						<i data-feather="x"></i>
 					</button>
@@ -271,30 +273,6 @@
 	<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
 
 	<script>
-		$('body').on('click', 'button[type="submit"]', function() {
-			var button = $(this);
-			setTimeout(function() {
-				button.prop('disabled', true);
-				Swal.fire({
-					title: 'Processing...',
-					text: 'Please wait while we process your request.',
-					icon: 'info',
-					timer: 10000,
-					timerProgressBar: true,
-					showConfirmButton: false
-				});
-				setTimeout(function() {
-					button.prop('disabled', false);
-					Swal.fire({
-						title: 'Success!',
-						text: 'Your request has been processed successfully.',
-						icon: 'success',
-						confirmButtonText: 'OK'
-					});
-				}, 10000);
-			});
-		});
-
 		$('.edit-btn').click(function() {
 			var id = $(this).data('id');
 
@@ -438,19 +416,19 @@
 		});
 
 		$('.print-sloc-barcode').click(function() {
-			const sloc = $(this).data('sloc'); 
-			const zone = $(this).data('zone'); 
-			const rack = $(this).data('rack'); 
-			const column_rack = $(this).data('column'); 
-			
+			const sloc = $(this).data('sloc');
+			const zone = $(this).data('zone');
+			const rack = $(this).data('rack');
+			const column_rack = $(this).data('column');
+
 			const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${(`${sloc}`)}&size=300x300`;
 
 			const qrCodeImage = new Image();
 			qrCodeImage.src = qrCodeUrl;
 
 			qrCodeImage.onload = function() {
-					const printWindow = window.open('', '_blank');
-					printWindow.document.write(`
+				const printWindow = window.open('', '_blank');
+				printWindow.document.write(`
 							<html>
 							<head>
 									<title>Print QR Code</title>
@@ -488,17 +466,17 @@
 							</body>
 							</html>
 					`);
-					printWindow.document.close();
-					printWindow.print();
+				printWindow.document.close();
+				printWindow.print();
 			};
 
 			qrCodeImage.onerror = function() {
-					alert('Error generating QR code. Please check the SLOC value.');
+				alert('Error generating QR code. Please check the SLOC value.');
 			};
-	});
+		});
 
-	$('.print-sloc-barcode-items').click(function() {
-			const sloc = $(this).data('sloc'); 
+		$('.print-sloc-barcode-items').click(function() {
+			const sloc = $(this).data('sloc');
 
 			$.ajax({
 				url: 'user/rack/get_items_by_sloc',
@@ -510,11 +488,11 @@
 				success: function(response) {
 					console.log('Response:', response);
 
-							if (response && response.status === 'success' && Array.isArray(response.items)) {
-									const itemsData = response.items; 
-									const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(`${sloc}`)}&size=300x300`;
-									const qrCodeImage = new Image();
-									qrCodeImage.src = qrCodeUrl;
+					if (response && response.status === 'success' && Array.isArray(response.items)) {
+						const itemsData = response.items;
+						const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(`${sloc}`)}&size=300x300`;
+						const qrCodeImage = new Image();
+						qrCodeImage.src = qrCodeUrl;
 
 						qrCodeImage.onload = function() {
 							const printWindow = window.open('', '_blank');
@@ -553,16 +531,16 @@
 																			<h3>SLOC: ${sloc}</h3>
 																			<img src="${qrCodeImage.src}" alt="QR Code" class="mb-5">
 																			`);
-																							if (itemsData.length > 0) {
-																									itemsData.forEach(function(item) {
-																											printWindow.document.write(`<li>SKU: ${item.sku}, Batch: ${item.batchnumber}, Total Quantity: ${item.total_quantity}</li>`);
-																									});
-																									printWindow.document.write('</ul>');
-																							} else {
-																									printWindow.document.write('<p>No items found for this SLOC.</p>');
-																							}
+							if (itemsData.length > 0) {
+								itemsData.forEach(function(item) {
+									printWindow.document.write(`<li>SKU: ${item.sku}, Batch: ${item.batchnumber}, Total Quantity: ${item.total_quantity}</li>`);
+								});
+								printWindow.document.write('</ul>');
+							} else {
+								printWindow.document.write('<p>No items found for this SLOC.</p>');
+							}
 
-																							printWindow.document.write(`
+							printWindow.document.write(`
 																							</div>
 																					</body>
 																			</html>
@@ -589,42 +567,61 @@
 	</script>
 
 
-	<!-- post jquery form formAddRackBulky ketika menunggu akan muncul processing -->
+	<!-- post jquery form formAddRackBulky upload file with loading  -->
 	<script>
-		$('#formAddRackBulky').on('submit', function(e) {
+		//add barang bulky form submit jquery with loading
+		$('#formAddRackBulky').submit(function(e) {
 			e.preventDefault();
+
+			var formData = new FormData(this);
+
 			$.ajax({
-				url: "<?= base_url('user/rack/processaddrackbulky') ?>",
-				type: "POST",
-				data: new FormData(this),
-				contentType: false,
+				url: '<?= base_url("user/Rack/import_rack") ?>',
+				type: 'POST',
+				data: formData,
 				cache: false,
+				contentType: false,
 				processData: false,
-				dataType: 'json',
 				success: function(response) {
+					$('#modalAddRackBulky').modal('hide');
 					Swal.fire({
-						title: response.status === 'success' ? 'Success' : 'Error',
-						text: response.message,
-						icon: response.status === 'success' ? 'success' : 'error',
+						title: 'Success!',
+						text: 'Data Rack berhasil ditambahkan!',
+						icon: 'success',
 						confirmButtonText: 'OK'
-					}).then(() => {
-						if (response.status === 'success') {
-							window.location.href = "<?= base_url('user/rack') ?>";
+					}).then((result) => {
+						if (result.isConfirmed) {
+							location.reload();
 						}
 					});
 				},
-				error: function(jqXHR, textStatus, errorThrown) {
+				error: function(xhr) {
+					// swal error 
 					Swal.fire({
-						title: 'Error',
-						text: 'Something went wrong: ' + textStatus,
+						title: 'Error!',
+						text: 'An error occurred while adding the item.',
 						icon: 'error',
 						confirmButtonText: 'OK'
+					}).then((result) => {
+						if (result.isConfirmed) {
+							location.reload();
+						}
 					});
-					window.location.href = "<?= base_url('user/rack') ?>";
+
+
+
+
 				}
 			});
 		});
 	</script>
+
+
+
+
+
+
+
 
 
 </body>

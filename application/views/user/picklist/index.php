@@ -73,7 +73,7 @@
 															<td><?= dateindo($pl1['created_at']) ?></td>
 															<td>
 																<?php if ($pl1['status'] != 1) { ?>
-																	<button type="button" class="btn btn-info btn-sm text-white" onclick="editData(<?= $pl1['id_picklist'] ?>)">Edit</button>
+																	<!-- <button type="button" class="btn btn-info btn-sm text-white" onclick="editData(<?= $pl1['id_picklist'] ?>)">Edit</button> -->
 																	<!-- DELETE -->
 																	<button type="button" class="btn btn-danger btn-sm" onclick="deleteData(<?= $pl1['id_picklist'] ?>)">Void</button>
 																	<a href="<?= base_url('user/inbound/create/' . $pl1['uuid']) ?>" class="btn btn-primary btn-sm">Inbound</a>
