@@ -83,8 +83,12 @@ class ReceivingInbound_model extends CI_Model
 		return $data;
 	}
 
-	public function get_last_counter($prefix = 'IB/' . date('ymd') . '/')
+	public function get_last_counter($prefix = null)
 	{
+			if ($prefix === null) {
+					$prefix = 'IB/' . date('ymd') . '/';
+			}
+
 			$this->db->select('no_inbound');
 			$this->db->from('inbound');
 			$this->db->like('no_inbound', $prefix, 'after');
