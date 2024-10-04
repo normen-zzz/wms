@@ -2,33 +2,40 @@
 class ReceivingInbound_model extends CI_Model
 {
 
-	public function insert_inbound($data)
-	{
-		return $this->db->insert('inbound', $data);
+	public function insert_inbound($data) {
+			$this->db->insert('inbound', $data);
+			return $this->db->insert_id(); 
 	}
 
+	public function insert_data_inbound($data) {
+			return $this->db->insert('data_inbound', $data);
+	}
 
 	public function get_inbound_data()
 	{
-		$this->db->select('inbound.*, picklist.no_picklist');
-		$this->db->from('inbound');
-		$this->db->join('picklist', 'inbound.id_picklist = picklist.id_picklist', 'left');
-		$this->db->group_by('inbound.no_inbound');
-		$query = $this->db->get();
-		return $query->result();
+			$this->db->select('inbound.*, picklist.no_picklist, data_inbound.received_qty, data_inbound.good_qty, data_inbound.bad_qty, data_inbound.batch_id');
+			$this->db->from('inbound');
+			$this->db->join('picklist', 'inbound.id_picklist = picklist.id_picklist', 'left');
+			$this->db->join('data_inbound', 'inbound.id_inbound = data_inbound.id_inbound', 'left');
+			$this->db->group_by('inbound.no_inbound');
+			
+			$query = $this->db->get();
+			return $query->result();
 	}
 
 	public function get_detils_inbound($uuid)
 	{
-		$id_picklist = $this->db->query('SELECT id_picklist FROM picklist WHERE uuid = "' . $uuid . '" ')->row_array();
+			$id_picklist = $this->db->query('SELECT id_picklist FROM picklist WHERE uuid = "' . $uuid . '" ')->row_array();
+			$this->db->select('sku, nama_barang, a.id_barang, batch, a.expiration_date, a.qty, data_inbound.received_qty, data_inbound.good_qty, data_inbound.bad_qty');
+			$this->db->from('datapicklist a');
+			$this->db->join('barang b', 'a.id_barang = b.id_barang');
+			$this->db->join('data_inbound', 'a.id_barang = data_inbound.id_barang AND a.batch = data_inbound.batch_id', 'left');
+			$this->db->where('a.id_picklist', $id_picklist['id_picklist']);
+			$this->db->where('(data_inbound.status_row = 0 OR data_inbound.status_row IS NULL)');
 
-		$this->db->select('sku, nama_barang, a.id_barang, batch, a.expiration_date, a.qty');
-		$this->db->from('datapicklist a');
-		$this->db->join('barang b', 'a.id_barang = b.id_barang');
-		$this->db->where('id_picklist', $id_picklist['id_picklist']);
-
-		return $this->db->get()->result_array();
+			return $this->db->get()->result_array();
 	}
+
 
 	public function get_picklist_byuuid($uuid)
 	{
@@ -76,12 +83,25 @@ class ReceivingInbound_model extends CI_Model
 		return $data;
 	}
 
-	public function get_last_counter()
+	public function get_last_counter($prefix = 'IB/' . date('ymd') . '/')
 	{
-		$this->db->select_max('id_inbound');
-		$query = $this->db->get('inbound');
-		$result = $query->row();
-		return $result->id_inbound ? (int)$result->id_inbound : 0;
+			$this->db->select('no_inbound');
+			$this->db->from('inbound');
+			$this->db->like('no_inbound', $prefix, 'after');
+			$this->db->order_by('no_inbound', 'DESC');
+			$this->db->limit(1);
+			
+			$query = $this->db->get();
+			$result = $query->row();
+
+			if ($result) {
+					$parts = explode('/', $result->no_inbound);
+					$lastCounter = isset($parts[2]) ? (int)$parts[2] : 0;
+			} else {
+					$lastCounter = 0;
+			}
+
+			return $lastCounter;
 	}
 
 	public function update_status_picklist($id_picklist, $status)
