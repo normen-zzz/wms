@@ -189,7 +189,8 @@ class Putaway extends CI_Controller
 			'subtitle2' => 'Detail Putaway',
 			'putaway_details' => $putaway_details,
 		];
-
+		
+		// var_dump($data);exit;
 		// Load the view with the data
 		$this->load->view('user/putaway/detailPutaway', $data);
 	}
