@@ -113,6 +113,7 @@ class Putaway extends CI_Controller
 			echo json_encode(['success' => false, 'message' => 'Failed to assign rack']);
 		}
 	}
+	
 	public function create_putaway()
 	{
 		$putaway_data = json_decode(file_get_contents('php://input'), true);
@@ -139,7 +140,8 @@ class Putaway extends CI_Controller
 								'uuid' => uniqid(),
 								'id_barang' => $item_data['id_barang'],
 								'batch_id' => $item_data['batch_id'],
-								'status' => 1
+								'status' => 1,
+								'status_row' => 1
 							];
 
 							if ($this->db->insert('dataputaway', $insert_data)) {
@@ -179,6 +181,20 @@ class Putaway extends CI_Controller
 			]);
 		}
 	}
+
+
+	public function finish_putaway()
+	{
+			$this->db->where('status', 1);
+			$this->db->update('dataputaway', ['status' => 2]); 
+
+			if ($this->db->affected_rows() > 0) {
+					echo json_encode(['status' => 'success', 'message' => 'Putaway completed.']);
+			} else {
+					echo json_encode(['status' => 'error', 'message' => 'No putaway records found to update.']);
+			}
+	}
+
 
 	public function detail($uuid)
 	{

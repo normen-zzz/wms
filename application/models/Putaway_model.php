@@ -22,23 +22,24 @@ class Putaway_model extends CI_Model
 
 	public function get_putaway_details($uuid)
 	{
-			$this->db->select('putaway.*, users.nama as user_name, di.no_inbound, ib.batch_id, ib.good_qty, barang.id_barang, barang.nama_barang, barang.sku, b.batchnumber'); // Select batchnumber
-			$this->db->from('putaway');
-			$this->db->join('users', 'putaway.id_users = users.id_users', 'left');
-			$this->db->join('data_inbound ib', 'putaway.id_inbound = ib.id_inbound', 'left');
-			$this->db->join('inbound di', 'di.id_inbound = putaway.id_inbound', 'left');
-			$this->db->join('barang', 'ib.id_barang = barang.id_barang', 'left');
-			$this->db->join('batch b', 'ib.batch_id = b.id_batch', 'left'); 
-			$this->db->where('putaway.uuid', $uuid);
-			$this->db->order_by('putaway.created_at', 'DESC');
-			
-			$result = $this->db->get()->result_array();
-			
-			foreach ($result as &$item) {
-					$item['existing_racks'] = $this->get_existing_racks($item['id_barang'], $item['batch_id']);
-			}
+		$this->db->select('putaway.*, users.nama as user_name, di.no_inbound, ib.batch_id, ib.good_qty, barang.id_barang, barang.nama_barang, barang.sku, b.batchnumber, dataputaway.status_row'); // Select batchnumber and status_row
+		$this->db->from('putaway');
+		$this->db->join('users', 'putaway.id_users = users.id_users', 'left');
+		$this->db->join('data_inbound ib', 'putaway.id_inbound = ib.id_inbound', 'left');
+		$this->db->join('inbound di', 'di.id_inbound = putaway.id_inbound', 'left');
+		$this->db->join('barang', 'ib.id_barang = barang.id_barang', 'left');
+		$this->db->join('batch b', 'ib.batch_id = b.id_batch', 'left');
+		$this->db->join('dataputaway', 'dataputaway.id_putaway = putaway.id_putaway', 'left'); // Join with dataputaway to get status_row
+		$this->db->where('putaway.uuid', $uuid);
+		$this->db->order_by('putaway.created_at', 'DESC');
+		
+		$result = $this->db->get()->result_array();
+		
+		foreach ($result as &$item) {
+			$item['existing_racks'] = $this->get_existing_racks($item['id_barang'], $item['batch_id']);
+		}
 
-			return $result;
+		return $result;
 	}
 
 

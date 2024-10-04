@@ -202,19 +202,20 @@
 													</thead>
 													<tbody>
 														<?php foreach ($data_putaway as $dtl) { ?>
+															<?php if ($dtl['status_row'] != 1) : ?>
 															<tr>
 																<td data-label="SKU"><?= $dtl['sku'] ?></td>
 																<td data-label="Nama Barang"><?= $dtl['nama_barang'] ?></td>
 																<td data-label="Batch"><?= $dtl['batchnumber'] ?></td> <!-- Display batchnumber -->
 																<td data-label="Qty (Good)"><?= $dtl['good_qty'] ?></td>
 																<td data-label="Existing Rack">
-																		<?php if (!empty($dtl['existing_racks'])) : ?>
-																				<?php foreach ($dtl['existing_racks'] as $rack) : ?>
-																						<p>SLOC: <?= $rack['sloc'] ?></p>
-																				<?php endforeach; ?>
-																		<?php else : ?>
-																				<p>Not assigned</p>
-																		<?php endif; ?>
+																	<?php if (!empty($dtl['existing_racks'])) : ?>
+																		<?php foreach ($dtl['existing_racks'] as $rack) : ?>
+																			<p>SLOC: <?= $rack['sloc'] ?></p>
+																		<?php endforeach; ?>
+																	<?php else : ?>
+																		<p>Not assigned</p>
+																	<?php endif; ?>
 																</td>
 																<td data-label="Recommended Rack">
 																	<button type="button" class="btn btn-sm btn-primary get-recommendations" data-id-barang="<?= $dtl['id_barang'] ?>" data-quantity="<?= $dtl['good_qty'] ?>">
@@ -223,31 +224,31 @@
 																	<div class="recommendations-list" style="display:none;"></div>
 																</td>
 																<td data-label="Chosen Rack">
-																		<table class="table mt-3" id="choosenRack">
-																				<thead>
-																						<tr>
-																								<th>Rack</th>
-																								<th>Quantity</th>
-																								<th>Action</th>
-																						</tr>
-																				</thead>
-																				<tbody>
-																						<tr>
-																								<td><input type="text" name="putaway_field[<?= $dtl['id_barang'] ?>][id_rack][]" class="form-control" placeholder="Enter Rack"></td>
-																								<td><input type="text" name="putaway_field[<?= $dtl['id_barang'] ?>][quantity][]" class="form-control" placeholder="Enter Quantity"></td>
-																								<td>
-																										<button type="button" class="btn btn-sm btn-danger remove-row">Remove</button>
-																								</td>
-																						</tr>
-																				</tbody>
-																				<tfoot>
-																						<tr>
-																								<td colspan="3" class="text-right">
-																										<button type="button" class="btn btn-sm btn-primary btn-block add-row">Add Row</button>
-																								</td>
-																						</tr>
-																				</tfoot>
-																		</table>
+																	<table class="table mt-3" id="choosenRack">
+																		<thead>
+																			<tr>
+																				<th>Rack</th>
+																				<th>Quantity</th>
+																				<th>Action</th>
+																			</tr>
+																		</thead>
+																		<tbody>
+																			<tr>
+																				<td><input type="text" name="putaway_field[<?= $dtl['id_barang'] ?>][id_rack][]" class="form-control" placeholder="Enter Rack"></td>
+																				<td><input type="text" name="putaway_field[<?= $dtl['id_barang'] ?>][quantity][]" class="form-control" placeholder="Enter Quantity"></td>
+																				<td>
+																					<button type="button" class="btn btn-sm btn-danger remove-row">Remove</button>
+																				</td>
+																			</tr>
+																		</tbody>
+																		<tfoot>
+																			<tr>
+																				<td colspan="3" class="text-right">
+																					<button type="button" class="btn btn-sm btn-primary btn-block add-row">Add Row</button>
+																				</td>
+																			</tr>
+																		</tfoot>
+																	</table>
 																</td>
 																<td data-label="Action">
 																	<button type="button" class="btn btn-sm btn-primary submitPutawayData" data-id-barang="<?= $dtl['id_barang'] ?>" data-quantity="<?= $dtl['good_qty'] ?>" data-batch-id="<?= $dtl['batch_id'] ?>">
@@ -259,9 +260,11 @@
 																	<input type="hidden" name="putaway_field[<?= $dtl['id_barang'] ?>][id_putaway]" value="<?= $dtl['id_putaway'] ?>">
 																</td>
 															</tr>
-														<?php } ?>
-													</tbody>
-												</table>
+															<?php endif; ?>
+															<?php } ?>
+														</tbody>
+													</table>
+													<button type="button" id="finishPutaway" class="btn btn-success">Finish Putaway</button>
 											</form>
 										</div>
 									</div>
@@ -329,80 +332,115 @@
 			});
 
 
-			$('.submitPutawayData').on('click', function() {
-				let id_barang = $(this).data('id-barang');
-				let good_qty = $(this).data('quantity');
-				let batch_id = $(this).data('batch-id');
+		$('.submitPutawayData').on('click', function() {
+				let button = $(this);
+				let id_barang = button.data('id-barang');
+				let good_qty = button.data('quantity');
+				let batch_id = button.data('batch-id');
 
 				let rack_ids = [];
 				let quantities = [];
 				let totalQuantity = 0;
-				$(`input[name="putaway_field[${id_barang}][id_rack][]"]`).each(function() {
-					rack_ids.push($(this).val());
-				});
 
+				$(`input[name="putaway_field[${id_barang}][id_rack][]"]`).each(function() {
+						rack_ids.push($(this).val());
+				});
 
 				$(`input[name="putaway_field[${id_barang}][quantity][]"]`).each(function() {
-					let quantity = parseInt($(this).val()) || 0;
-					quantities.push(quantity);
-					totalQuantity += quantity;
+						let quantity = parseInt($(this).val()) || 0;
+						quantities.push(quantity);
+						totalQuantity += quantity;
 				});
 
-
+				// Quantity validation
 				if (totalQuantity < good_qty) {
-					Swal.fire({
-						icon: 'error',
-						title: 'Oops...',
-						text: `Total quantity yang diinputkan (${totalQuantity}) kurang dari jumlah yang dibutuhkan (${good_qty}).`
-					});
-					return;
+						Swal.fire({
+								icon: 'error',
+								title: 'Oops...',
+								text: `Total quantity (${totalQuantity}) is less than required (${good_qty}).`
+						});
+						return;
 				}
 
 				if (totalQuantity > good_qty) {
-					Swal.fire({
-						icon: 'error',
-						title: 'Oops...',
-						text: `Total quantity yang diinputkan (${totalQuantity}) lebih dari jumlah yang dibutuhkan (${good_qty}).`
-					});
-					return;
+						Swal.fire({
+								icon: 'error',
+								title: 'Oops...',
+								text: `Total quantity (${totalQuantity}) exceeds the required amount (${good_qty}).`
+						});
+						return;
 				}
 
 				let data = {
-					'putaway_field': {
-						[id_barang]: {
-							'id_barang': id_barang,
-							'batch_id': batch_id,
-							'id_inbound': $(`input[name="putaway_field[${id_barang}][id_inbound]"]`).val(),
-							'id_putaway': $(`input[name="putaway_field[${id_barang}][id_putaway]"]`).val(),
-							'rack_ids': rack_ids,
-							'quantities': quantities
+						'putaway_field': {
+								[id_barang]: {
+										'id_barang': id_barang,
+										'batch_id': batch_id,
+										'id_inbound': $(`input[name="putaway_field[${id_barang}][id_inbound]"]`).val(),
+										'id_putaway': $(`input[name="putaway_field[${id_barang}][id_putaway]"]`).val(),
+										'rack_ids': rack_ids,
+										'quantities': quantities
+								}
 						}
-					}
 				};
 
 				$.ajax({
-					url: '<?= site_url('user/putaway/create_putaway') ?>',
-					type: 'POST',
-					contentType: 'application/json', // Send the data as JSON
-					data: JSON.stringify(data), // Stringify the data
-					success: function(response) {
-						Swal.fire({
-							icon: 'success',
-							title: 'Success',
-							text: 'Putaway berhasil disubmit!'
-						});
-					},
-					error: function(xhr, status, error) {
-						Swal.fire({
-							icon: 'error',
-							title: 'Oops...',
-							text: 'Ada masalah saat menyimpan data. Silakan coba lagi.'
-						});
-					}
+						url: '<?= site_url('user/putaway/create_putaway') ?>',
+						type: 'POST',
+						contentType: 'application/json', // Send the data as JSON
+						data: JSON.stringify(data), // Stringify the data
+						success: function(response) {
+								Swal.fire({
+										icon: 'success',
+										title: 'Success',
+										text: 'Putaway successfully submitted!'
+								});
+								// Remove the submitted row
+								button.closest('tr').remove();
+						},
+						error: function(xhr, status, error) {
+								Swal.fire({
+										icon: 'error',
+										title: 'Oops...',
+										text: 'There was a problem saving the data. Please try again.'
+								});
+						}
 				});
+		});
 
-
+		$('#finishPutaway').on('click', function() {
+					Swal.fire({
+							title: 'Are you sure?',
+							text: "You are about to finish the putaway process!",
+							icon: 'warning',
+							showCancelButton: true,
+							confirmButtonText: 'Yes, finish it!'
+					}).then((result) => {
+							if (result.isConfirmed) {
+									$.ajax({
+											url: '<?= site_url('user/putaway/finish_putaway') ?>',
+											type: 'POST',
+											success: function(response) {
+													Swal.fire({
+															icon: 'success',
+															title: 'Putaway Completed!',
+															text: 'The putaway process has been finished successfully.'
+													});
+													// You could redirect or update the status of all rows to 'done'
+													$('tbody').empty(); // Clear all rows
+											},
+											error: function(xhr, status, error) {
+													Swal.fire({
+															icon: 'error',
+															title: 'Oops...',
+															text: 'There was a problem finishing the putaway. Please try again.'
+													});
+											}
+									});
+							}
+					});
 			});
+
 
 			$(document).on('click', '.add-row', function() {
 					var id_barang = $('input[name^="putaway_field"]').attr('name').match(/\[(.*?)\]/)[1]; // Get id_barang
