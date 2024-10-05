@@ -19,7 +19,7 @@ class Deliveryorder extends CI_Controller
             'subtitle' => 'Data Delivery Order',
             'subtitle2' => 'Data Delivery Order',
             'deliveryorder' => $this->deliveryorder->getDeliveryorder(),
-            
+
         ];
         $this->load->view('user/deliveryorder/index', $data);
     }
@@ -77,6 +77,7 @@ class Deliveryorder extends CI_Controller
         echo json_encode($response);
     }
 
+
     public function printDeliveryOrder($uuidDeliveryorder)
     {
         $deliveryorder = $this->deliveryorder->getDetailDeliveryorder($uuidDeliveryorder);
@@ -85,28 +86,37 @@ class Deliveryorder extends CI_Controller
 
         $mpdf->SetFont('Helvetica', '', 12);
 
+        $footer = '<table style="width: 100%; border-collapse: collapse; border: none; font-size: 10px;">
+        <tr>
+            <td style="width: 50%; text-align: left; border: none;">Printed by Transtama Logistics WMS</td>
+            <td style="width: 50%; text-align: right; border: none;">Page {PAGENO} of {nbpg}</td>
+        </tr>
+    </table>
+    <hr style="border: 1px solid #ddd;">';
+        $mpdf->SetFooter($footer, ['odd' => $footer, 'even' => $footer]);
+
         $html = '<style>
-                .center {
-                    text-align: center;
-                }
-                table {
-                    border-collapse: collapse;
-                }
-                th{
-                    border: 1px solid #ddd;
-                    padding: 5px;
-                    text-align: center;
-                }
+            .center {
+                text-align: center;
+            }
+            table {
+                border-collapse: collapse;
+            }
+            th{
+                border: 1px solid #ddd;
+                padding: 5px;
+                text-align: center;
+            }
 
-                td {
-                    border: 1px solid #ddd;
-                    padding: 5px;
-                    text-align: center;
-                    
-                    white-space: nowrap;
+            td {
+                border: 1px solid #ddd;
+                padding: 5px;
+                text-align: center;
+                
+                white-space: nowrap;
 
-                }
-            </style>';
+            }
+        </style>';
 
         $html .= '<div id="head" style="text-align: center;">';
         $html .= '<img src="https://tesla-smartwork.transtama.com/uploads/logoRaw.png" alt="Delivery Order" style="width: auto; height: 70px;">';
@@ -130,63 +140,52 @@ class Deliveryorder extends CI_Controller
 
         $no = 1;
         $itemCount = 0;
-$totalItemCount = $deliveryorderItems->num_rows();
+        $totalItemCount = $deliveryorderItems->num_rows();
 
-foreach ($deliveryorderItems->result() as $item) {
-    // ...
-    $html .= '<tr>';
-    
-    $no++;
-    $html .= '<td>' . $item->sku . '</td>';
-    $html .= '<td>' . $item->nama_barang . '</td>';
-    $html .= '<td>' . $item->batchnumber . '</td>';
-    $html .= '<td>' . $item->expiration_date . '</td>';
-    $html .= '<td>' . $item->qty . '</td>';
-    $html .= '<td></td>';
-    $html .= '</tr>';
+        foreach ($deliveryorderItems->result() as $item) {
+            // ...
+            $html .= '<tr>';
 
-    $itemCount++;
+            $no++;
+            $html .= '<td>' . $item->sku . '</td>';
+            $html .= '<td>' . $item->nama_barang . '</td>';
+            $html .= '<td>' . $item->batchnumber . '</td>';
+            $html .= '<td>' . $item->expiration_date . '</td>';
+            $html .= '<td>' . $item->qty . '</td>';
+            $html .= '<td></td>';
+            $html .= '</tr>';
 
-    if ($itemCount >= 20 && $no <= $totalItemCount) {
-        $html .= '</table>'; // Close the table
-        $mpdf->WriteHTML($html);
-        $footer = '<table style="width: 100%; border-collapse: collapse; border: none; font-size: 10px;">
+            $itemCount++;
+
+            if ($itemCount >= 20 && $no <= $totalItemCount) {
+                $html .= '</table>'; // Close the table
+                $mpdf->WriteHTML($html);
+
+                $mpdf->AddPage(); // Add a new page
+                $html = '<div id="head" style="text-align: center;">
+        <img  src="https://tesla-smartwork.transtama.com/uploads/logoRaw.png" alt="Delivery Order" style="width: auto; height: 70px;">
+        <p class="center" ><b>Delivery Order : ' . $deliveryorder['ext_deliveryorder'] . '</b></p>
+        <table style="width: 100%; border-collapse: collapse; border: none;">
             <tr>
-                <td style="width: 50%; text-align: left; border: none;">Printed by Transtama Logistics WMS</td>
-                <td style="width: 50%; text-align: right; border: none;">Page {PAGENO} of {nbpg}</td>
+                <td style="width: 20%; text-align: left; border: none;">Tanggal</td>
+                <td style="width: 5%; text-align: center; border: none;">:</td>
+                <td style="width: 75%; text-align: left; border: none;">' . date('d-M-Y', strtotime($deliveryorder['created_at'])) . '</td>
             </tr>
-          </table>
-          <hr style="border: 1px solid #ddd;">';
-        $mpdf->SetFooter($footer, ['odd' => $footer, 'even' => $footer]);
+            <tr>
+                <td style="width: 20%; text-align: left; border: none;">Kepada</td>
+                <td style="width: 5%; text-align: center; border: none;">:</td>
+                <td style="width: 75%; text-align: left; border: none;">' . $deliveryorder['nama_customer'] . '</td>
+            </tr>
+        </table> <br><br>
+    </div>'; // Add the header section again
 
-        $mpdf->AddPage(); // Add a new page
-        $html = '<div id="head" style="text-align: center;">
-            <img  src="https://tesla-smartwork.transtama.com/uploads/logoRaw.png" alt="Delivery Order" style="width: auto; height: 70px;">
-            <p class="center" ><b>Delivery Order : ' . $deliveryorder['ext_deliveryorder'] . '</b></p>
-            <table style="width: 100%; border-collapse: collapse; border: none;">
-                <tr>
-                    <td style="width: 20%; text-align: left; border: none;">Tanggal</td>
-                    <td style="width: 5%; text-align: center; border: none;">:</td>
-                    <td style="width: 75%; text-align: left; border: none;">' . date('d-M-Y', strtotime($deliveryorder['created_at'])) . '</td>
-                </tr>
-                <tr>
-                    <td style="width: 20%; text-align: left; border: none;">Kepada</td>
-                    <td style="width: 5%; text-align: center; border: none;">:</td>
-                    <td style="width: 75%; text-align: left; border: none;">' . $deliveryorder['nama_customer'] . '</td>
-                </tr>
-            </table> <br><br>
-        </div>'; // Add the header section again
+                $html .= '<table style="width: 100%"><tr><th>Item Number</th><th>Item Name</th><th>Batch</th><th>Expired Date</th><th>Batch Qty</th><th>Remarks</th></tr>'; // Add a new table header
 
-        $html .= '<table style="width: 100%"><tr><th>Item Number</th><th>Item Name</th><th>Batch</th><th>Expired Date</th><th>Batch Qty</th><th>Remarks</th></tr>'; // Add a new table header
-
-        $itemCount = 0;
-    }
-}
-
-
+                $itemCount = 0;
+            }
+        }
 
         // Add the remaining items to the last page
-
         if ($itemCount > 0) {
             $html .= '</table>'; // Close the table
         }
@@ -206,11 +205,9 @@ foreach ($deliveryorderItems->result() as $item) {
         $html .= '</tr>';
         $html .= '</table>';
         $mpdf->WriteHTML($html);
-        
 
         $mpdf->Output('delivery_order.pdf', 'I');
     }
-    
 }
 
 /* End of file User.php */

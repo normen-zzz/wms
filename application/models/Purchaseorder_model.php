@@ -45,12 +45,15 @@ class Purchaseorder_model extends CI_Model
 	// Fetch users
 	function selectBarang($searchTerm = NULL)
 	{
-		$this->db->select('');
-		$this->db->from('barang');
+		$this->db->select('barang.id_barang,barang.sku,barang.nama_barang');
+		$this->db->from('rack_items');
+		// join barang 
+		$this->db->join('barang', 'rack_items.id_barang = barang.id_barang');
+	
 
 
 		if ($searchTerm != NULL) {
-			$this->db->where("nama_barang LIKE '%" . $this->db->escape_like_str($searchTerm) . "%' OR sku LIKE '%" . $this->db->escape_like_str($searchTerm) . "%'");
+			$this->db->where("barang.nama_barang LIKE '%" . $this->db->escape_like_str($searchTerm) . "%' OR barang.sku LIKE '%" . $this->db->escape_like_str($searchTerm) . "%'");
 		}
 		$this->db->where('is_deleted', 0);
 
@@ -81,7 +84,7 @@ class Purchaseorder_model extends CI_Model
 
 	public function getBatchBarang($id_barang)
 	{
-		return $this->db->query('SELECT  b.batchnumber,b.id_batch FROM batchitem AS a INNER JOIN batch AS b ON a.id_batch = b.id_batch WHERE a.id_barang = ' . $id_barang . ' AND a.qty > 0 ');
+		return $this->db->query('SELECT  b.batchnumber,b.id_batch FROM rack_items AS a INNER JOIN batch AS b ON a.id_batch = b.id_batch WHERE a.id_barang = ' . $id_barang . ' AND a.quantity > 0 ');
 	}
 
 	public function checkQty($id_barang, $id_batch)

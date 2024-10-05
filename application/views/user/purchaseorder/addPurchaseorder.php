@@ -161,6 +161,15 @@
 
 			$('#purchaseorderForm').on('submit', function(e) {
 				e.preventDefault();
+				
+				Swal.fire({
+					title: 'Please wait...',
+					html: 'Loading...',
+					timerProgressBar: true,
+					didOpen: () => {
+						Swal.showLoading()
+					}
+				});	
 				$.ajax({
 					url: "<?= base_url('user/purchaseorder/insertPurchaseorder') ?>",
 					type: "POST",
