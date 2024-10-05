@@ -74,40 +74,46 @@ class Picklist extends CI_Controller
 																							AND batchitem.id_barang = ' . $barang_id);
 
 					if ($checkBatchItem->num_rows() == 0) {
+						$checkBatch = $this->db->query('SELECT id_batch FROM batch WHERE batchnumber = "' . $batches[$key] . '"');
+						if ($checkBatch->num_rows() == 0) {
+
 							$this->db->insert('batch', [
-									'uuid' => uniqid(),
-									'batchnumber' => $batches[$key], 
-									'expiration_date' => date('Y-m-d H:i:s', strtotime($expired_dates[$key]))
+								'uuid' => uniqid(),
+								'batchnumber' => $batches[$key],
+								'expiration_date' => date('Y-m-d H:i:s', strtotime($expired_dates[$key]))
 							]);
 							$id_batch =  $this->db->insert_id();
+						} else {
+							$id_batch = $checkBatch->row()->id_batch;
+						}
 
-							$dataBatchItem = [
-									'id_barang' => $barang_id,
-									'id_batch' => $id_batch,
-									'qty' => $qtys[$key]
-							];
-							$this->db->insert('batchitem', $dataBatchItem);
-					} else {
-							$checkBatchItem = $checkBatchItem->row_array();
-							$id_batch = $checkBatchItem['id_batch'];
-							$current_qty = $checkBatchItem['qty'];
-
-							$new_qty = $current_qty + $qtys[$key];  
-							$this->db->update('batchitem', ['qty' => $new_qty], ['id_batchitem' => $checkBatchItem['id_batchitem']]);
-					}
-					
-					$datapicklist_data = array(
-							'id_picklist' => $insert_id,
+						$dataBatchItem = [
 							'id_barang' => $barang_id,
-							'batch' => $id_batch,
-							'qty' => $qtys[$key],
-							'created_at' => date('Y-m-d H:i:s'),
-							'created_by' => $created_by,
-							'expiration_date' =>  date('Y-m-d', strtotime($expired_dates[$key]))
+							'id_batch' => $id_batch,
+							'qty' => $qtys[$key]
+						];
+						$this->db->insert('batchitem', $dataBatchItem);
+					} else {
+						$checkBatchItem = $checkBatchItem->row_array();
+						$id_batch = $checkBatchItem['id_batch'];
+						$current_qty = $checkBatchItem['qty'];
+
+						$new_qty = $current_qty + $qtys[$key];
+						$this->db->update('batchitem', ['qty' => $new_qty], ['id_batchitem' => $checkBatchItem['id_batchitem']]);
+					}
+
+					$datapicklist_data = array(
+						'id_picklist' => $insert_id,
+						'id_barang' => $barang_id,
+						'batch' => $id_batch,
+						'qty' => $qtys[$key],
+						'created_at' => date('Y-m-d H:i:s'),
+						'created_by' => $created_by,
+						'expiration_date' =>  date('Y-m-d', strtotime($expired_dates[$key]))
 					);
 
 					$this->picklist->insert_datapicklist($datapicklist_data);
-			}
+				}
 
 				$response = array('status' => 'success', 'message' => 'Picklist inserted successfully.');
 			} else {

@@ -76,6 +76,7 @@
 														<th>Nama Barang</th>
 														<th>ID Batch</th>
 														<th>Sloc Rack</th>
+														<th>Expiration date</th>
 														<th>Quantity</th>
 													</tr>
 												</thead>
@@ -89,6 +90,7 @@
 																<td><?= $item->nama_barang ?></td>
 																<td><?= $item->batchnumber ?></td>
 																<td><?= $item->sloc ?></td>
+																<td><?= date('d-m-Y',strtotime($item->expiration_date))  ?></td>
 																<td><?= $item->total_quantity ?></td>
 															</tr>
 														<?php endforeach; ?>

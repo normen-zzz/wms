@@ -77,7 +77,8 @@
 																	<td><?= $dtl['nama_barang'] ?></td>
 																	<td><?= getBatchById($dtl['batch']) ?></td>
 																	<td><?= $dtl['expiration_date'] ?></td>
-																	<td><?= $dtl['qty'] ?></td>
+																	<td><?= $dtl['qty'] ?> <input type="hidden" name="qty[]" value="<?= $dtl['qty'] ?>"></td>
+																	
 																	<td>
 																		<input type="number" name="good_qty[]" class="form-control good_qty" required>
 																	</td>
@@ -144,6 +145,7 @@
 					var rowData = {
 							id_picklist: $('input[name="id_picklist"]').val(),
 							received_qty: $('input[name="received_qty"]').val(),
+							qty : $row.find('input[name="qty[]"]').val(),
 							good_qty: $row.find('input[name="good_qty[]"]').val(),
 							bad_qty: $row.find('input[name="bad_qty[]"]').val(),
 							sku: $row.find('input[name="sku[]"]').val(),
@@ -153,6 +155,29 @@
 
 					var $submitBtn = $(this);
 					$submitBtn.prop('disabled', true);
+
+					//check good and bad qty apakah sudah memenuhi qty 
+					//if row data null change with 0
+					if (rowData.good_qty == '') {
+							rowData.good_qty = 0;
+					}
+					if (rowData.bad_qty == '') {
+							rowData.bad_qty = 0;
+					}
+
+				
+
+					if (parseInt(rowData.good_qty) + parseInt(rowData.bad_qty) != parseInt(rowData.qty)) {
+							Swal.fire({
+									title: 'Error',
+									text: 'Good and Bad quantity must be equal to received quantity',
+									icon: 'error',
+									confirmButtonText: 'OK'
+							});
+							$submitBtn.prop('disabled', false);
+							return;
+					}
+					
 
 					$.ajax({
 							url: "<?= base_url('user/inbound/processRow') ?>",

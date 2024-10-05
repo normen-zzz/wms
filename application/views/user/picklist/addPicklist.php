@@ -143,7 +143,18 @@
 				initSelect2AndFlatpickr();
 			});
 
+			//loading swal
 			$('#picklistForm').on('submit', function(e) {
+				//loading swal
+				Swal.fire({
+					title: 'Loading',
+					text: 'Please wait...',
+					allowOutsideClick: false,
+					showConfirmButton: false,
+					willOpen: () => {
+						Swal.showLoading()
+					}
+				});
 				e.preventDefault();
 				$.ajax({
 					url: "<?= base_url('user/picklist/insertPicklist') ?>",

@@ -11,7 +11,7 @@ class RackItems_model extends CI_Model
 
 	public function get_all_rack_items($filters = [])
 	{
-		$this->db->select('rack_items.*, rack.sloc, barang.nama_barang, batch.batchnumber, barang.sku, SUM(rack_items.quantity) AS total_quantity');
+		$this->db->select('rack_items.*, rack.sloc, barang.nama_barang, batch.batchnumber, barang.sku, SUM(rack_items.quantity) AS total_quantity,batch.expiration_date');
 		$this->db->from('rack_items');
 		$this->db->join('rack', 'rack_items.id_rack = rack.id_rack', 'left');
 		$this->db->join('barang', 'rack_items.id_barang = barang.id_barang', 'left');

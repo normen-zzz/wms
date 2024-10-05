@@ -146,6 +146,20 @@ class Putaway extends CI_Controller
 
 							if ($this->db->insert('dataputaway', $insert_data)) {
 								$this->Putaway_model->assign_rack_to_item($get_Rack_id, $item_data['id_barang'], $quantity, $item_data['batch_id']);
+								$getNoPutaway = $this->db->query('SELECT no_putaway FROM putaway WHERE id_putaway = ' . $item_data['id_putaway'])->row()->no_putaway;	
+								// log
+								$log_data = [
+									'id_barang' => $item_data['id_barang'],
+									'id_batch' => $item_data['batch_id'],
+									'id_rack' => $get_Rack_id,
+									'condition' => 'out',
+									'qty' => $quantity,
+									'at' => date('Y-m-d H:i:s'),
+									'by' => $this->session->userdata('id_users'),
+									'no_document' => $getNoPutaway,
+								];
+								 $this->db->insert('wms_log', $log_data);
+								
 							} else {
 								echo json_encode([
 									'status' => 'error',
