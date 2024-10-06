@@ -202,7 +202,7 @@
 													</thead>
 													<tbody>
 														<?php foreach ($data_putaway as $dtl) { ?>
-														  <!-- <?php if (!isset($dtl['status_row']) || $dtl['status_row'] != 1) : ?> -->
+														  <?php if ( $dtl['status_putaway'] == 0 ) : ?>
 															<tr>
 																<td data-label="SKU"><?= $dtl['sku'] ?></td>
 																<td data-label="Nama Barang"><?= $dtl['nama_barang'] ?></td>
@@ -257,10 +257,11 @@
 																	<input type="hidden" name="putaway_field[<?= $dtl['id_barang'] ?>][id_barang]" value="<?= $dtl['id_barang'] ?>">
 																	<input type="hidden" name="putaway_field[<?= $dtl['id_barang'] ?>][batch_id]" value="<?= $dtl['batch_id'] ?>">
 																	<input type="hidden" name="putaway_field[<?= $dtl['id_barang'] ?>][id_inbound]" value="<?= $dtl['id_inbound'] ?>">
+																	<input type="hidden" name="putaway_field[<?= $dtl['id_barang'] ?>][id_data_inbound]" value="<?= $dtl['id_data_inbound'] ?>">
 																	<input type="hidden" name="putaway_field[<?= $dtl['id_barang'] ?>][id_putaway]" value="<?= $dtl['id_putaway'] ?>">
 																</td>
 															</tr>
-															<!-- <?php endif; ?> -->
+															<?php endif; ?>
 															<?php } ?>
 														</tbody>
 													</table>
@@ -394,6 +395,7 @@
 											'batch_id': batch_id,
 											'id_inbound': $(`input[name="putaway_field[${id_barang}][id_inbound]"]`).val(),
 											'id_putaway': $(`input[name="putaway_field[${id_barang}][id_putaway]"]`).val(),
+											'id_data_inbound': $(`input[name="putaway_field[${id_barang}][id_data_inbound]`).val(),
 											'rack_ids': rack_ids,
 											'quantities': quantities
 									}

@@ -142,9 +142,14 @@ class Putaway extends CI_Controller
 								'uuid' => uniqid(),
 								'id_barang' => $item_data['id_barang'],
 								'batch_id' => $item_data['batch_id'],
-								'status' => 0,
+								'status' => 1,
 								'status_row' => 1
 							];
+
+							// update status putaway per row
+							$this->db->where('id_data_inbound', $item_data['id_data_inbound']);
+							$this->db->update('data_inbound', ['status_putaway' => 1]);
+
 
 							if ($this->db->insert('dataputaway', $insert_data)) {
 								$this->Putaway_model->assign_rack_to_item($get_Rack_id, $item_data['id_barang'], $quantity, $item_data['batch_id']);
