@@ -97,7 +97,7 @@ class Purchaseorder_model extends CI_Model
 	public function get_last_counter($prefix = null)
 	{
 		if ($prefix === null) {
-			$prefix = 'PO/' . date('ymd') . '/';
+			$prefix = 'PO/';
 		}
 
 		$this->db->select('no_purchaseorder');
@@ -130,7 +130,7 @@ class Purchaseorder_model extends CI_Model
 	public function get_last_counter_pickingslip($prefix = null)
 	{
 		if ($prefix === null) {
-			$prefix = 'PS/' . date('ymd') . '/';
+			$prefix = 'PS/';
 		}
 
 		$this->db->select('no_pickingslip');

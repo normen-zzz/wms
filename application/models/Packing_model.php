@@ -45,7 +45,7 @@ class Packing_model extends CI_Model
 	public function get_last_counter($prefix = null)
 	{
 		if ($prefix === null) {
-			$prefix = 'PACK/' . date('ymd') . '/';
+			$prefix = 'PACK/';
 		}
 
 		$this->db->select('no_packing');

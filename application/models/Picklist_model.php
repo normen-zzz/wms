@@ -53,7 +53,7 @@ class Picklist_model extends CI_Model
 	public function get_last_counter($prefix = null)
 	{
 			if ($prefix === null) {
-					$prefix = 'PL/' . date('ymd') . '/';
+					$prefix = 'PL/';
 			}
 
 			$this->db->select('no_picklist');
