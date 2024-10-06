@@ -24,6 +24,7 @@ class Picklist_model extends CI_Model
 		}
 
 		$this->db->where('is_deleted', 0);
+		$this->db->limit(10);
 
 		$fetched_records = $this->db->get();
 		$items = $fetched_records->result_array();
