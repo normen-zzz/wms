@@ -69,43 +69,37 @@
 
 										<div class="table-responsive">
 											<table class="table" id="table1">
-												<thead>
-													<tr>
-														<th>No</th>
-														<th>SKU</th>
-														<th>Nama Barang</th>
-														<th>ID Batch</th>
-														<th>Sloc Rack</th>
-														<th>Expiration date</th>
-														<th>Quantity</th>
-													</tr>
-												</thead>
-												<tbody>
-													<?php if (!empty($rack_items)) : ?>
-														<?php $number = 1; ?>
-														<?php foreach ($rack_items as $item) : ?>
+													<thead>
 															<tr>
-																<td><?= $number++ ?></td>
-																<td><?= $item->sku ?></td>
-																<td><?= $item->nama_barang ?></td>
-																<td><?= $item->batchnumber ?></td>
-																<td><?= $item->sloc ?></td>
-																<td><?= date('d-m-Y',strtotime($item->expiration_date))  ?></td>
-																<td><?= $item->total_quantity ?></td>
+																	<th>No</th>
+																	<th>SKU</th>
+																	<th>Nama Barang</th>
+																	<th>ID Batch</th>
+																	<th>Sloc Rack</th>
+																	<th>Expiration date</th>
+																	<th>Quantity</th>
 															</tr>
-														<?php endforeach; ?>
-													<?php else : ?>
-														<tr>
-															<td colspan="6" class="text-center">No results found</td>
-														</tr>
-													<?php endif; ?>
-												</tbody>
+													</thead>
+													<tbody>
+															<?php if (!empty($rack_items)) : ?>
+																	<?php $number = 1; ?>
+																	<?php foreach ($rack_items as $item) : ?>
+																			<tr>
+																					<td><?= $number++ ?></td>
+																					<td><?= $item->sku ?></td>
+																					<td><?= $item->nama_barang ?></td>
+																					<td><?= $item->batchnumber ?></td>
+																					<td><?= $item->sloc ?></td>
+																					<td><?= date('d-m-Y', strtotime($item->expiration_date)) ?></td>
+																					<td><?= $item->total_quantity ?></td>
+																			</tr>
+																	<?php endforeach; ?>
+															<?php endif; ?>
+													</tbody>
 											</table>
-										</div>
+									</div>
 									</div>
 								</div>
-
-
 								<!-- Basic Tables end -->
 							</div>
 						</div>
@@ -132,6 +126,17 @@
 	<script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
 
+	<script>
+		$(document).ready(function() {
+				$('#tblinventory').DataTable({
+						language: {
+								emptyTable: "No results found"
+						}
+				});
+		});
+
+
+	</script>
 
 </body>
 
