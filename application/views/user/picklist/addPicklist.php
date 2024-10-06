@@ -144,7 +144,21 @@
 			//loading swal
 			$('#picklistForm').on('submit', function(e) {
 				//loading swal
-				  const batchInputs = $('input[name="batch[]"]');
+
+				const barang = $('select[name="barang[]"]');
+				for (let i = 0; i < barang.length; i++) {
+						if (barang[i].value === '-' || barang[i].value.trim() === '') { 
+								Swal.fire({
+										title: 'Error!',
+										text: 'Barang tidak boleh kosong!',
+										icon: 'error',
+										confirmButtonText: 'OK'
+								});
+								return; 
+						}
+				}
+
+				const batchInputs = $('input[name="batch[]"]');
 					for (let i = 0; i < batchInputs.length; i++) {
 							if (batchInputs[i].value.trim() === '') {
 									Swal.fire({

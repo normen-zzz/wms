@@ -161,6 +161,45 @@
 
 			$('#purchaseorderForm').on('submit', function(e) {
 				e.preventDefault();
+
+				const barang = $('select[name="barang[]"]');
+				for (let i = 0; i < barang.length; i++) {
+						if (barang[i].value === '-' || barang[i].value.trim() === '') { 
+								Swal.fire({
+										title: 'Error!',
+										text: 'Barang tidak boleh kosong!',
+										icon: 'error',
+										confirmButtonText: 'OK'
+								});
+								return; 
+						}
+				}
+
+	    	const batchInputs = $('select[name="batch[]"]');
+				for (let i = 0; i < batchInputs.length; i++) {
+						if (batchInputs[i].value === '-' || batchInputs[i].value.trim() === '') { 
+								Swal.fire({
+										title: 'Error!',
+										text: 'Batch tidak boleh kosong!',
+										icon: 'error',
+										confirmButtonText: 'OK'
+								});
+								return; 
+						}
+				}
+
+				const qtyInputs = $('input[name="qty[]"]');
+				for (let i = 0; i < qtyInputs.length; i++) {
+						if (qtyInputs[i].value.trim() === '') {
+								Swal.fire({
+										title: 'Error!',
+										text: 'Quantity tidak boleh kosong!',
+										icon: 'error',
+										confirmButtonText: 'OK'
+								});
+								return; 
+						}
+				}
 				
 				Swal.fire({
 					title: 'Please wait...',
