@@ -104,10 +104,10 @@
     <script src="<?= base_url().'/' ?>assets/compiled/js/app.js"></script>
 
     <script src="<?= base_url().'/' ?>assets/extensions/apexcharts/apexcharts.min.js"></script>
-    <script src="<?= base_url().'/' ?>assets/static/js/pages/dashboard.js"></script>
 	<script>
     var incomingItemsData = <?php echo $incoming_chart_data; ?>;
     var outgoingItemsData = <?php echo $outgoing_chart_data; ?>;
+	
     var monthsIncoming = <?php echo $incoming_months; ?>;
     var monthsOutgoing = <?php echo $outgoing_months; ?>;
 
