@@ -443,19 +443,19 @@
 
 
 			$(document).on('click', '.add-row', function() {
-					var id_barang = $('input[name^="putaway_field"]').attr('name').match(/\[(.*?)\]/)[1]; // Get id_barang
+					var $table = $(this).closest('table');
+					var id_barang = $table.closest('tr').find('input[name^="putaway_field"]').attr('name').match(/\[(.*?)\]/)[1]; 
 					var newRow = '<tr>' +
 							'<td><input type="text" name="putaway_field[' + id_barang + '][id_rack][]" class="form-control" placeholder="Enter Rack"></td>' +
 							'<td><input type="text" name="putaway_field[' + id_barang + '][quantity][]" class="form-control" placeholder="Enter Quantity"></td>' +
 							'<td><button type="button" class="btn btn-sm btn-danger remove-row">Remove</button></td>' +
 							'</tr>';
-					$('#choosenRack tbody').append(newRow);
+					$table.find('tbody').append(newRow);
 			});
 
 			$(document).on('click', '.remove-row', function() {
 					$(this).closest('tr').remove();
 			});
-
 
 			$('#table').on('input', '.quantity-input', function() {
 				calculateTotalQuantity();
