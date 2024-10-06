@@ -42,12 +42,29 @@ class Packing_model extends CI_Model
 
 	}
 
-    public function get_last_counter()
+	public function get_last_counter($prefix = null)
 	{
-		$this->db->select_max('id_packing');
-		$query = $this->db->get('packing');
+		if ($prefix === null) {
+			$prefix = 'PACK/' . date('ymd') . '/';
+		}
+
+		$this->db->select('no_packing');
+		$this->db->from('packing');
+		$this->db->like('no_packing', $prefix, 'after');
+		$this->db->order_by('no_packing', 'DESC');
+		$this->db->limit(1);
+			
+		$query = $this->db->get();
 		$result = $query->row();
-		return $result->id_packing ? (int)$result->id_packing : 0;
+
+		if ($result) {
+			$parts = explode('/', $result->no_packing);
+			$lastCounter = isset($parts[2]) ? (int)$parts[2] : 0;
+		} else {
+			$lastCounter = 0;
+		}
+
+		return $lastCounter;
 	}
 
 }

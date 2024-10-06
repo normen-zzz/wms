@@ -164,6 +164,7 @@ class Purchaseorder extends CI_Controller
 		foreach ($batchOptions->result() as $batch) {
 			$batchOptionsArray[] = array('id' => $batch->id_batch, 'name' => $batch->batchnumber);
 		}
+		// var_dump($batchOptionsArray);exit;
 		echo json_encode(['batch_options' => $batchOptionsArray]);
 	}
 
