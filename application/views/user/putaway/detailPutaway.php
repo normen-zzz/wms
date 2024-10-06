@@ -63,6 +63,7 @@
 														<th>Batch</th>
 														<th>Qty</th>
 														<th>Racks</th>
+														<th>Expiration Date</th>
 													</tr>
 												</thead>
 												<tbody>
@@ -73,6 +74,7 @@
 															<td><?= $item['batchnumber'] ?></td>
 															<td><?= $item['qty_putaway'] ?></td>
 															<td><?= $item['sloc'] ?></td>
+															<td><?= $item['expiration_date'] ?></td>
 														</tr>
 													<?php endforeach; ?>
 												</tbody>

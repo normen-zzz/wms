@@ -170,7 +170,7 @@ class Putaway_model extends CI_Model
 	// get details
 	public function get_details_putaway($uuid)
 	{
-		$this->db->select('dataputaway.*,  users.nama as user_name, putaway.no_putaway, barang.id_barang, barang.nama_barang, barang.sku, batch.batchnumber, rack.sloc, rack.zone, rack.rack, rack.row, rack.column_rack');
+		$this->db->select('dataputaway.*,  users.nama as user_name, putaway.no_putaway, barang.id_barang, barang.nama_barang, barang.sku, batch.batchnumber, batch.expiration_date, rack.sloc, rack.zone, rack.rack, rack.row, rack.column_rack');
 		$this->db->from('dataputaway');
 		$this->db->join('putaway', 'dataputaway.id_putaway = putaway.id_putaway', 'left');
 		$this->db->join('users', 'putaway.id_users = users.id_users', 'left');
