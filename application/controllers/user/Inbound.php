@@ -6,6 +6,7 @@ class Inbound extends CI_Controller
 
 	public function __construct()
 	{
+		$this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));");
 		parent::__construct();
 		$this->load->model('ReceivingInbound_model');
 	}

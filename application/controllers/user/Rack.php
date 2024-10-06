@@ -13,6 +13,7 @@ class Rack extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
+		$this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));");
 		is_login();
 		date_default_timezone_set('Asia/Jakarta');
 		$this->load->model('Rack_model', 'rack');
