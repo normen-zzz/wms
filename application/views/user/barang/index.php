@@ -24,11 +24,14 @@
 		src: url('<?= base_url('assets/fonts/LibreBarcode128-Regular.ttf'); ?>') format('truetype');
 	}
 
-	.barcode {
-		font-family: 'Libre Barcode 128';
-		font-size: 48px;
-		letter-spacing: 5px;
-	}
+	@media (max-width: 768px) {
+  #table1 {
+    font-size: 0.8rem;
+  }
+  #table1 th, #table1 td {
+    padding: 0.2rem;
+  }
+}
 </style>
 
 <body>
@@ -54,48 +57,43 @@
 								<!-- Basic Tables start -->
 
 								<div class="card">
-									<div class="card-header">
-										<h5 class="card-title">
-											<?= $subtitle2 ?>
-										</h5>
-										<button type="button" data-bs-toggle="modal" data-bs-target="#modalAddBarang" class="btn btn-primary">Add Barang</button>
-										<!-- btn modal add barang bulky with excel -->
-										<button type="button" data-bs-toggle="modal" data-bs-target="#modalAddBarangBulky" class="btn btn-primary">Add Barang Bulky</button>
-									</div>
+										<div class="card-header">
+											<h5 class="card-title"><?= $subtitle2 ?></h5>
+											<button type="button" data-bs-toggle="modal" data-bs-target="#modalAddBarang" class="btn btn-primary">Add Barang</button>
+											<!-- btn modal add barang bulky with excel -->
+											<button type="button" data-bs-toggle="modal" data-bs-target="#modalAddBarangBulky" class="btn btn-primary">Add Barang Bulky</button>
+										</div>
 
-									<div class="card-body">
-										<div class="table-responsive">
-											<table class="table" id="table1">
-												<thead>
-													<tr>
-														<th>SKU</th>
-														<th>Nama Barang</th>
-														<th>UOM</th>
-														<th>Status</th>
-														<th>Action</th>
-													</tr>
-												</thead>
-												<tbody>
-													<?php foreach ($barang->result_array() as $barang1) { ?>
-
-
+										<div class="card-body">
+											<div class="table-responsive">
+												<table class="table table-sm" id="table1">
+													<thead>
 														<tr>
-															<td><?= $barang1['sku'] ?></td>
-															<td><?= $barang1['nama_barang'] ?></td>
-															<td><?= $barang1['uom'] ?></td>
-															<td><?= getStatusBarang($barang1['is_deleted'])  ?></td>
-															<td>
-																<button class="btn btn-warning btn-sm edit-btn" data-id_barang="<?= $barang1['id_barang'] ?>">Edit</button>
-																<button class="btn btn-danger btn-sm delete-btn" data-id_barang="<?= $barang1['id_barang'] ?>">Delete</button>
-															</td>
+															<th>SKU</th>
+															<th>Nama Barang</th>
+															<th>UOM</th>
+															<th>Status</th>
+															<th>Action</th>
 														</tr>
-													<?php } ?>
-												</tbody>
-											</table>
+													</thead>
+													<tbody>
+														<?php foreach ($barang->result_array() as $barang1) { ?>
+															<tr>
+																<td><?= $barang1['sku'] ?></td>
+																<td><?= $barang1['nama_barang'] ?></td>
+																<td><?= $barang1['uom'] ?></td>
+																<td><?= getStatusBarang($barang1['is_deleted'])  ?></td>
+																<td>
+																	<button class="btn btn-warning btn-sm edit-btn" data-id_barang="<?= $barang1['id_barang'] ?>">Edit</button>
+																	<button class="btn btn-danger btn-sm delete-btn" data-id_barang="<?= $barang1['id_barang'] ?>">Delete</button>
+																</td>
+															</tr>
+														<?php } ?>
+													</tbody>
+												</table>
+											</div>
 										</div>
 									</div>
-								</div>
-
 
 								<!-- Basic Tables end -->
 							</div>
@@ -188,7 +186,7 @@
 							<form id="editForm">
 								<div class="modal-header">
 									<h5 class="modal-title" id="editModalLabel">Edit Barang</h5>
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
 										<span aria-hidden="true">&times;</span>
 									</button>
 								</div>
@@ -208,7 +206,7 @@
 									</div>
 								</div>
 								<div class="modal-footer">
-									<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 									<button type="submit" class="btn btn-primary">Save changes</button>
 								</div>
 							</form>
