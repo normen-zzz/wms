@@ -6,9 +6,10 @@ class Profile extends CI_Controller
 
     public function __construct()
     {
-        $this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));");
+       
         parent::__construct();
         is_login();
+        $this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));");
         date_default_timezone_set('Asia/Jakarta');
         $this->load->model('User_model', 'user');
         $this->load->model('Admin_model', 'admin');
