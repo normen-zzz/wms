@@ -80,7 +80,7 @@
 
 
 														<tr>
-															<td><?= $barang1['sku'] ?>]</td>
+															<td><?= $barang1['sku'] ?></td>
 															<td><?= $barang1['nama_barang'] ?></td>
 															<td><?= $barang1['uom'] ?></td>
 															<td><?= getStatusBarang($barang1['is_deleted'])  ?></td>
