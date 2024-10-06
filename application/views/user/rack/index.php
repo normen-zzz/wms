@@ -557,7 +557,7 @@
 																	`);
 
 									// printWindow.document.write(`<li>SKU: ${item.sku}, Batch: ${item.batchnumber}, Total Quantity: ${item.total_quantity}</li>`);
-									
+
 
 
 
@@ -599,6 +599,19 @@
 		//add barang bulky form submit jquery with loading
 		$('#formAddRackBulky').submit(function(e) {
 			e.preventDefault();
+
+			// show loading  swal tanpa confirm
+			Swal.fire({
+				title: 'Loading...',
+				allowOutsideClick: false,
+				showConfirmButton: false,
+				onBeforeOpen: () => {
+					Swal.showLoading();
+				}
+			});
+
+			
+			
 
 			var formData = new FormData(this);
 
