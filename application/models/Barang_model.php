@@ -7,7 +7,6 @@ class Barang_model extends CI_Model
 	{
 		$this->db->select('*');
 		$this->db->from('barang');
-		$this->db->where('is_deleted', 0);
 		return $this->db->get();
 	}
 	

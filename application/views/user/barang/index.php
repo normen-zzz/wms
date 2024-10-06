@@ -85,7 +85,7 @@
 																<td><?= getStatusBarang($barang1['is_deleted'])  ?></td>
 																<td>
 																	<button class="btn btn-warning btn-sm edit-btn" data-id_barang="<?= $barang1['id_barang'] ?>">Edit</button>
-																	<button class="btn btn-danger btn-sm delete-btn" data-id_barang="<?= $barang1['id_barang'] ?>">Delete</button>
+																	<button class="btn btn-danger btn-sm delete-btn" data-id_barang="<?= $barang1['id_barang'] ?>">Nonactive</button>
 																</td>
 															</tr>
 														<?php } ?>
@@ -200,10 +200,10 @@
 										<label for="nama_barang">Nama Barang</label>
 										<input type="text" class="form-control" id="editNamaBarang" name="nama_barang" required>
 									</div>
-									<!-- <div class="form-group">
+									<div class="form-group">
 										<label for="uom">UOM</label>
 										<input type="text" class="form-control" id="editUom" name="uom" required>
-									</div> -->
+									</div>
 								</div>
 								<div class="modal-footer">
 									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
