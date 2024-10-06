@@ -68,10 +68,9 @@
 
 
 										<div class="table-responsive">
-											<table class="table" id="table1">
+											<table class="table" id="tblinventory">
 													<thead>
 															<tr>
-																	<th>No</th>
 																	<th>SKU</th>
 																	<th>Nama Barang</th>
 																	<th>ID Batch</th>
@@ -82,10 +81,8 @@
 													</thead>
 													<tbody>
 															<?php if (!empty($rack_items)) : ?>
-																	<?php $number = 1; ?>
 																	<?php foreach ($rack_items as $item) : ?>
 																			<tr>
-																					<td><?= $number++ ?></td>
 																					<td><?= $item->sku ?></td>
 																					<td><?= $item->nama_barang ?></td>
 																					<td><?= $item->batchnumber ?></td>
@@ -128,12 +125,14 @@
 
 	<script>
 		$(document).ready(function() {
-				$('#tblinventory').DataTable({
+			$('#tblinventory').DataTable({
 						language: {
 								emptyTable: "No results found"
-						}
+						},
+						order: [[4, 'asc']]
 				});
 		});
+
 
 
 	</script>

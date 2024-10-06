@@ -5,11 +5,12 @@ class Pickingslip_model extends CI_Model
 {
 	function getDataPickingslip()
 	{
-		$this->db->select('a.*,b.no_purchaseorder,b.customer');
-		$this->db->from('pickingslip a');
-		$this->db->join('purchaseorder b','a.id_purchaseorder = b.id_purchaseorder','right');
-		$this->db->where('is_void', 0);
-		return $this->db->get();
+			$this->db->select('a.*, b.no_purchaseorder, b.customer');
+			$this->db->from('pickingslip a');
+			$this->db->join('purchaseorder b', 'a.id_purchaseorder = b.id_purchaseorder', 'right');
+			$this->db->where('a.is_void', 0);
+			$this->db->order_by('a.created_at', 'DESC');
+			return $this->db->get();
 	}
 
 	

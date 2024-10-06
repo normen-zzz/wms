@@ -51,9 +51,10 @@
 
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                            <table class="table" id="table1">
+                                            <table class="table" id="tbldo">
                                                 <thead>
                                                     <tr>
+														<th>No</th>
                                                         <th>No Do</th>
                                                         <th>No Packing</th>
                                                         <th>No Pickingslip</th>
@@ -66,6 +67,7 @@
                                                 <tbody>
                                                     <?php foreach ($deliveryorder->result_array() as $deliveryorder1) { ?>
                                                         <tr>
+															<td></td>
                                                             <td><?= $deliveryorder1['ext_deliveryorder'] ?></td>
                                                             <td><?= $deliveryorder1['no_packing'] ?></td>
                                                             <td><?= $deliveryorder1['no_pickingslip'] ?></td>
@@ -110,6 +112,22 @@
     <script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
     <script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
+	<script>
+		// tblpickingslip datatable
+		$(document).ready(function() {
+			$('#tbldo').DataTable({
+				"order": [[4, "desc"]],
+				"columnDefs": [{
+					"searchable": false,
+					"orderable": false,
+					"targets": 0
+				}],
+					rowCallback: function(row, data, index) {
+				$('td:eq(0)', row).html(index + 1); 
+			}
+			});
+		});
+	</script>
 
 
 

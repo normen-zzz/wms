@@ -8,6 +8,8 @@ class Packing_model extends CI_Model
         $this->db->select('a.*,b.no_pickingslip');
         $this->db->from('packing a');
         $this->db->join('pickingslip b', 'a.id_pickingslip =  b.id_pickingslip');
+		// order by created_at
+		$this->db->order_by('a.created_at', 'DESC');
         return $this->db->get(); 
     }
 
@@ -25,6 +27,7 @@ class Packing_model extends CI_Model
       
        
         $this->db->where('b.uuid', $uuidPacking);
+		// order by created_at
         return $this->db->get(); 
     }
 

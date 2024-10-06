@@ -52,9 +52,10 @@
 
 									<div class="card-body">
 										<div class="table-responsive">
-											<table class="table" id="table1">
+											<table class="table" id="tblputaway">
 												<thead>
 													<tr>
+														<th>No</th>
 														<th>No Putaway</th>
 														<th>No Inbound</th>
 														<th>Assign to</th>
@@ -66,6 +67,7 @@
 												<tbody>
 													<?php foreach ($putaway as $p) : ?>
 														<tr>
+															<td></td>
 															<td><?= $p->no_putaway ?></td>
 															<td><?= $p->no_inbound ?></td>
 															<td><?= $p->user_name ?></td>
@@ -108,7 +110,19 @@
 		<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
 		<script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
 		<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
-
+		<script>
+			$('#tblputaway').DataTable({
+				"order": [[5, "desc"]],
+				"columnDefs": [{
+						"searchable": false,
+						"orderable": false,
+						"targets": 0
+					}],
+					rowCallback: function(row, data, index) {
+							$('td:eq(0)', row).html(index + 1); 
+					}
+			});
+		</script>
 
 </body>
 

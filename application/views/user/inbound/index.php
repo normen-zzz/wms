@@ -53,9 +53,9 @@
 												<table class="table" id="inboundTable">
 														<thead>
 																<tr>
+																		<th>No</th>
 																		<th>No Inbound</th>
 																		<th>No PL</th>
-																		
 																		<th>Created At</th>
 																		<th>Status</th>
 																		<th>Action</th>
@@ -65,6 +65,7 @@
 																<?php if (!empty($inbound_data)) { ?>
 																		<?php foreach ($inbound_data as $inbound) { ?>
 																				<tr>
+																					  <td></td>
 																						<td><?= $inbound->no_inbound ?></td>
 																						<td><?= $inbound->no_picklist ?></td>
 																						
@@ -141,7 +142,17 @@
 		}
 
 		// data table inboundTable
-		$('#inboundTable').DataTable();
+		$('#inboundTable').DataTable({
+			"order": [[4, "desc"]],
+			"columnDefs": [{
+					"searchable": false,
+					"orderable": false,
+					"targets": 0
+				}],
+				rowCallback: function(row, data, index) {
+            $('td:eq(0)', row).html(index + 1); 
+        }
+		});
 
 		$('#submitInbound').on('click', function () {
 			$('#inboundForm').submit();

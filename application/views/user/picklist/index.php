@@ -52,11 +52,11 @@
 
 									<div class="card-body">
 										<div class="table-responsive">
-											<table class="table" id="table1">
+											<table class="table" id="tblpicklist">
 												<thead>
 													<tr>
+														<th>No</th>
 														<th>No PL</th>
-														
 														<th>Total Qty</th>
 														<th>Status</th>
 														<th>Created At</th>
@@ -66,6 +66,7 @@
 												<tbody>
 													<?php foreach ($pl->result_array() as $pl1) { ?>
 														<tr>
+															<td></td>
 															<td><?= $pl1['no_picklist'] ?></td>
 															
 															<td><?= $pl1['qty'] ?></td>
@@ -156,6 +157,24 @@
 	<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
 
 	<script>
+
+		// datatable tblpicklist
+		$(document).ready(function() {
+			$('#tblpicklist').DataTable({
+				"order": [
+					[4, "desc"]
+				],
+				"columnDefs": [{
+					"searchable": false,
+					"orderable": false,
+					"targets": 0
+				}],
+				rowCallback: function(row, data, index) {
+            $('td:eq(0)', row).html(index + 1); 
+        }
+			});
+		});
+
 		// onclick deleteData
 		function deleteData(id) {
 			Swal.fire({

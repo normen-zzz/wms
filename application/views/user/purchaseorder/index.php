@@ -51,9 +51,10 @@
 
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                            <table class="table" id="table1">
+                                            <table class="table" id="tblpo">
                                                 <thead>
                                                     <tr>
+														<th>No</th>
                                                         <th>No PO</th>
                                                         <th>Customer</th>
                                                         <th>Status</th>
@@ -65,6 +66,7 @@
                                                 <tbody>
                                                     <?php foreach ($po->result_array() as $po1) { ?>
                                                         <tr>
+															<td></td>
                                                             <td><?= $po1['no_purchaseorder'] ?></td>
                                                             <td><?= getNamaCustomer($po1['customer']) ?></td>
 															<td><?= getStatusPurchaseorder($po1['status']) ?></td> 
@@ -111,7 +113,19 @@
     <script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
     <script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
-
+	<script>
+			$('#tblpo').DataTable({
+				"order": [[4, "desc"]],
+				"columnDefs": [{
+						"searchable": false,
+						"orderable": false,
+						"targets": 0
+					}],
+					rowCallback: function(row, data, index) {
+							$('td:eq(0)', row).html(index + 1); 
+					}
+			});
+	</script>																
     
 
 </body>

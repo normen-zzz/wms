@@ -16,7 +16,6 @@ class RackItems_model extends CI_Model
 		$this->db->join('rack', 'rack_items.id_rack = rack.id_rack', 'left');
 		$this->db->join('barang', 'rack_items.id_barang = barang.id_barang', 'left');
 		$this->db->join('batch', 'rack_items.id_batch = batch.id_batch', 'left');
-
 		if (!empty($filters['sku'])) {
 			$this->db->like('barang.sku', $filters['sku']);
 		}
