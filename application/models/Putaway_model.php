@@ -170,26 +170,21 @@ class Putaway_model extends CI_Model
 	// get details
 	public function get_details_putaway($uuid)
 	{
-		$this->db->select('dataputaway.*,  users.nama as user_name, putaway.no_putaway, di.no_inbound, ib.batch_id, ib.good_qty, barang.id_barang, barang.nama_barang, barang.sku, batch.batchnumber');
+		$this->db->select('dataputaway.*,  users.nama as user_name, putaway.no_putaway, barang.id_barang, barang.nama_barang, barang.sku, batch.batchnumber, rack.sloc, rack.zone, rack.rack, rack.row, rack.column_rack');
 		$this->db->from('dataputaway');
 		$this->db->join('putaway', 'dataputaway.id_putaway = putaway.id_putaway', 'left');
 		$this->db->join('users', 'putaway.id_users = users.id_users', 'left');
-		$this->db->join('data_inbound ib', 'putaway.id_inbound = ib.id_inbound', 'left');
-		$this->db->join('inbound di', 'di.id_inbound = putaway.id_inbound', 'left');
-		$this->db->join('barang', 'ib.id_barang = barang.id_barang', 'left');
-		$this->db->join('batch', 'ib.batch_id = batch.id_batch', 'left');
+		$this->db->join('barang', 'dataputaway.id_barang = barang.id_barang', 'left');
+		$this->db->join('batch', 'dataputaway.batch_id = batch.id_batch', 'left');
 		$this->db->where('putaway.uuid', $uuid);
-		// $this->db->where('dataputaway.status !=', 2);
+		$this->db->join('rack', 'dataputaway.id_rack = rack.id_rack', 'left');
 		$this->db->order_by('dataputaway.created_at', 'DESC');
 
+
 		$result = $this->db->get()->result_array();
-
-		foreach ($result as &$item) {
-			$item['existing_racks'] = $this->get_existing_racks($item['id_barang'], $item['batch_id']);
-		}
-
 		return !empty($result) ? $result : [];
 	}
+
 	public function getDataInbound($uuid) {
 		//from data_inbound where uuid on join inbound,join barang,batch
 		$this->db->select('data_inbound.good_qty,data_inbound.bad_qty,data_inbound.received_qty,inbound.no_inbound, barang.sku, barang.nama_barang, batch.batchnumber,batch.expiration_date');
