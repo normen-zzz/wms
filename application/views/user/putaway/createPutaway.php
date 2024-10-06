@@ -202,7 +202,7 @@
 													</thead>
 													<tbody>
 														<?php foreach ($data_putaway as $dtl) { ?>
-														  <?php if (!isset($dtl['status_row']) || $dtl['status_row'] != 1) : ?>
+														  <!-- <?php if (!isset($dtl['status_row']) || $dtl['status_row'] != 1) : ?> -->
 															<tr>
 																<td data-label="SKU"><?= $dtl['sku'] ?></td>
 																<td data-label="Nama Barang"><?= $dtl['nama_barang'] ?></td>
@@ -260,10 +260,11 @@
 																	<input type="hidden" name="putaway_field[<?= $dtl['id_barang'] ?>][id_putaway]" value="<?= $dtl['id_putaway'] ?>">
 																</td>
 															</tr>
-															<?php endif; ?>
+															<!-- <?php endif; ?> -->
 															<?php } ?>
 														</tbody>
 													</table>
+													<input type="hidden" name="id_putaway" value="<?= $dtl['id_putaway'] ?>">
 													<button type="button" id="finishPutaway" class="btn btn-success">Finish Putaway</button>
 											</form>
 										</div>
@@ -426,7 +427,7 @@
 								$.ajax({
 										url: "<?= base_url('user/putaway/finishPutaway') ?>",
 										type: "POST",
-										data: { id_picklist: $('input[name="id_putaway"]').val() },
+										data: { id_putaway: $('input[name="id_putaway"]').val() },
 										success: function(response) {
 												Swal.fire('Finished!', response.message, 'success');
 											 	if (result.isConfirmed) {

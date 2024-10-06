@@ -22,19 +22,21 @@ class Putaway_model extends CI_Model
 
 	public function get_putaway_details($uuid)
 	{
-			$this->db->select('putaway.*, users.nama as user_name, di.no_inbound, ib.batch_id, ib.good_qty, barang.id_barang, barang.nama_barang, barang.sku, b.batchnumber');
+			$this->db->select('putaway.*, users.nama as user_name, di.no_inbound, ib.batch_id, ib.good_qty, barang.id_barang, barang.nama_barang, barang.sku, b.batchnumber, dataputaway.status_row');
 			$this->db->from('putaway');
 			$this->db->join('users', 'putaway.id_users = users.id_users', 'left');
 			$this->db->join('data_inbound ib', 'putaway.id_inbound = ib.id_inbound', 'left');
 			$this->db->join('inbound di', 'di.id_inbound = putaway.id_inbound', 'left');
 			$this->db->join('barang', 'ib.id_barang = barang.id_barang', 'left');
 			$this->db->join('batch b', 'ib.batch_id = b.id_batch', 'left');
-			$this->db->join('dataputaway', 'putaway.id_putaway = dataputaway.id_putaway AND (dataputaway.status_row IS NULL OR dataputaway.status_row != 1)', 'left');
+			$this->db->join('dataputaway', 'putaway.id_putaway = dataputaway.id_putaway', 'left');
 
 			$this->db->where('putaway.uuid', $uuid);
 			$this->db->order_by('putaway.created_at', 'DESC');
 
 			$result = $this->db->get()->result_array();
+
+			// echo $this->db->last_query();
 
 			foreach ($result as &$item) {
 					$item['existing_racks'] = $this->get_existing_racks($item['id_barang'], $item['batch_id']);
@@ -195,7 +197,7 @@ class Putaway_model extends CI_Model
 			return $query->result_array(); 
 	}
 
-	public function update_status_picklist($id_putaway, $status)
+	public function update_status_putaway($id_putaway, $status)
 	{
 		$this->db->where('id_putaway', $id_putaway);
 		$this->db->update('putaway', ['status' => $status]);

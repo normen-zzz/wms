@@ -209,7 +209,7 @@ class Putaway extends CI_Controller
 
 			$update_status = $this->Putaway_model->update_status_putaway($id_putaway, 1);  
 			// $update_status_row = $this->ReceivingInbound_model->update_status_row($id_putaway, 1);
-
+			
 			if ($update_status) {
 					$response = array('status' => 'success', 'message' => 'Putaway process has been successfully completed.');
 			} else {
