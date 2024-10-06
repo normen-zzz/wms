@@ -75,10 +75,10 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'garudacup.id',
-	'username' => 'u1739671_test',
-	'password' => 'eNx]7Y^E~5KJ',
-	'database' => 'u1739671_test',
+	'hostname' => 'localhost',
+	'username' => 'wms_transtama',
+	'password' => 'qv!q01I73',
+	'database' => 'warehouse',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
