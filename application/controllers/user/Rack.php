@@ -180,8 +180,6 @@ class Rack extends CI_Controller
 		}
 	}
 
-
-
 	public function download_template()
 	{
 
@@ -201,6 +199,45 @@ class Rack extends CI_Controller
 		header('Cache-Control: max-age=0');
 		$writer->save('php://output');
 	}
+
+	// activate_rack
+	public function activate_rack($id_rack)
+	{
+		$id_rack = $this->input->post('id');
+
+		if ($id_rack) {
+				$data = array(
+							'is_deleted' => 0,
+				);
+
+				$this->db->where('id_rack', $id_rack);
+				$this->db->update('rack', $data);
+
+				echo json_encode(['status' => 'success']);
+		} else {
+				echo json_encode(['status' => 'error', 'message' => 'Rack ID not provided.']);
+		}
+	}
+
+	// deactivate_rack
+	public function deactivate_rack()
+	{
+			$id_rack = $this->input->post('id');
+
+			if ($id_rack) {
+				$data = array(
+					'is_deleted' => 1,
+				);
+
+				$this->db->where('id_rack', $id_rack);
+				$this->db->update('rack', $data);
+
+				echo json_encode(['status' => 'success']);
+			} else {
+				echo json_encode(['status' => 'error', 'message' => 'Rack ID not provided.']);
+			}
+	}
+
 }
 
 /* End of file User.php */
