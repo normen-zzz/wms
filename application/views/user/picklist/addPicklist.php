@@ -71,9 +71,7 @@
 																</select>
 															</td>
 															<td>
-																
 																<input type="text" name="batch[]" class="form-control mt-2"  placeholder="Input Batch Manually">
-																
 															</td>
 															<td>
 																<input type="text" class="form-control qty" name="qty[]">
@@ -146,6 +144,46 @@
 			//loading swal
 			$('#picklistForm').on('submit', function(e) {
 				//loading swal
+				  const batchInputs = $('input[name="batch[]"]');
+					for (let i = 0; i < batchInputs.length; i++) {
+							if (batchInputs[i].value.trim() === '') {
+									Swal.fire({
+											title: 'Error!',
+											text: 'Batch input tidak boleh kosong!',
+											icon: 'error',
+											confirmButtonText: 'OK'
+									});
+									// stop submit
+									return;
+							}
+					}
+
+					const qtyInputs = $('input[name="qty[]"]');
+					for (let i = 0; i < qtyInputs.length; i++) {
+							if (qtyInputs[i].value.trim() === '') {
+									Swal.fire({
+											title: 'Error!',
+											text: 'Quantity input tidak boleh kosong!',
+											icon: 'error',
+											confirmButtonText: 'OK'
+									});
+									return;
+							}
+					}
+
+					const edInputs = $('input[name="ed[]"]');
+					for (let i = 0; i < edInputs.length; i++) {
+							if (edInputs[i].value.trim() === '') {
+									Swal.fire({
+											title: 'Error!',
+											text: 'Tanggal input tidak boleh kosong!',
+											icon: 'error',
+											confirmButtonText: 'OK'
+									});
+									return;
+							}
+					}
+				
 				Swal.fire({
 					title: 'Loading',
 					text: 'Please wait...',
