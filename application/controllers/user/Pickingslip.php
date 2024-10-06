@@ -93,6 +93,7 @@ class Pickingslip extends CI_Controller
 
 			$id_rack =  $this->pickingslip->getIdRackFromSloc($sloc);
 			$id_pickingslip =  $this->pickingslip->getIdPickingslipFromUuid($uuid);
+			$nodoc_pickingslip = $this->pickingslip->getNoDocumentPickingslip($uuid);
 
 			$getLastQtyRackItems = $this->pickingslip->getLastQtyRackItems($id_barang, $id_batch, $id_rack['id_rack']);
 
@@ -109,6 +110,19 @@ class Pickingslip extends CI_Controller
 			$this->pickingslip->insert_datapickingslip($dataPickingslip);
 			$this->db->update('datapurchaseorder', ['status' => 1], ['id_datapurchaseorder' => $id_datapurchaseorder]);
 			$this->db->update('rack_items', ['quantity' => $getLastQtyRackItems - $qty], ['id_barang' => $id_barang, 'id_batch' => $id_batch, 'id_rack' => $id_rack['id_rack']]);
+			$dataLog = [
+				
+				'id_barang' => $id_barang,
+				'id_batch' => $id_batch,
+				'id_rack' =>  $id_rack['id_rack'],
+				'condition' => 'out',
+				'qty' => $qty,
+				'at' => date('Y-m-d H:i:s'),
+				'by' =>  $this->session->userdata('id_users'),
+				'no_document' => $nodoc_pickingslip,
+				'description' => 'Picking Slip'
+			];
+			$this->db->insert('wms_log', $dataLog);
 		}
 
 		echo json_encode([

@@ -177,6 +177,15 @@ class Pickingslip_model extends CI_Model
 		 return $query['status'];
 	}
 
+	// getNoDocumentPickingslip
+	public function getNoDocumentPickingslip($uuid) {
+		$this->db->select('no_pickingslip');
+		$this->db->from('pickingslip');
+		$this->db->where('uuid', $uuid);
+		$query = $this->db->get()->row_array();
+		return $query['no_pickingslip'];
+	}
+
 	
 
 
