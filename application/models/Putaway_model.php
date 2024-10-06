@@ -130,7 +130,7 @@ class Putaway_model extends CI_Model
 	public function get_last_counter($prefix = null)
 	{
 			if ($prefix === null) {
-					$prefix = 'PUT/' . date('ymd') . '/';
+					$prefix = 'PUT/';
 			}
 
 			$this->db->select('no_putaway');
