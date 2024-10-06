@@ -56,6 +56,8 @@ class Purchaseorder_model extends CI_Model
 			$this->db->where("barang.nama_barang LIKE '%" . $this->db->escape_like_str($searchTerm) . "%' OR barang.sku LIKE '%" . $this->db->escape_like_str($searchTerm) . "%'");
 		}
 		$this->db->where('is_deleted', 0);
+		// group by barang.id_barang dan batch.id_batch dan;
+		$this->db->group_by(['rack_items.id_barang']);
 
 		$fetched_records = $this->db->get();
 		$items = $fetched_records->result_array();
@@ -84,7 +86,7 @@ class Purchaseorder_model extends CI_Model
 
 	public function getBatchBarang($id_barang)
 	{
-		return $this->db->query('SELECT  b.batchnumber,b.id_batch FROM rack_items AS a INNER JOIN batch AS b ON a.id_batch = b.id_batch WHERE a.id_barang = ' . $id_barang . ' AND a.quantity > 0 ');
+		return $this->db->query('SELECT  b.batchnumber,b.id_batch FROM rack_items AS a INNER JOIN batch AS b ON a.id_batch = b.id_batch WHERE a.id_barang = ' . $id_barang . ' AND a.quantity > 0 GROUP BY b.id_batch');
 	}
 
 	public function checkQty($id_barang, $id_batch)

@@ -54,7 +54,7 @@
                                             <table class="table" id="tblpacking">
                                                 <thead>
                                                     <tr>
-														<th>No</th>
+                                                        <th>No</th>
                                                         <th>No Packing</th>
                                                         <th>No Pickingslip</th>
                                                         <th>Created At</th>
@@ -66,19 +66,24 @@
                                                 <tbody>
                                                     <?php foreach ($packing->result_array() as $packing1) { ?>
                                                         <tr>
-															<td></td>
+                                                            <td></td>
                                                             <td><?= $packing1['no_packing'] ?></td>
                                                             <td><?= $packing1['no_pickingslip'] ?></td>
                                                             <td><?= dateindo($packing1['created_at']) ?></td>
                                                             <td><?= getNamaUserById($packing1['created_by']) ?></td>
                                                             <td>
                                                                 <a href="<?= base_url('user/Packing/detail/' . $packing1['uuid']) ?>" class="btn btn-primary btn-sm mb-1">Detail</a>
-                                                                
+
                                                                 <!-- if role admin  -->
-                                                                 <?php if ($this->session->userdata('role_id') == 6 || $this->session->userdata('role_id') == 1) { ?>
-                                                                    
-                                                                <a href="<?= base_url('user/Deliveryorder/createDeliveryorder/' . $packing1['uuid']) ?>" class="btn btn-warning btn-sm mb-1">Create Delivery Order</a>
-                                                                <?php } ?>
+                                                                <?php if ($this->session->userdata('role_id') == 6 || $this->session->userdata('role_id') == 1) { ?>
+
+                                                                    <!-- if status 0 -->
+                                                                    <?php if ($packing1['status'] == 0) { ?>
+
+
+                                                                        <a href="<?= base_url('user/Deliveryorder/createDeliveryorder/' . $packing1['uuid']) ?>" class="btn btn-warning btn-sm mb-1">Create Delivery Order</a>
+                                                                <?php }
+                                                                } ?>
 
 
                                                             </td>
@@ -114,22 +119,24 @@
     <script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
     <script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
-	<script>
-		// tblpickingslip datatable
-		$(document).ready(function() {
-			$('#tblpacking').DataTable({
-				"order": [[3, "desc"]],
-				"columnDefs": [{
-					"searchable": false,
-					"orderable": false,
-					"targets": 0
-				}],
-					rowCallback: function(row, data, index) {
-				$('td:eq(0)', row).html(index + 1); 
-			}
-			});
-		});
-	</script>
+    <script>
+        // tblpickingslip datatable
+        $(document).ready(function() {
+            $('#tblpacking').DataTable({
+                "order": [
+                    [3, "desc"]
+                ],
+                "columnDefs": [{
+                    "searchable": false,
+                    "orderable": false,
+                    "targets": 0
+                }],
+                rowCallback: function(row, data, index) {
+                    $('td:eq(0)', row).html(index + 1);
+                }
+            });
+        });
+    </script>
 
 
 </body>
