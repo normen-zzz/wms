@@ -70,7 +70,7 @@ class Barang extends CI_Controller
     {
         $id_barang = $this->input->post('id_barang');
         $data = array(
-            'sku' => $this->input->post('sku'),
+            // 'sku' => $this->input->post('sku'),
             'nama_barang' => $this->input->post('nama_barang'),
             'uom' => $this->input->post('uom')
         );
@@ -82,6 +82,12 @@ class Barang extends CI_Controller
     public function delete_barang($id_barang)
     {
         $this->barang->delete_barang($id_barang);
+        echo json_encode(['success' => true]);
+    }
+
+	public function activated($id_barang)
+    {
+        $this->barang->activated_barang($id_barang);
         echo json_encode(['success' => true]);
     }
 

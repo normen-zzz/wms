@@ -7,7 +7,7 @@ if (!function_exists('getStatusBarang')) {
 	{
 		if ($is_deleted == 0) {
 			return '<span class="badge bg-success">Active</span>';
-		} else {
+		} else if ($is_deleted == 1) {
 			return '<span class="badge bg-danger">Inactive</span>';
 		}
 	}

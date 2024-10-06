@@ -7,7 +7,6 @@ class Barang_model extends CI_Model
 	{
 		$this->db->select('*');
 		$this->db->from('barang');
-		$this->db->where('is_deleted', 0);
 		return $this->db->get();
 	}
 	
@@ -23,6 +22,12 @@ class Barang_model extends CI_Model
 	public function delete_barang($id_barang) {
     $this->db->where('id_barang', $id_barang);
     return $this->db->update('barang', ['is_deleted' => 1]);
+	}
+
+	
+	public function activated_barang($id_barang) {
+    $this->db->where('id_barang', $id_barang);
+    return $this->db->update('barang', ['is_deleted' => 0]);
 	}
 	
 }
