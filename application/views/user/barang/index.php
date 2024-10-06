@@ -86,7 +86,7 @@
 																<td>
 																	<?php if ($barang1['is_deleted'] == 0): ?>
 																			<button class="btn btn-warning btn-sm edit-btn" data-id_barang="<?= $barang1['id_barang'] ?>">Edit</button>
-																			<button class="btn btn-danger btn-sm delete-btn" data-id_barang="<?= $barang1['id_barang'] ?>">Nonactive</button>
+																			<button class="btn btn-danger btn-sm delete-btn" data-id_barang="<?= $barang1['id_barang'] ?>">Deactivate</button>
 																	<?php endif; ?>
 
 																	<?php if ($barang1['is_deleted'] == 1): ?>

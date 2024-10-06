@@ -7,7 +7,7 @@ class Rack_model extends CI_Model
 	{
 		$this->db->select('*');
 		$this->db->from('rack');
-		$this->db->where('is_deleted', 0);
+		// $this->db->where('is_deleted', 0);
 		return $this->db->get();
 	}
 	

@@ -15,9 +15,9 @@ if (!function_exists('getStatusBarang')) {
 
 // getStatusRack
 if (!function_exists('getStatusRack')) {
-	function getStatusRack($status)
+	function getStatusRack($is_deleted)
 	{
-		if ($status == 0) {
+		if ($is_deleted == 0) {
 			return '<span class="badge bg-success">Active</span>';
 		} else {
 			return '<span class="badge bg-danger">Inactive</span>';

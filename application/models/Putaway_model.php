@@ -116,6 +116,8 @@ class Putaway_model extends CI_Model
 		$this->db->where('ri.id_barang', $id_barang);
 		$this->db->where('ri.id_batch', $batch_id);
 		$this->db->where('ri.quantity >', 0);
+		// where is_deleted = 0
+		$this->db->where('r.is_deleted', 0);
 		$this->db->group_by('ri.id_rack');
 
 		$query = $this->db->get();
