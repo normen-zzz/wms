@@ -79,15 +79,30 @@ class Deliveryorder_model extends CI_Model
         return $result->id_packing;
     }
 
+	public function get_last_counter($prefix = null)
+	{
+		if ($prefix === null) {
+			$prefix = 'DO/' . date('ymd') . '/';
+		}
 
+		$this->db->select('no_deliveryorder');
+		$this->db->from('deliveryorder');
+		$this->db->like('no_deliveryorder', $prefix, 'after');
+		$this->db->order_by('no_deliveryorder', 'DESC');
+		$this->db->limit(1);
+			
+		$query = $this->db->get();
+		$result = $query->row();
 
-    public function get_last_counter()
-    {
-        $this->db->select_max('id_deliveryorder');
-        $query = $this->db->get('deliveryorder');
-        $result = $query->row();
-        return $result->id_deliveryorder ? (int)$result->id_deliveryorder : 0;
-    }
+		if ($result) {
+			$parts = explode('/', $result->no_deliveryorder);
+			$lastCounter = isset($parts[2]) ? (int)$parts[2] : 0;
+		} else {
+			$lastCounter = 0;
+		}
+
+		return $lastCounter;
+	}
 
     public function insertDeliveryOrder($data)
     {
