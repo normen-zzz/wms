@@ -76,9 +76,6 @@
                                                             <td>
                                                                 <a href="<?= base_url('user/Deliveryorder/detail/' . $deliveryorder1['uuid']) ?>" class="btn btn-primary btn-sm mb-1">Detail</a>
                                                                 <a target="_blank" href="<?= base_url('user/Deliveryorder/printDeliveryOrder/' . $deliveryorder1['uuid']) ?>" class="btn btn-primary btn-sm mb-1">Print Delivery Order</a>
-                                                                
-
-
                                                             </td>
                                                         </tr>
                                                     <?php } ?>
