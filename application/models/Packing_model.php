@@ -47,7 +47,7 @@ class Packing_model extends CI_Model
 		$this->db->select_max('id_packing');
 		$query = $this->db->get('packing');
 		$result = $query->row();
-		return $result->id_putaway ? (int)$result->id_putaway : 0;
+		return $result->id_packing ? (int)$result->id_packing : 0;
 	}
 
 }
