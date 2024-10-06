@@ -84,8 +84,14 @@
 																<td><?= $barang1['uom'] ?></td>
 																<td><?= getStatusBarang($barang1['is_deleted'])  ?></td>
 																<td>
-																	<button class="btn btn-warning btn-sm edit-btn" data-id_barang="<?= $barang1['id_barang'] ?>">Edit</button>
-																	<button class="btn btn-danger btn-sm delete-btn" data-id_barang="<?= $barang1['id_barang'] ?>">Nonactive</button>
+																	<?php if ($barang1['is_deleted'] == 0): ?>
+																			<button class="btn btn-warning btn-sm edit-btn" data-id_barang="<?= $barang1['id_barang'] ?>">Edit</button>
+																			<button class="btn btn-danger btn-sm delete-btn" data-id_barang="<?= $barang1['id_barang'] ?>">Nonactive</button>
+																	<?php endif; ?>
+
+																	<?php if ($barang1['is_deleted'] == 1): ?>
+																	<button class="btn btn-info text-white btn-sm activated-btn" data-id_barang="<?= $barang1['id_barang'] ?>">Activated</button>
+																	<?php endif; ?>	
 																</td>
 															</tr>
 														<?php } ?>
@@ -369,7 +375,7 @@
 							success: function(response) {
 								Swal.fire({
 									title: 'Deleted!',
-									text: 'Data barang berhasil dihapus!',
+									text: 'Data barang berhasil dinonaktifkan!',
 									icon: 'success',
 									confirmButtonText: 'OK'
 								}).then((result) => {
@@ -381,7 +387,49 @@
 							error: function(xhr) {
 								Swal.fire({
 									title: 'Error!',
-									text: 'An error occurred while deleting the item.',
+									text: 'An error occurred while nonactivated the item.',
+									icon: 'error',
+									confirmButtonText: 'OK'
+								});
+							}
+						});
+					}
+				});
+			});
+
+			$('.activated-btn').click(function() {
+				var id = $(this).data('id_barang');
+
+				Swal.fire({
+					title: 'Are you sure?',
+					text: "You won't be able to revert this!",
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonColor: '#3085d6',
+					cancelButtonColor: '#d33',
+					confirmButtonText: 'Yes, delete it!',
+					cancelButtonText: 'Cancel'
+				}).then((result) => {
+					if (result.isConfirmed) {
+						$.ajax({
+							url: '<?= base_url("user/barang/activated") ?>/' + id,
+							type: 'POST',
+							success: function(response) {
+								Swal.fire({
+									title: 'Success!',
+									text: 'Data barang berhasil diaktifkan!',
+									icon: 'success',
+									confirmButtonText: 'OK'
+								}).then((result) => {
+									if (result.isConfirmed) {
+										location.reload();
+									}
+								});
+							},
+							error: function(xhr) {
+								Swal.fire({
+									title: 'Error!',
+									text: 'An error occurred while activated the item.',
 									icon: 'error',
 									confirmButtonText: 'OK'
 								});

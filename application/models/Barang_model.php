@@ -23,6 +23,12 @@ class Barang_model extends CI_Model
     $this->db->where('id_barang', $id_barang);
     return $this->db->update('barang', ['is_deleted' => 1]);
 	}
+
+	
+	public function activated_barang($id_barang) {
+    $this->db->where('id_barang', $id_barang);
+    return $this->db->update('barang', ['is_deleted' => 0]);
+	}
 	
 }
 

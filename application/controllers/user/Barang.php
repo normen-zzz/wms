@@ -83,6 +83,12 @@ class Barang extends CI_Controller
         echo json_encode(['success' => true]);
     }
 
+	public function activated($id_barang)
+    {
+        $this->barang->activated_barang($id_barang);
+        echo json_encode(['success' => true]);
+    }
+
     public function download_template()
     {
 
