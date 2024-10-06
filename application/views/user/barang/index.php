@@ -192,18 +192,18 @@
 								</div>
 								<div class="modal-body">
 									<input type="hidden" id="editId" name="id_barang">
-									<div class="form-group">
+									<!-- <div class="form-group">
 										<label for="sku">SKU</label>
 										<input type="text" class="form-control" id="editSku" name="sku" required>
-									</div>
+									</div> -->
 									<div class="form-group">
 										<label for="nama_barang">Nama Barang</label>
 										<input type="text" class="form-control" id="editNamaBarang" name="nama_barang" required>
 									</div>
-									<div class="form-group">
+									<!-- <div class="form-group">
 										<label for="uom">UOM</label>
 										<input type="text" class="form-control" id="editUom" name="uom" required>
-									</div>
+									</div> -->
 								</div>
 								<div class="modal-footer">
 									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

@@ -68,9 +68,9 @@ class Barang extends CI_Controller
     {
         $id_barang = $this->input->post('id_barang');
         $data = array(
-            'sku' => $this->input->post('sku'),
+            // 'sku' => $this->input->post('sku'),
             'nama_barang' => $this->input->post('nama_barang'),
-            'uom' => $this->input->post('uom')
+            // 'uom' => $this->input->post('uom')
         );
 
         $this->barang->update_barang($id_barang, $data);
