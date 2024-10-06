@@ -140,7 +140,7 @@ class Putaway extends CI_Controller
 								'uuid' => uniqid(),
 								'id_barang' => $item_data['id_barang'],
 								'batch_id' => $item_data['batch_id'],
-								'status' => 1,
+								'status' => 0,
 								'status_row' => 1
 							];
 
