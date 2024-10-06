@@ -28,16 +28,17 @@ class Pickingslip_model extends CI_Model
 	
 
 	// Fetch users
-    function selectBarang($searchTerm = NULL)
+   function selectBarang($searchTerm = NULL)
 	{
-		$this->db->select('');
+		$this->db->select('*');
 		$this->db->from('barang');
-		
 
-		if ($searchTerm != NULL) {
+		if (!empty($searchTerm)) {
 			$this->db->where("nama_barang LIKE '%" . $this->db->escape_like_str($searchTerm) . "%' OR sku LIKE '%" . $this->db->escape_like_str($searchTerm) . "%'");
 		}
-		$this->db->where('is_deleted',0);
+
+		$this->db->where('is_deleted', 0);
+		$this->db->limit(10);
 
 		$fetched_records = $this->db->get();
 		$items = $fetched_records->result_array();
@@ -49,7 +50,7 @@ class Pickingslip_model extends CI_Model
 				"text" => $item['sku'] . ' | ' . $item['nama_barang']
 			);
 		}
-		
+
 		return $data;
 	}
 

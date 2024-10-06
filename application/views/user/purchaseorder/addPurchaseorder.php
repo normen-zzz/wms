@@ -240,15 +240,15 @@
 
 
 			function initSelect2AndFlatpickr() {
-				$('.selectBarang').select2({
+					$('.selectBarang').select2({
 					ajax: {
-						url: '<?= base_url('user/purchaseorder/getDataBarangSelect') ?>',
+						url: '<?= base_url('user/picklist/getDataBarangSelect') ?>',
 						type: "POST",
 						dataType: 'json',
 						delay: 250,
 						data: function(params) {
 							return {
-								searchTerm: params.term
+								searchTerm: params.term || ''
 							};
 						},
 						processResults: function(response) {
@@ -257,7 +257,10 @@
 							};
 						},
 						cache: true
-					}
+					},
+					minimumInputLength: 0,
+					placeholder: "Pilih barang",
+					allowClear: true
 				});
 
 				$('.flatpickrDate').flatpickr({
