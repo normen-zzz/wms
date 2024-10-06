@@ -2,7 +2,7 @@
 
 <div class="header-top">
     <div class="container">
-        <div class="border">
+        <div class="">
             <img width="150px" src="<?= base_url() . '/' ?>assets/compiled/logo/logoRaw.png" alt="Logo">
         </div>
         <div class="header-top-right">
