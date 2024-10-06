@@ -49,12 +49,29 @@ class Picklist_model extends CI_Model
 		return $this->db->insert('datapicklist', $data);
 	}
 
-	public function get_last_counter()
+	public function get_last_counter($prefix = null)
 	{
-		$this->db->select_max('id_picklist');
-		$query = $this->db->get('picklist');
-		$result = $query->row();
-		return $result->id_picklist ? (int)$result->id_picklist : 0;
+			if ($prefix === null) {
+					$prefix = 'PL/' . date('ymd') . '/';
+			}
+
+			$this->db->select('no_picklist');
+			$this->db->from('picklist');
+			$this->db->like('no_picklist', $prefix, 'after');
+			$this->db->order_by('no_picklist', 'DESC');
+			$this->db->limit(1);
+			
+			$query = $this->db->get();
+			$result = $query->row();
+
+			if ($result) {
+					$parts = explode('/', $result->no_picklist);
+					$lastCounter = isset($parts[2]) ? (int)$parts[2] : 0;
+			} else {
+					$lastCounter = 0;
+			}
+
+			return $lastCounter;
 	}
 
 	// delete

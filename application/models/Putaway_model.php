@@ -127,12 +127,29 @@ class Putaway_model extends CI_Model
 		}
 	}
 
-	public function get_last_counter()
+	public function get_last_counter($prefix = null)
 	{
-		$this->db->select_max('id_putaway');
-		$query = $this->db->get('putaway');
-		$result = $query->row();
-		return $result->id_putaway ? (int)$result->id_putaway : 0;
+			if ($prefix === null) {
+					$prefix = 'PUT/' . date('ymd') . '/';
+			}
+
+			$this->db->select('no_putaway');
+			$this->db->from('putaway');
+			$this->db->like('no_putaway', $prefix, 'after');
+			$this->db->order_by('no_putaway', 'DESC');
+			$this->db->limit(1);
+			
+			$query = $this->db->get();
+			$result = $query->row();
+
+			if ($result) {
+					$parts = explode('/', $result->no_putaway);
+					$lastCounter = isset($parts[2]) ? (int)$parts[2] : 0;
+			} else {
+					$lastCounter = 0;
+			}
+
+			return $lastCounter;
 	}
 
 	public function get_all_user_putaways()

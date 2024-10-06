@@ -83,12 +83,29 @@ class ReceivingInbound_model extends CI_Model
 		return $data;
 	}
 
-	public function get_last_counter()
+	public function get_last_counter($prefix = null)
 	{
-		$this->db->select_max('id_inbound');
-		$query = $this->db->get('inbound');
-		$result = $query->row();
-		return $result->id_inbound ? (int)$result->id_inbound : 0;
+			if ($prefix === null) {
+					$prefix = 'IB/' . date('ymd') . '/';
+			}
+
+			$this->db->select('no_inbound');
+			$this->db->from('inbound');
+			$this->db->like('no_inbound', $prefix, 'after');
+			$this->db->order_by('no_inbound', 'DESC');
+			$this->db->limit(1);
+			
+			$query = $this->db->get();
+			$result = $query->row();
+
+			if ($result) {
+					$parts = explode('/', $result->no_inbound);
+					$lastCounter = isset($parts[2]) ? (int)$parts[2] : 0;
+			} else {
+					$lastCounter = 0;
+			}
+
+			return $lastCounter;
 	}
 
 	public function update_status_picklist($id_picklist, $status)
