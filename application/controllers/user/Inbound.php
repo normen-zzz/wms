@@ -225,6 +225,8 @@ class Inbound extends CI_Controller
 			}
 
 			$update_status = $this->ReceivingInbound_model->update_status_picklist($id_picklist, 1);  
+			// update status inbound 
+			$this->ReceivingInbound_model->updateStatusInbound($id_picklist, 0); 
 			// $update_status_row = $this->ReceivingInbound_model->update_status_row($id_picklist, 1);
 
 			if ($update_status) {
@@ -263,7 +265,7 @@ class Inbound extends CI_Controller
 	public function detail($uuid)
 	{
 		$inbound = $this->ReceivingInbound_model->get_inbound_byuuid($uuid);
-		$inbound_details = $this->ReceivingInbound_model->get_detils_inboundpl($uuid);
+		$inbound_details = $this->ReceivingInbound_model->getDataInbound($uuid);
 
 		$data = [
 			'title' => 'Inbound',

@@ -59,6 +59,7 @@
 														<th>SKU</th>
 														<th>Nama Barang</th>
 														<th>Batch</th>
+														<th>Expiration Date</th>
 														<th>Good</th>
 														<th>Bad</th>
 														<!-- <th>Expiration Date</th> -->
@@ -73,6 +74,7 @@
 																<td><?= $detail['sku'] ?></td>
 																<td><?= $detail['nama_barang'] ?></td>
 																<td><?= $detail['batchnumber'] ?></td>
+																<td><?= $detail['expiration_date'] ?></td>
 																<td><?= $detail['good_qty'] ?></td>
 																<td><?= $detail['bad_qty'] ?></td>
 																<!-- <td><?= $detail['expiration_date'] ?></td> -->

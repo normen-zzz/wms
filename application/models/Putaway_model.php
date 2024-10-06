@@ -30,8 +30,10 @@ class Putaway_model extends CI_Model
 			$this->db->join('barang', 'ib.id_barang = barang.id_barang', 'left');
 			$this->db->join('batch b', 'ib.batch_id = b.id_batch', 'left');
 			$this->db->join('dataputaway', 'putaway.id_putaway = dataputaway.id_putaway', 'left');
-
+			$this->db->where('ib.status_putaway', 0);
 			$this->db->where('putaway.uuid', $uuid);
+			// where data inbound status putaway 
+			
 			$this->db->order_by('putaway.created_at', 'DESC');
 
 			$result = $this->db->get()->result_array();
@@ -176,7 +178,7 @@ class Putaway_model extends CI_Model
 	}
 	public function getDataInbound($uuid) {
 		//from data_inbound where uuid on join inbound,join barang,batch
-		$this->db->select('data_inbound.good_qty,data_inbound.bad_qty,data_inbound.received_qty,inbound.no_inbound, barang.sku, barang.nama_barang, batch.batchnumber');
+		$this->db->select('data_inbound.good_qty,data_inbound.bad_qty,data_inbound.received_qty,inbound.no_inbound, barang.sku, barang.nama_barang, batch.batchnumber,batch.expiration_date');
 		$this->db->from('data_inbound');
 		$this->db->join('inbound', 'inbound.id_inbound = data_inbound.id_inbound');
 		$this->db->join('barang', 'barang.id_barang = data_inbound.id_barang');
@@ -201,5 +203,10 @@ class Putaway_model extends CI_Model
 	{
 		$this->db->where('id_putaway', $id_putaway);
 		$this->db->update('putaway', ['status' => $status]);
+	}
+	// updateStatusInbound 
+	public function updateStatusInbound($id_inbound, $status) {
+		$this->db->where('id_inbound', $id_inbound);
+		$this->db->update('inbound', ['status' => $status]);
 	}
 }

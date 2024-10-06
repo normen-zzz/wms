@@ -81,12 +81,12 @@ if (!function_exists('getStatusPicklist')) {
 if (!function_exists('getStatusInbound')) {
 	function getStatusInbound($status)
 	{
-		if ($status == 'received') {
-			return '<span class="badge bg-success">Received</span>';
-		} else if ($status == 'putaway') {
-			return '<span class="badge bg-primary">Putaway</span>';
-		} else {
-			return '<span class="badge bg-warning">Created</span>';
+		if ($status == 0) {
+			return '<span class="badge bg-secondary">Created</span>';
+		} else if ($status == 1) {
+			return '<span class="badge bg-primary">On Putaway</span>';
+		} else if ($status == 2) {
+			return '<span class="badge bg-success">Done</span>';
 		}
 	}
 }

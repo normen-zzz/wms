@@ -84,12 +84,12 @@
 														</thead>
 														<tbody>
 																<?php if (!empty($inbound_details)) { ?>
-																		<?php foreach ($inbound_details as $detail) { ?>
+																		<?php foreach ($inbound_details->result_array() as $detail) { ?>
 																				<tr>
 																						<td><?= $detail['no_inbound'] ?></td>
 																						<td><?= $detail['sku'] ?></td>
 																						<td><?= $detail['nama_barang'] ?></td>
-																						<td><?= $detail['batch_id'] ?></td>
+																						<td><?= $detail['batchnumber'] ?></td>
 																						<td><?= $detail['good_qty'] ?></td>
 																						<td><?= $detail['bad_qty'] ?></td>
 																						<!-- <td><?= $detail['expiration_date'] ?></td> -->

@@ -334,6 +334,17 @@
 
 		
 			$(document).on('click', '.submitPutawayData', function() {
+				// show loading swal
+				Swal.fire({
+					title: 'Loading',
+					text: 'Please wait...',
+					allowOutsideClick: false,
+					showConfirmButton: false,
+					onBeforeOpen: () => {
+						Swal.showLoading();
+					}
+				});
+				
 					let button = $(this);
 					let id_barang = button.data('id-barang');
 					let good_qty = button.data('quantity');

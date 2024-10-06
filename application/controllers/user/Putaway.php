@@ -61,6 +61,8 @@ class Putaway extends CI_Controller
 		$result = $this->Putaway_model->insert_assign_putaway($data);
 
 		if ($result) {
+			// update status inbound to 1 
+			$this->Putaway_model->updateStatusInbound($this->input->post('id_inbound'), 1);
 			$this->session->set_flashdata('success', 'Data Putaway has been added');
 			redirect('user/putaway');
 		} else {
@@ -152,13 +154,14 @@ class Putaway extends CI_Controller
 									'id_barang' => $item_data['id_barang'],
 									'id_batch' => $item_data['batch_id'],
 									'id_rack' => $get_Rack_id,
-									'condition' => 'out',
+									'condition' => 'in',
 									'qty' => $quantity,
 									'at' => date('Y-m-d H:i:s'),
 									'by' => $this->session->userdata('id_users'),
 									'no_document' => $getNoPutaway,
 								];
 								 $this->db->insert('wms_log', $log_data);
+								 
 								
 							} else {
 								echo json_encode([
@@ -207,7 +210,7 @@ class Putaway extends CI_Controller
 					return;
 			}
 
-			$update_status = $this->Putaway_model->update_status_putaway($id_putaway, 1);  
+			$update_status = $this->Putaway_model->update_status_putaway($id_putaway, 2);  
 			// $update_status_row = $this->ReceivingInbound_model->update_status_row($id_putaway, 1);
 			
 			if ($update_status) {

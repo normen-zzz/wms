@@ -74,7 +74,10 @@
 															</td>
 															<td><?= $p->created_at ?></td>
 															<td>
-																<a href="<?= base_url('user/putaway/create/' . $p->uuid) ?>" class="btn btn-primary">Put</a>
+																<!-- if status =2  -->
+																<?php if ($p->status != 2) : ?>
+																	<a href="<?= base_url('user/putaway/create/' . $p->uuid) ?>" class="btn btn-primary">Put</a>
+																<?php endif; ?>
 																<a href="<?= base_url('user/putaway/detail/' . $p->uuid) ?>" class="btn btn-primary">Detail</a>
 															</td>
 														</tr>

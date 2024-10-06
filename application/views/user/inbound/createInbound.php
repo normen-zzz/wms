@@ -141,6 +141,19 @@
 			
 			$row.find('.submit-row').on('click', function(e) {
 					e.preventDefault();
+
+					// loading swal 
+					Swal.fire({
+							title: 'Processing',
+							text: 'Please wait...',
+							allowOutsideClick: false,
+							allowEscapeKey: false,
+							allowEnterKey: false,
+							showConfirmButton: false,
+							onBeforeOpen: () => {
+									Swal.showLoading();
+							}
+					});
 					
 					var rowData = {
 							id_picklist: $('input[name="id_picklist"]').val(),
