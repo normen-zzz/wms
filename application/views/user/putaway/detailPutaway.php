@@ -62,8 +62,8 @@
 														<th>Nama Barang</th>
 														<th>Batch</th>
 														<th>Qty</th>
-														<!-- <th>Existing Racks</th> -->
-														<!-- <th>Action</th> -->
+														<th>Racks</th>
+														<th>Expiration Date</th>
 													</tr>
 												</thead>
 												<tbody>
@@ -73,26 +73,12 @@
 															<td><?= $item['nama_barang'] ?></td>
 															<td><?= $item['batchnumber'] ?></td>
 															<td><?= $item['qty_putaway'] ?></td>
-															<!-- <td>
-																<?php if (!empty($item['existing_racks'])) : ?>
-																	<?php foreach ($item['existing_racks'] as $rack) : ?>
-																		<p>SLOC: <?= $rack['sloc'] ?>, Qty: <?= $rack['rack_quantity'] ?></p>
-																	<?php endforeach; ?>
-																<?php else : ?>
-																	<p>Not assigned</p>
-																<?php endif; ?>
-															</td> -->
-															<!-- <td>
-																<input type="hidden" class="id_dataputaway" value="<?= $item['id_dataputaway'] ?>">
-																  <?php if ($item['status'] == 2): ?>
-																			<button type="button" class="btn btn-secondary" disabled>Completed</button>
-																	<?php else: ?>
-																			<button type="button" class="btn btn-primary done-button">Done</button>
-																	<?php endif; ?>
-															</td> -->
+															<td><?= $item['sloc'] ?></td>
+															<td><?= $item['expiration_date'] ?></td>
 														</tr>
 													<?php endforeach; ?>
 												</tbody>
+
 											</table>
 										</div>
 									</div>
