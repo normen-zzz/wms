@@ -88,7 +88,7 @@
 
 																</select></td>
 															<td>
-																<input type="text" class="form-control qty" name="qty[]">
+																<input type="number" class="form-control qty" name="qty[]">
 															</td>
 
 
@@ -277,8 +277,8 @@
 						success: function(response) {
 							console.log(response);
 							if (qty > response) {
-								lastqty.val('');
-								alert('input melebihi jumlah qty yang ada!!!');
+								lastqty.val(response);
+								
 
 							}
 						}
