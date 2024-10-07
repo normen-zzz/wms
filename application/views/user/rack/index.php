@@ -86,13 +86,9 @@
 														<td><?= $rack1['uom'] ?></td>
 														<td><?= getStatusRack($rack1['is_deleted']) ?></td>
 														<td>
-															<button class="btn btn-sm btn-primary print-sloc-barcode"
-																data-sloc="<?= htmlspecialchars($rack1['sloc'], ENT_QUOTES, 'UTF-8') ?>"
-																data-zone="<?= htmlspecialchars($rack1['zone'], ENT_QUOTES, 'UTF-8') ?>"
-																data-rack="<?= htmlspecialchars($rack1['rack'], ENT_QUOTES, 'UTF-8') ?>"
-																data-column="<?= htmlspecialchars($rack1['column_rack'], ENT_QUOTES, 'UTF-8') ?>">
-																Print SLOC QR Code
-															</button>
+															<!-- a print qr code  -->
+															<a target="_blank" href="<?= base_url('user/rack/print_slocrack/' . $rack1['id_rack']) ?>"
+																class="btn btn-sm btn-primary">Print QR Code</a>
 
 															<button class="btn btn-sm btn-secondary print-sloc-barcode-items"
 																data-sloc="<?= htmlspecialchars($rack1['sloc'], ENT_QUOTES, 'UTF-8') ?>">

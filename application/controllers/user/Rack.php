@@ -168,7 +168,7 @@ class Rack extends CI_Controller
 						'created_by' => $this->session->userdata('id_users'),
 						'is_deleted' =>  0,
 						'status' => 0
-						
+
 					];
 				}
 			}
@@ -207,38 +207,71 @@ class Rack extends CI_Controller
 		$id_rack = $this->input->post('id');
 
 		if ($id_rack) {
-				$data = array(
-							'is_deleted' => 0,
-				);
+			$data = array(
+				'is_deleted' => 0,
+			);
 
-				$this->db->where('id_rack', $id_rack);
-				$this->db->update('rack', $data);
+			$this->db->where('id_rack', $id_rack);
+			$this->db->update('rack', $data);
 
-				echo json_encode(['status' => 'success']);
+			echo json_encode(['status' => 'success']);
 		} else {
-				echo json_encode(['status' => 'error', 'message' => 'Rack ID not provided.']);
+			echo json_encode(['status' => 'error', 'message' => 'Rack ID not provided.']);
 		}
 	}
 
 	// deactivate_rack
 	public function deactivate_rack()
 	{
-			$id_rack = $this->input->post('id');
+		$id_rack = $this->input->post('id');
 
-			if ($id_rack) {
-				$data = array(
-					'is_deleted' => 1,
-				);
+		if ($id_rack) {
+			$data = array(
+				'is_deleted' => 1,
+			);
 
-				$this->db->where('id_rack', $id_rack);
-				$this->db->update('rack', $data);
+			$this->db->where('id_rack', $id_rack);
+			$this->db->update('rack', $data);
 
-				echo json_encode(['status' => 'success']);
-			} else {
-				echo json_encode(['status' => 'error', 'message' => 'Rack ID not provided.']);
-			}
+			echo json_encode(['status' => 'success']);
+		} else {
+			echo json_encode(['status' => 'error', 'message' => 'Rack ID not provided.']);
+		}
 	}
 
+	// print sloc rack dengan mpdf bentuk
+	public function print_slocrack($id_rack)
+	{
+		$rack = $this->db->get_where('rack', ['id_rack' => $id_rack])->row_array();
+		$data = [
+			'title' => 'Print Rack',
+			'subtitle' => 'Print Rack',
+			'rack' => $rack,
+		];
+		$this->load->view('user/rack/print_rack', $data, true);
+
+		$mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A4-L']);
+
+		$html = '
+    <br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+    <div style="text-align:center">
+        <h1>SLOC: ' . $rack['sloc'] . '</h1>
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' . $rack['sloc'] . '" alt="">
+        <h3>Zone: ' . $rack['zone'] . ', Rack: ' . $rack['rack'] . ', Row: ' . $rack['row'] . ', Column: ' . $rack['column_rack'] . '</h3>
+    </div>
+';
+
+		$mpdf->WriteHTML($html);
+		$mpdf->Output();
+	}
 }
 
 /* End of file User.php */
