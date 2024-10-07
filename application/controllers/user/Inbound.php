@@ -164,6 +164,9 @@ class Inbound extends CI_Controller
 			$batch_id = $this->input->post('batch_id');
 			$id_barang = $this->input->post('id_barang');
 			$created_by = $this->session->userdata('id_users');
+			$id_datapicklist = $this->input->post('id_datapicklist');
+
+			// var_dump($id_datapicklist);exit;
 
 			if ($existingInbound) {
 					$id_inbound = $existingInbound['id_inbound']; 
@@ -191,8 +194,10 @@ class Inbound extends CI_Controller
 					'bad_qty' => $bad_qty,
 					'batch_id' => $batch_id,
 					'id_barang' => $id_barang,
-					'status_row' => 1, 
 			);
+
+			// update status_row in  datapicklist
+			$this->ReceivingInbound_model->update_status_row($id_datapicklist, 1);
 
 			$this->ReceivingInbound_model->insert_data_inbound($data_details);
 

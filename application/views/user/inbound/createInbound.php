@@ -91,6 +91,7 @@
 																	<input type="hidden" name="sku[]" value="<?= $dtl['sku'] ?>" class="sku">
 																	<input type="hidden" name="batch_id[]" value="<?= $dtl['batch'] ?>" class="batch_id">
 																	<input type="hidden" name="id_barang[]" value="<?= $dtl['id_barang'] ?>" class="id_barang">
+																	<input type="hidden" name="id_datapicklist[]" value="<?= $dtl['id_datapicklist'] ?>" class="id_datapicklist">
 																</tr>
 															<?php } ?>
 														<?php } ?>
@@ -164,6 +165,7 @@
 							sku: $row.find('input[name="sku[]"]').val(),
 							batch_id: $row.find('input[name="batch_id[]"]').val(),
 							id_barang: $row.find('input[name="id_barang[]"]').val(),
+							id_datapicklist: $row.find('input[name="id_datapicklist[]"]').val()
 					};
 
 					var $submitBtn = $(this);
