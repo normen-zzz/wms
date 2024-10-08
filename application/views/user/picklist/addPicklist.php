@@ -130,16 +130,29 @@
 			initSelect2AndFlatpickr();
 
 			$('#add-row-btn').on('click', function() {
-				var newRow = `
-				<tr>
-						<td><select name="barang[]" class="form-control selectBarang"></select></td>
-						<td><input type="text" class="form-control batch" name="batch[]"></td>
-						<td><input type="text" class="form-control qty" name="qty[]"></td>
-						<td><input type="date" name="ed[]" class="form-control flatpickrDate"></td>
-				</tr>`;
-				$('#table-body').append(newRow);
-				initSelect2AndFlatpickr();
+					// var lastEDValue = $('#table-body tr:last-child').find('input[name="ed[]"]').val();
+					var newRow = `
+					<tr>
+							<td>
+									<select name="barang[]" class="form-control selectBarang">
+											<option value="">Pilih Barang</option>
+									</select>
+							</td>
+							<td>
+									<input type="text" class="form-control batch" placeholder="Input Batch Manually" name="batch[]">
+							</td>
+							<td>
+									<input type="text" class="form-control qty" name="qty[]">
+							</td>
+							<td>
+									<input type="date" name="ed[]" class="form-control flatpickrDate">
+							</td>
+					</tr>`;
+					
+					$('#table-body').append(newRow);
+					initSelect2AndFlatpickr(); 
 			});
+
 
 			//loading swal
 			$('#picklistForm').on('submit', function(e) {
@@ -238,110 +251,80 @@
 			});
 
 			function initSelect2AndFlatpickr() {
-				$('.selectBarang').select2({
-					ajax: {
-						url: '<?= base_url('user/picklist/getDataBarangSelect') ?>',
-						type: "POST",
-						dataType: 'json',
-						delay: 250,
-						data: function(params) {
-							return {
-								searchTerm: params.term || ''
-							};
-						},
-						processResults: function(response) {
-							return {
-								results: response
-							};
-						},
-						cache: true
-					},
-					minimumInputLength: 0,
-					placeholder: "Pilih barang",
-					allowClear: true
-				});
+					$('.selectBarang').select2({
+							ajax: {
+									url: '<?= base_url('user/picklist/getDataBarangSelect') ?>',
+									type: "POST",
+									dataType: 'json',
+									delay: 250,
+									data: function(params) {
+											return {
+													searchTerm: params.term || ''
+											};
+									},
+									processResults: function(response) {
+											return {
+													results: response
+											};
+									},
+									cache: true
+							},
+							minimumInputLength: 0,
+							placeholder: "Pilih barang",
+							allowClear: true
+					});
 
-				$('.selectBarang').on('change', function() {
-					var barangId = $(this).val();
-					var row = $(this).closest('tr');
-					var batchSelect = row.find('.selectBatch');
-					var inputBatchManual = row.find('.inputBatchManual');
-					var qty = row.find('.qty');
-					var ed = row.find('.flatpickrDate');
-					var btnSaveBatch = row.find('.btn-save-batch');
+					$('.flatpickrDate').flatpickr({
+							dateFormat: "Y-m-d" // Adjusted format for date input
+					});
 
-					$.ajax({
-						url: '<?= base_url('user/goodsorder/getBatch') ?>',
-						type: 'POST',
-						data: {
-							barangId: barangId
-						},
-						dataType: 'json',
-						success: function(response) {
-							console.log(response);
-							var batchOptions = response.batch_options;
-							batchSelect.empty();
-							batchSelect.append($('<option>', {
-								value: '-',
-								text: 'Select Batch'
-							}));
+					$('.selectBarang').on('change', function() {
+							var barangId = $(this).val();
+							var row = $(this).closest('tr');
+							var batchSelect = row.find('.selectBatch');
+							var inputBatchManual = row.find('.inputBatchManual');
+							var qty = row.find('.qty');
+							var ed = row.find('.flatpickrDate');
+							var btnSaveBatch = row.find('.btn-save-batch');
 
-							if (batchOptions.length > 0) {
-								$.each(batchOptions, function(index, batch) {
-									batchSelect.append($('<option>', {
-										value: batch.id,
-										text: batch.name
-									}));
-								});
-								inputBatchManual.hide();
-								btnSaveBatch.hide();
-							} else {
-								inputBatchManual.show();
-								btnSaveBatch.show();
-							}
+							$.ajax({
+									url: '<?= base_url('user/goodsorder/getBatch') ?>',
+									type: 'POST',
+									data: {
+											barangId: barangId
+									},
+									dataType: 'json',
+									success: function(response) {
+											console.log(response);
+											var batchOptions = response.batch_options;
+											batchSelect.empty();
+											batchSelect.append($('<option>', {
+													value: '-',
+													text: 'Select Batch'
+											}));
 
-							batchSelect.select2({
-								width: '100%',
-								placeholder: 'Select batch'
+											if (batchOptions.length > 0) {
+													$.each(batchOptions, function(index, batch) {
+															batchSelect.append($('<option>', {
+																	value: batch.id,
+																	text: batch.name
+															}));
+													});
+													inputBatchManual.hide();
+													btnSaveBatch.hide();
+											} else {
+													inputBatchManual.show();
+													btnSaveBatch.show();
+											}
+
+											batchSelect.select2({
+													width: '100%',
+													placeholder: 'Select batch'
+											});
+									}
 							});
-						}
 					});
-				});
-
-				$('.flatpickrDate').flatpickr({
-					dateFormat: "d-m-Y"
-				});
-
-				$('.btn-save-batch').on('click', function() {
-					var manualBatch = $(this).closest('tr').find('.inputBatchManual').val();
-					var barangId = $(this).closest('tr').find('.selectBarang').val();
-					var qty = $(this).closest('tr').find('.qty').val();
-					var ed = $(this).closest('tr').find('.flatpickrDate').val();
-
-					$.ajax({
-						url: '<?= base_url('user/picklist/saveManualBatch') ?>',
-						type: 'POST',
-						data: {
-							barangId: barangId,
-							manualBatch: manualBatch,
-							qty: qty,
-							expirationDate: ed
-						},
-						dataType: 'json',
-						success: function(response) {
-							if (response.status === 'success') {
-								alert('Batch saved successfully!');
-							} else {
-								alert('Failed to save batch: ' + (response.message || 'Unknown error'));
-							}
-						},
-						error: function(xhr, status, error) {
-							alert('Failed to save batch: ' + error);
-						}
-					});
-				});
 			}
-
 
 		});
 	</script>
