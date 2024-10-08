@@ -26,7 +26,7 @@ class ReceivingInbound_model extends CI_Model
 	public function get_detils_inbound($uuid)
 	{
 			$id_picklist = $this->db->query('SELECT id_picklist FROM picklist WHERE uuid = "' . $uuid . '" ')->row_array();
-			$this->db->select('sku, nama_barang, a.id_barang, batch, c.expiration_date, a.qty, data_inbound.received_qty, data_inbound.good_qty, data_inbound.bad_qty, data_inbound.batch_id, data_inbound.status_row');
+			$this->db->select('sku, nama_barang, a.id_barang, batch, c.expiration_date, a.qty, data_inbound.received_qty, data_inbound.good_qty, data_inbound.bad_qty, data_inbound.batch_id, a.status_row, a.id_datapicklist');
 			$this->db->from('datapicklist a');
 			$this->db->join('barang b', 'a.id_barang = b.id_barang');
 			$this->db->join('data_inbound', 'a.id_barang = data_inbound.id_barang AND a.batch = data_inbound.batch_id', 'left');
@@ -182,10 +182,16 @@ class ReceivingInbound_model extends CI_Model
 
 //   updateStatusInbound 
   public function updateStatusInbound($id_picklist, $status) {
-	$this->db->where('id_picklist', $id_picklist);
-	$this->db->update('inbound', ['status' => $status]);
+		$this->db->where('id_picklist', $id_picklist);
+		$this->db->update('inbound', ['status' => $status]);
   }
 
+	// update_status_row
+	public function update_status_row($id_datapicklist, $status_row)
+	{
+		$this->db->where('id_datapicklist', $id_datapicklist);
+		$this->db->update('datapicklist', ['status_row' => $status_row]);
+	}
   
 
   
