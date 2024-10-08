@@ -84,7 +84,7 @@
 
 													<tfoot>
 														<tr>
-															<td colspan="3">
+															<td colspan="5">
 																<button type="button" id="add-row-btn" class="btn btn-secondary">Add Row</button>
 																<button type="submit" class="btn btn-primary">Save</button>
 															</td>
@@ -147,12 +147,18 @@
 							<td>
 									<input type="date" name="ed[]" class="form-control flatpickrDate">
 							</td>
+							<td>
+									<button type="button" class="btn btn-danger remove-row">Remove</button>
+							</td>
 					</tr>`;
 					
 					$('#table-body').append(newRow);
 					initSelect2AndFlatpickr(); 
 			});
 
+			$('#table-body').on('click', '.remove-row', function() {
+					$(this).closest('tr').remove();
+			});
 
 			//loading swal
 			$('#picklistForm').on('submit', function(e) {
