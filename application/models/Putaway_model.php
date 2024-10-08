@@ -32,7 +32,7 @@ class Putaway_model extends CI_Model
 			$this->db->where('putaway.uuid', $uuid);
 
 			
-			$this->db->order_by('putaway.created_at', 'DESC');
+			$this->db->order_by('ib.id_data_inbound', 'DESC');
 			$result = $this->db->get()->result_array();
 			foreach ($result as &$item) {
 					$item['existing_racks'] = $this->get_existing_racks($item['id_barang'], $item['batch_id']);

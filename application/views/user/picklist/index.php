@@ -69,7 +69,7 @@
 															<td></td>
 															<td><?= $pl1['no_picklist'] ?></td>
 															
-															<td><?= $pl1['qty'] ?></td>
+															<td><?= $pl1['total_qty'] ?></td>
 															<td><?= getStatusPicklist($pl1['status']) ?></td>
 															<td><?= dateindo($pl1['created_at']) ?></td>
 															<td>
