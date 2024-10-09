@@ -18,6 +18,7 @@ class ReceivingInbound_model extends CI_Model
 			$this->db->join('picklist', 'inbound.id_picklist = picklist.id_picklist', 'left');
 			$this->db->join('data_inbound', 'inbound.id_inbound = data_inbound.id_inbound', 'left');
 			$this->db->group_by('inbound.no_inbound');
+			$this->db->order_by('picklist.created_at', 'DESC');
 			
 			$query = $this->db->get();
 			return $query->result();
@@ -32,6 +33,7 @@ class ReceivingInbound_model extends CI_Model
 			$this->db->join('data_inbound', 'a.id_barang = data_inbound.id_barang AND a.batch = data_inbound.batch_id', 'left');
 			$this->db->join('batch c', 'a.batch = c.id_batch');
 			$this->db->where('a.id_picklist', $id_picklist['id_picklist']);
+			$this->db->order_by('datapicklist.created_at', 'DESC');
 
 			return $this->db->get()->result_array();
 	}
