@@ -45,6 +45,7 @@ class ReceivingInbound_model extends CI_Model
 		$this->db->from('picklist');
 		$this->db->join('datapicklist', 'datapicklist.id_picklist = picklist.id_picklist', 'left');
 		$this->db->where('picklist.uuid', $uuid);
+		$this->db->order_by('datapicklist.id_datapicklist', 'DESC');
 		return $this->db->get()->row();
 	}
 
