@@ -96,7 +96,7 @@ class ReceivingInbound_model extends CI_Model
 			$this->db->select('no_inbound');
 			$this->db->from('inbound');
 			$this->db->like('no_inbound', $prefix, 'after');
-			$this->db->order_by('no_inbound', 'DESC');
+			$this->db->order_by('id_inbound', 'DESC');
 			$this->db->limit(1);
 			
 			$query = $this->db->get();
