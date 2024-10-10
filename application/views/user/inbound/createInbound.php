@@ -92,6 +92,7 @@
 																	<input type="hidden" name="batch_id[]" value="<?= $dtl['batch'] ?>" class="batch_id">
 																	<input type="hidden" name="id_barang[]" value="<?= $dtl['id_barang'] ?>" class="id_barang">
 																	<input type="hidden" name="id_datapicklist[]" value="<?= $dtl['id_datapicklist'] ?>" class="id_datapicklist">
+																	<input type="hidden" name="received_qty" value=<?= $dtl['qty'] ?>>
 																</tr>
 															<?php } ?>
 														<?php } ?>
@@ -99,7 +100,6 @@
 												</table>
 
 												<input type="hidden" name="id_picklist" value="<?= $picklist->id_picklist ?>">
-												<input type="hidden" name="received_qty" value="<?= $picklist->qty ?>">
 												<button id="finishInbound" class="btn btn-primary mt-2">Finish Inbound</button>
 											</form>
 										</div>

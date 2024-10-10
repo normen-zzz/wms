@@ -114,6 +114,7 @@ class Picklist_model extends CI_Model
 		$this->db->join('barang', 'datapicklist.id_barang = barang.id_barang');
 		$this->db->join('batch', 'datapicklist.batch = batch.id_batch');
 		$this->db->where('picklist.id_picklist', $id);
+		$this->db->order_by('picklist.id_picklist', 'DESC');
 		
 		return $this->db->get()->result_array();
 	}
