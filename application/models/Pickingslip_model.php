@@ -78,6 +78,7 @@ class Pickingslip_model extends CI_Model
 		$result = $query->row();
 		return $result->id_pickingslip ? (int)$result->id_pickingslip : 0;
 	}
+	
 
 	public function getUserPicker() {
 		$this->db->select('id_users,nama');
@@ -86,13 +87,31 @@ class Pickingslip_model extends CI_Model
 		return $this->db->get();
 	}
 
-	public function get_last_counter_pickingslip()
+	public function get_last_counter_pickingslip($prefix = null)
 	{
-		$this->db->select_max('id_pickingslip');
-		$query = $this->db->get('pickingslip');
+		if ($prefix === null) {
+			$prefix = 'PS/';
+		}
+
+		$this->db->select('no_pickingslip');
+		$this->db->from('pickingslip');
+		$this->db->like('no_pickingslip', $prefix, 'after');
+		$this->db->order_by('id_pickingslip', 'DESC');
+		$this->db->limit(1);
+			
+		$query = $this->db->get();
 		$result = $query->row();
-		return $result->id_pickingslip ? (int)$result->id_pickingslip : 0;
+
+		if ($result) {
+			$parts = explode('/', $result->no_pickingslip);
+			$lastCounter = isset($parts[2]) ? (int)$parts[2] : 0;
+		} else {
+			$lastCounter = 0;
+		}
+
+		return $lastCounter;
 	}
+
 
 	public function get_by_uuid($uuid) {
     $this->db->where('uuid', $uuid);
