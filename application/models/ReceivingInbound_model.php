@@ -34,7 +34,7 @@ class ReceivingInbound_model extends CI_Model
 			$this->db->join('batch c', 'a.batch = c.id_batch');
 			$this->db->where('a.id_picklist', $id_picklist['id_picklist']);
 			// $this->db->order_by('a.id_picklist', 'DESC');
-			$this->db->order_by('a.id_datapicklist', 'DESC');
+			$this->db->order_by('a.id_datapicklist', 'ASC');
 
 			return $this->db->get()->result_array();
 	}
