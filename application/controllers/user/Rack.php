@@ -281,7 +281,7 @@ class Rack extends CI_Controller
 	public function print_items_qr($sloc)
 	{
 		$barangGrouped = getGroupedItemsBySloc($sloc);
-		$mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [95.6, 100]]);
+		$mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [94.6, 98]]);
 		// margin 0 
 		$mpdf->SetMargins(0, 0, 0, 0);
 
@@ -320,8 +320,8 @@ class Rack extends CI_Controller
 
 		$mpdf->WriteHTML($html);
 		// set name pdf with sloc on download
-		// $mpdf->Output($sloc . '.pdf', 'D');
-		$mpdf->Output();
+		$mpdf->Output($sloc . '.pdf', 'D');
+		// $mpdf->Output();
 		
 		// convert to jpg
 		// convert pdf to jpg
