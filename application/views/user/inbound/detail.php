@@ -79,7 +79,7 @@
 																		<th>Good</th>
 																		<th>Bad</th>
 																		<!-- <th>Expiration Date</th> -->
-																		<th>Qty</th>
+																		<!-- <th>Qty</th> -->
 																</tr>
 														</thead>
 														<tbody>
@@ -93,7 +93,7 @@
 																						<td><?= $detail['good_qty'] ?></td>
 																						<td><?= $detail['bad_qty'] ?></td>
 																						<!-- <td><?= $detail['expiration_date'] ?></td> -->
-																						<td><?= $detail['received_qty'] ?></td>
+																						<!-- <td><?= $detail['received_qty'] ?></td> -->
 																				</tr>
 																		<?php } ?>
 																<?php } else { ?>

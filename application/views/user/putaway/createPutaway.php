@@ -334,96 +334,99 @@
 			});
 
 		
-			$(document).on('click', '.submitPutawayData', function() {
-				// show loading swal
-				Swal.fire({
-					title: 'Loading',
-					text: 'Please wait...',
-					allowOutsideClick: false,
-					showConfirmButton: false,
-					onBeforeOpen: () => {
-						Swal.showLoading();
-					}
-				});
-				
-					let button = $(this);
-					let id_barang = button.data('id-barang');
-					let good_qty = button.data('quantity');
-					let batch_id = button.data('batch-id');
+		
+    $(document).on('click', '.submitPutawayData', function() {
+        // show loading swal
+        Swal.fire({
+            title: 'Loading',
+            text: 'Please wait...',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            onBeforeOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        
+        let button = $(this);
+        let id_barang = button.data('id-barang');
+        let good_qty = button.data('quantity');
+        let batch_id = button.data('batch-id');
 
-					let rack_ids = [];
-					let quantities = [];
-					let totalQuantity = 0;
+        let rack_ids = [];
+        let quantities = [];
+        let totalQuantity = 0;
 
-					$(`input[name="putaway_field[${id_barang}][id_rack][]"]`).each(function() {
-							let rack_id = $(this).val();
-							if (rack_id) {
-									rack_ids.push(rack_id);
-							}
-					});
+        let currentRow = button.closest('tr');
 
-					$(`input[name="putaway_field[${id_barang}][quantity][]"]`).each(function() {
-							let quantity = parseInt($(this).val()) || 0;
-							if (quantity > 0) {
-									quantities.push(quantity);
-									totalQuantity += quantity;
-							}
-					});
+        currentRow.find(`input[name="putaway_field[${id_barang}][id_rack][]"]`).each(function() {
+            let rack_id = $(this).val();
+            if (rack_id) {
+                rack_ids.push(rack_id);
+            }
+        });
 
-					if (totalQuantity < good_qty) {
-							Swal.fire({
-									icon: 'error',
-									title: 'Oops...',
-									text: `Total quantity (${totalQuantity}) is less than required (${good_qty}).`
-							});
-							return;
-					}
+        currentRow.find(`input[name="putaway_field[${id_barang}][quantity][]"]`).each(function() {
+            let quantity = parseInt($(this).val()) || 0;
+            if (quantity > 0) {
+                quantities.push(quantity);
+                totalQuantity += quantity;
+            }
+        });
 
-					if (totalQuantity > good_qty) {
-							Swal.fire({
-									icon: 'error',
-									title: 'Oops...',
-									text: `Total quantity (${totalQuantity}) exceeds the required amount (${good_qty}).`
-							});
-							return;
-					}
+        if (totalQuantity < good_qty) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: `Total quantity (${totalQuantity}) is less than required (${good_qty}).`
+            });
+            return;
+        }
 
-					let data = {
-							'putaway_field': {
-									[id_barang]: {
-											'id_barang': id_barang,
-											'batch_id': batch_id,
-											'id_inbound': $(`input[name="putaway_field[${id_barang}][id_inbound]"]`).val(),
-											'id_putaway': $(`input[name="putaway_field[${id_barang}][id_putaway]"]`).val(),
-											'id_data_inbound': $(`input[name="putaway_field[${id_barang}][id_data_inbound]`).val(),
-											'rack_ids': rack_ids,
-											'quantities': quantities
-									}
-							}
-					};
+        if (totalQuantity > good_qty) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: `Total quantity (${totalQuantity}) exceeds the required amount (${good_qty}).`
+            });
+            return;
+        }
 
-					$.ajax({
-							url: '<?= site_url('user/putaway/create_putaway') ?>',
-							type: 'POST',
-							contentType: 'application/json',
-							data: JSON.stringify(data),
-							success: function(response) {
-									Swal.fire({
-											icon: 'success',
-											title: 'Success',
-											text: 'Putaway successfully submitted!'
-									});
-									button.closest('tr').remove(); 
-							},
-							error: function(xhr, status, error) {
-									Swal.fire({
-											icon: 'error',
-											title: 'Oops...',
-											text: 'There was a problem saving the data. Please try again.'
-									});
-							}
-					});
-			});
+        let data = {
+            'putaway_field': {
+                [id_barang]: {
+                    'id_barang': id_barang,
+                    'batch_id': batch_id,
+                    'id_inbound': currentRow.find(`input[name="putaway_field[${id_barang}][id_inbound]"]`).val(),
+                    'id_putaway': currentRow.find(`input[name="putaway_field[${id_barang}][id_putaway]"]`).val(),
+                    'id_data_inbound': currentRow.find(`input[name="putaway_field[${id_barang}][id_data_inbound]"]`).val(),
+                    'rack_ids': rack_ids,
+                    'quantities': quantities
+                }
+            }
+        };
+
+        $.ajax({
+            url: '<?= site_url('user/putaway/create_putaway') ?>',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function(response) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Putaway successfully submitted!'
+                });
+                currentRow.remove();
+            },
+            error: function(xhr, status, error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'There was a problem saving the data. Please try again.'
+                });
+            }
+        });
+    });
 
 
 		$('#finishPutaway').on('click', function(e) {

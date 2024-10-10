@@ -138,7 +138,7 @@ class Putaway_model extends CI_Model
 			$this->db->select('no_putaway');
 			$this->db->from('putaway');
 			$this->db->like('no_putaway', $prefix, 'after');
-			$this->db->order_by('no_putaway', 'DESC');
+			$this->db->order_by('id_putaway', 'DESC');
 			$this->db->limit(1);
 			
 			$query = $this->db->get();

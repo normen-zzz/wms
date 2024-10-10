@@ -88,7 +88,7 @@ class Deliveryorder_model extends CI_Model
 		$this->db->select('no_deliveryorder');
 		$this->db->from('deliveryorder');
 		$this->db->like('no_deliveryorder', $prefix, 'after');
-		$this->db->order_by('no_deliveryorder', 'DESC');
+		$this->db->order_by('id_deliveryorder', 'DESC');
 		$this->db->limit(1);
 			
 		$query = $this->db->get();

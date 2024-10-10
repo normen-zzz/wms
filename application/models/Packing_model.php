@@ -51,7 +51,7 @@ class Packing_model extends CI_Model
 		$this->db->select('no_packing');
 		$this->db->from('packing');
 		$this->db->like('no_packing', $prefix, 'after');
-		$this->db->order_by('no_packing', 'DESC');
+		$this->db->order_by('id_packing', 'DESC');
 		$this->db->limit(1);
 			
 		$query = $this->db->get();
