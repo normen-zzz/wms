@@ -18,7 +18,7 @@ function getGroupedItemsBySloc($sloc)
 {
 	$CI = &get_instance();
 
-	$CI->db->select('r.sloc, b.sku, ba.batchnumber, SUM(bi.qty) as total_quantity');
+	$CI->db->select('r.sloc,b.nama_barang, b.sku, ba.batchnumber');
 	$CI->db->from('rack r');
 	$CI->db->join('rack_items ri', 'r.id_rack = ri.id_rack', 'inner');
 	$CI->db->join('barang b', 'ri.id_barang = b.id_barang', 'inner');

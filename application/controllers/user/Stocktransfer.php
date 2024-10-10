@@ -120,4 +120,8 @@ class Stocktransfer extends CI_Controller {
         $rack = $this->Stocktransfer_model->getRecommendedRack($id_barang, $id_batch);
         echo json_encode($rack);
     }
+
+    // check available based on id_barang and id_batch and rack 
+
+
 }
