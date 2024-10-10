@@ -271,6 +271,15 @@ class Rack extends CI_Controller
 		$mpdf->WriteHTML($html);
 		$mpdf->Output();
 	}
+
+	  public function print_sloc($sloc) {
+
+        $data['items'] = $this->rack->getGroupedItemsBySloc($sloc);
+        $data['sloc'] = $sloc;
+
+        // Load view dengan data
+        $this->load->view('user/rack/print_sloc', $data);
+    }
 }
 
 /* End of file User.php */

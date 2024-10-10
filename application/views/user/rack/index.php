@@ -90,10 +90,8 @@
 															<a target="_blank" href="<?= base_url('user/rack/print_slocrack/' . $rack1['id_rack']) ?>"
 																class="btn btn-sm btn-primary">Print QR Code</a>
 
-															<button class="btn btn-sm btn-secondary print-sloc-barcode-items"
-																data-sloc="<?= htmlspecialchars($rack1['sloc'], ENT_QUOTES, 'UTF-8') ?>">
-																Print Items QR Code
-															</button>
+															<a target="_blank" href="<?= base_url('user/rack/print_sloc/' . $rack1['sloc']) ?>" class="btn btn-sm btn-secondary">Print Items QR Code</a>
+
 
 															<!-- activated dan nonactivated -->
 															<?php if ($rack1['is_deleted'] == 1) { ?>
@@ -428,173 +426,112 @@
 			});
 		});
 
-		$('.print-sloc-barcode').click(function () {
-			const sloc = $(this).data('sloc');
-			const zone = $(this).data('zone');
-			const rack = $(this).data('rack');
-			const column_rack = $(this).data('column');
+		// get ready document
+		$(document).ready(function () {
+			$('.print-sloc-barcode-items').click(function () {
+				const sloc = $(this).data('sloc');
 
-			const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${(`${sloc}`)}&size=300x300`;
+				$.ajax({
+					url: 'user/rack/get_items_by_sloc',
+					method: 'POST',
+					data: {
+						sloc: sloc
+					},
+					dataType: 'json',
+					success: function (response) {
+						console.log('Response:', response);
 
-			const qrCodeImage = new Image();
-			qrCodeImage.src = qrCodeUrl;
+						if (response && response.status === 'success' && Array.isArray(response.items)) {
+							const itemsData = response.items;
+							const qrCodeUrl =
+								`https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(`${sloc}`)}&size=300x300`;
+							const qrCodeImage = new Image();
+							qrCodeImage.src = qrCodeUrl;
 
-			qrCodeImage.onload = function () {
-				const printWindow = window.open('', '_blank');
-				printWindow.document.write(`
-							<html>
-							<head>
-									<title>Print QR Code</title>
-									<style>
-									  @media print {
-                        @page {
-                            size: landscape; 
-                        }
-                    }
-											body, html {
-													height: 100%;
-													margin: 0;
-													display: flex;
-													justify-content: center;
-													align-items: center;
-													text-align: center;
-											}
-											.container {
-													display: flex;
-													flex-direction: column;
-													justify-content: center;
-													align-items: center;
-											}
-											img {
-													margin-bottom: 20px;
-											}
-									</style>
-							</head>
-							<body>
-									<div class="container">
-											<p><strong>SLOC:</strong> ${sloc}</p>
-											<img src="${qrCodeImage.src}" alt="QR Code">
-											<p><strong>Zone:</strong> ${zone}, <strong>Rack:</strong> ${rack}, <strong>Column:</strong> ${column_rack}</p>
-									</div>
-							</body>
-							</html>
-					`);
-				printWindow.document.close();
-				printWindow.print();
-			};
-
-			qrCodeImage.onerror = function () {
-				alert('Error generating QR code. Please check the SLOC value.');
-			};
-		});
-
-		$('.print-sloc-barcode-items').click(function () {
-			const sloc = $(this).data('sloc');
-
-			$.ajax({
-				url: 'user/rack/get_items_by_sloc',
-				method: 'POST',
-				data: {
-					sloc: sloc
-				},
-				dataType: 'json',
-				success: function (response) {
-					console.log('Response:', response);
-
-					if (response && response.status === 'success' && Array.isArray(response.items)) {
-						const itemsData = response.items;
-						const qrCodeUrl =
-							`https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(`${sloc}`)}&size=300x300`;
-						const qrCodeImage = new Image();
-						qrCodeImage.src = qrCodeUrl;
-
-						qrCodeImage.onload = function () {
-							const printWindow = window.open('', '_blank');
-							printWindow.document.write(`
-													<html>
-															<head>
-																	<title>Print QR Code with Items</title>
-																	<style>
-																		@media print {
-																				@page {
-																						size: portrait; 
-																				}
-																		}
-																		body {
+							qrCodeImage.onload = function () {
+									const printWindow = window.open('', '_blank');
+									printWindow.document.write(`
+											<html>
+													<head>
+															<title>Print QR Code with Items</title>
+															<style>
+																	@media print {
+																			@page {
+																					size: portrait; 
+																			}
+																	}
+																	body {
 																			justify-content: center;
 																			align-items: center;
 																			height: 100vh;
 																			text-align: center;
 																			margin: 0;
-																		}
-																		.content {
+																	}
+																	.content {
 																			display: inline-block;
 																			text-align: center;
 																			font-size: 20px;
-																		}
-																		h3 {
-																				margin-top: 10px;
-																		}
-																		ul {
-																				list-style-type: none;
-																				padding: 0;
-																		}
-																		li {
-																				margin-bottom: 5px;
-																				text-align: left;
-																		}
-																	</style>
-															</head>
-															<body>
-																	<div class="content">
-																			<h3>SLOC: ${sloc}</h3>
-																			<img src="${qrCodeImage.src}" alt="QR Code" class="mb-5">
-																			<table border="1" style="width: 100%; border-collapse: collapse;margin-top:5px">
+																	}
+																	h3 {
+																			margin-top: 10px;
+																	}
+																	ul {
+																			list-style-type: none;
+																			padding: 0;
+																	}
+																	li {
+																			margin-bottom: 5px;
+																			text-align: left;
+																	}
+															</style>
+													</head>
+													<body>
+															<div class="content">
+																	<h3>SLOC: ${sloc}</h3>
+																	<img src="${qrCodeImage.src}" alt="QR Code" class="mb-5">
+																	<table border="1" style="width: 100%; border-collapse: collapse;margin-top:5px">
 																			<tr>
 																					<th>SKU</th>
 																					<th>Batch</th>
 																					<th>Total Quantity</th>
 																			</tr>
-																			`);
-																			if (itemsData.length > 0) {
-																				itemsData.forEach(function (item) {
-																					//pakai table
-																					printWindow.document.write(`
-																			
-																						<tr>
-																								<td>${item.sku}</td>
-																								<td>${item.batchnumber}</td>
-																								<td>${item.total_quantity}</td>
-																						</tr>
-																	
-																					`);
-																					});
-																						printWindow.document.write('</table></ul>');
-																					} else {
-																						printWindow.document.write('<p>No items found for this SLOC.</p>');
-																					}
+									`);
+									if (itemsData.length > 0) {
+											itemsData.forEach(function (item) {
+													printWindow.document.write(`
+															<tr>
+																	<td>${item.sku}</td>
+																	<td>${item.batchnumber}</td>
+																	<td>${item.total_quantity}</td>
+															</tr>
+													`);
+											});
+											printWindow.document.write('</table></div></body></html>');
+									} else {
+											printWindow.document.write('<p>No items found for this SLOC.</p>');
+									}
 
-																					printWindow.document.write(`
-																							</div>
-																							</body>
-																							</html>
-																					`);
+									printWindow.document.write('</div></body></html>');
+									printWindow.document.close();
 
-																					printWindow.document.close();
-																					printWindow.print();
-						};
+									// Menunda panggilan print selama 500ms
+									setTimeout(function () {
+											printWindow.print();
+									}, 500);
+							};
 
-						qrCodeImage.onerror = function () {
-							alert('Error generating QR code. Please check the SLOC value.');
-						};
-					} else {
-						alert('Data not found');
+							qrCodeImage.onerror = function () {
+								alert('Error generating QR code. Please check the SLOC value.');
+							};
+						} else {
+							alert('Data not found');
+						}
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						console.error('AJAX error:', textStatus, errorThrown);
+						alert('Error fetching item data. Please try again.');
 					}
-				},
-				error: function (jqXHR, textStatus, errorThrown) {
-					console.error('AJAX error:', textStatus, errorThrown);
-					alert('Error fetching item data. Please try again.');
-				}
+				});
 			});
 		});
 
