@@ -57,7 +57,7 @@
                                                 <div class="form-group">
                                                     <div class="col-xs-12">
                                                         <label for="first_name">
-                                                            <h4>Customer</h4>
+                                                            <h4>Stock Transfer</h4>
                                                         </label>
 
 
@@ -99,6 +99,10 @@
                                                             </td>
                                                             <td style="width: 20%;">
                                                                 <input type="text" class="form-control qty" name="qty[]">
+                                                            </td>
+                                                            <td>
+                                                                <!-- button remove row  -->
+                                                                <button type="button" class="btn btn-danger remove-row">Remove</button>
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -175,6 +179,9 @@
                         <td style="width: 20%;">
                             <input type="text" class="form-control qty" name="qty[]">
                         </td>
+                        <td>
+                            <!-- button remove row  -->
+                            <button type="button" class="btn btn-danger remove-row">Remove</button>
                     </tr>
                 `;
 
@@ -250,6 +257,11 @@
                     }
                 });
 
+                // remove row 
+                $(document).on('click', '.remove-row', function() {
+                    $(this).closest('tr').remove();
+                });
+
                 $('.flatpickrDate').flatpickr({
                     dateFormat: "d-m-Y"
                 });
@@ -312,6 +324,31 @@
                                 lastqty.val(response);
                                 
 
+                            }
+                        }
+                    });
+                });
+
+                // cek from[] perbaris ketika diketik apakah ada di database atau tidak 
+                $('.from').on('keyup', function() {
+                    var row = $(this).closest('tr'); // Get the current row
+                    var barangId = row.find('.selectBarang').val();
+                    var batchId = row.find('.selectBatch').val();
+                    var rack = row.find('.from').val();
+                    console.log(barangId, batchId, rack, qty);
+                    $.ajax({
+                        url: '<?= base_url('user/stocktransfer/checkAvailableRack') ?>',
+                        type: 'POST',
+                        data: {
+                            barangId: barangId,
+                            batchId: batchId,
+                            rack: rack
+                        },
+                        dataType: 'json',
+                        success: function(response) {
+                            console.log(response);
+                            if (qty > response) {
+                                row.find('.qty').val(response);
                             }
                         }
                     });

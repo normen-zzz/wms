@@ -90,9 +90,12 @@
 															<a target="_blank" href="<?= base_url('user/rack/print_slocrack/' . $rack1['id_rack']) ?>"
 																class="btn btn-sm btn-primary">Print QR Code</a>
 
-															<a target="_blank" href="<?= base_url('user/rack/print_sloc/' . $rack1['sloc']) ?>" class="btn btn-sm btn-secondary">Print Items QR Code</a>
+															<!-- <a target="_blank" href="<?= base_url('user/rack/print_sloc/' . $rack1['sloc']) ?>" class="btn btn-sm btn-secondary">Print Items QR Code</a> -->
 
 
+															<!-- tag a print items qr code  -->
+															<a target="_blank" href="<?= base_url('user/rack/print_items_qr/' . $rack1['sloc']) ?>"
+																class="btn btn-sm btn-primary">Print Items QR Code</a>
 															<!-- activated dan nonactivated -->
 															<?php if ($rack1['is_deleted'] == 1) { ?>
 															<button class="btn btn-sm btn-success activate-rack"

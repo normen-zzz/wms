@@ -135,9 +135,6 @@ class Rack extends CI_Controller
 	// input to database from excel file template tanpa save file
 	public function import_rack()
 	{
-
-
-
 		$file = $_FILES['rackBulky'];
 		$ext = pathinfo($file['tmp_name'], PATHINFO_EXTENSION);
 		if ($ext == 'csv') {
@@ -280,6 +277,56 @@ class Rack extends CI_Controller
         // Load view dengan data
         $this->load->view('user/rack/print_sloc', $data);
     }
+	// print_items_qr berisi sloc dan barcode, bawahnya isinya list nama barang dari rack_items berbentuk png
+	public function print_items_qr($sloc)
+	{
+		$barangGrouped = getGroupedItemsBySloc($sloc);
+		$mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [95.6, 100]]);
+		// margin 0 
+		$mpdf->SetMargins(0, 0, 0, 0);
+
+
+		
+	
+		$html = '
+		
+		<div>
+	<div style="text-align:center">
+		<h4>SLOC: ' . $sloc . '</h4>
+		<img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=' . $sloc . '" alt="">
+	</div>
+	<br>
+	<table border="1" style="width:100%">
+		<tr>
+			<th style="font-size: 10px;">SKU</th>
+			<th style="font-size: 10px;">Description</th>
+			<th style="font-size: 10px;">LOT</th>
+			
+		</tr>
+	';
+		foreach ($barangGrouped as $barang) {
+			$html .= '
+		<tr>
+			<td style="font-size: 8px;">' . $barang['sku'] . '</td>
+			<td style="font-size: 8px;">' . $barang['nama_barang'] . '</td>
+			<td style="font-size: 8px;">' . $barang['batchnumber'] . '</td>
+			
+		</tr>
+		
+		';
+		}
+		$html .= '</table>
+		</div>';
+
+		$mpdf->WriteHTML($html);
+		// set name pdf with sloc on download
+		// $mpdf->Output($sloc . '.pdf', 'D');
+		$mpdf->Output();
+		
+		// convert to jpg
+		// convert pdf to jpg
+		
+	}
 }
 
 /* End of file User.php */
