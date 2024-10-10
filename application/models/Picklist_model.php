@@ -59,7 +59,8 @@ class Picklist_model extends CI_Model
 			$this->db->select('no_picklist');
 			$this->db->from('picklist');
 			$this->db->like('no_picklist', $prefix, 'after');
-			$this->db->order_by('no_picklist', 'DESC');
+			$this->db->order_by('id_picklist', 'DESC');
+			$this->db->where('is_deleted', 0);
 			$this->db->limit(1);
 			
 			$query = $this->db->get();
@@ -68,8 +69,8 @@ class Picklist_model extends CI_Model
 			if ($result) {
 					$parts = explode('/', $result->no_picklist);
 					$lastCounter = isset($parts[2]) ? (int)$parts[2] : 0;
-			} else {
-					$lastCounter = 0;
+			}else{
+				$lastCounter = 0;
 			}
 
 			return $lastCounter;
