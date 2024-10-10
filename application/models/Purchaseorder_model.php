@@ -103,7 +103,7 @@ class Purchaseorder_model extends CI_Model
 		$this->db->select('no_purchaseorder');
 		$this->db->from('purchaseorder');
 		$this->db->like('no_purchaseorder', $prefix, 'after');
-		$this->db->order_by('no_purchaseorder', 'DESC');
+		$this->db->order_by('id_purchaseorder', 'DESC');
 		$this->db->limit(1);
 			
 		$query = $this->db->get();
