@@ -47,85 +47,101 @@ class Picklist extends CI_Controller
 
 	public function insertPicklist()
 	{
-		$no_picklist = generate_picklist_number();
-		$created_by = $this->session->userdata('id_users');
-		$status = 0;
+			$this->db->trans_start();
 
-		$picklist_data = array(
-			'no_picklist' => $no_picklist,
-			'uuid' => uniqid(),
-			'created_at' => date('Y-m-d H:i:s'),
-			'created_by' => $created_by,
-			'status' => $status
-		);
+			try {
+					$no_picklist = generate_picklist_number();
+					$created_by = $this->session->userdata('id_users');
+					$status = 0;
 
-		$insert_id = $this->picklist->insert_picklist($picklist_data);
-
-		if ($insert_id) {
-			$barang_ids = $this->input->post('barang');
-			$qtys = $this->input->post('qty');
-			$batches = $this->input->post('batch');
-			$expired_dates = $this->input->post('ed');
-
-			if (is_array($barang_ids) && !empty($barang_ids)) {
-				foreach ($barang_ids as $key => $barang_id) {
-					$checkBatchItem = $this->db->query('SELECT id_batchitem, batch.id_batch, batchitem.qty 
-																							FROM batchitem 
-																							INNER JOIN batch ON batchitem.id_batch = batch.id_batch 
-																							WHERE batch.batchnumber = "' . $batches[$key] . '" 
-																							AND batchitem.id_barang = ' . $barang_id);
-
-					if ($checkBatchItem->num_rows() == 0) {
-						$checkBatch = $this->db->query('SELECT id_batch FROM batch WHERE batchnumber = "' . $batches[$key] . '"');
-						if ($checkBatch->num_rows() == 0) {
-
-							$this->db->insert('batch', [
-								'uuid' => uniqid(),
-								'batchnumber' => $batches[$key],
-								'expiration_date' => date('Y-m-d H:i:s', strtotime($expired_dates[$key]))
-							]);
-							$id_batch =  $this->db->insert_id();
-						} else {
-							$id_batch = $checkBatch->row()->id_batch;
-						}
-
-						$dataBatchItem = [
-							'id_barang' => $barang_id,
-							'id_batch' => $id_batch,
-							'qty' => $qtys[$key]
-						];
-						$this->db->insert('batchitem', $dataBatchItem);
-					} else {
-						$checkBatchItem = $checkBatchItem->row_array();
-						$id_batch = $checkBatchItem['id_batch'];
-						$current_qty = $checkBatchItem['qty'];
-
-						$new_qty = $current_qty + $qtys[$key];
-						$this->db->update('batchitem', ['qty' => $new_qty], ['id_batchitem' => $checkBatchItem['id_batchitem']]);
-					}
-
-					$datapicklist_data = array(
-						'id_picklist' => $insert_id,
-						'id_barang' => $barang_id,
-						'batch' => $id_batch,
-						'qty' => $qtys[$key],
-						'created_at' => date('Y-m-d H:i:s'),
-						'created_by' => $created_by,
-						'expiration_date' =>  date('Y-m-d', strtotime($expired_dates[$key]))
+					$picklist_data = array(
+							'no_picklist' => $no_picklist,
+							'uuid' => uniqid(),
+							'created_at' => date('Y-m-d H:i:s'),
+							'created_by' => $created_by,
+							'status' => $status
 					);
 
-					$this->picklist->insert_datapicklist($datapicklist_data);
-				}
+					$insert_id = $this->picklist->insert_picklist($picklist_data);
 
-				$response = array('status' => 'success', 'message' => 'Picklist inserted successfully.');
-			} else {
-				$response = array('status' => 'error', 'message' => 'No items to process.');
+					if ($insert_id) {
+							$barang_ids = $this->input->post('barang');
+							$qtys = $this->input->post('qty');
+							$batches = $this->input->post('batch');
+							$expired_dates = $this->input->post('ed');
+
+							if (is_array($barang_ids) && !empty($barang_ids)) {
+									foreach ($barang_ids as $key => $barang_id) {
+											$checkBatchItem = $this->db->query('SELECT id_batchitem, batch.id_batch, batchitem.qty 
+																													FROM batchitem 
+																													INNER JOIN batch ON batchitem.id_batch = batch.id_batch 
+																													WHERE batch.batchnumber = "' . $batches[$key] . '" 
+																													AND batchitem.id_barang = ' . $barang_id);
+
+																													
+																													if ($checkBatchItem->num_rows() == 0) {
+													$checkBatch = $this->db->query('SELECT id_batch FROM batch WHERE batchnumber = "' . $batches[$key] . '"');
+													if ($checkBatch->num_rows() == 0) {
+
+															$this->db->insert('batch', [
+																	'uuid' => uniqid(),
+																	'batchnumber' => $batches[$key],
+																	'expiration_date' => date('Y-m-d H:i:s', strtotime($expired_dates[$key]))
+															]);
+															$id_batch =  $this->db->insert_id();
+													} else {
+															$id_batch = $checkBatch->row()->id_batch;
+													}
+
+													$dataBatchItem = [
+															'id_barang' => $barang_id,
+															'id_batch' => $id_batch,
+															'qty' => $qtys[$key]
+													];
+													$this->db->insert('batchitem', $dataBatchItem);
+											} else {
+													$checkBatchItem = $checkBatchItem->row_array();
+													$id_batch = $checkBatchItem['id_batch'];
+													$current_qty = $checkBatchItem['qty'];
+
+													$new_qty = $current_qty + $qtys[$key];
+													$this->db->update('batchitem', ['qty' => $new_qty], ['id_batchitem' => $checkBatchItem['id_batchitem']]);
+											}
+
+											$datapicklist_data = array(
+												'id_picklist' => $insert_id,
+												'id_barang' => $barang_id,
+												'batch' => $id_batch,
+												'qty' => $qtys[$key],
+												'created_at' => date('Y-m-d H:i:s'),
+												'created_by' => $created_by,
+												'expiration_date' =>  date('Y-m-d', strtotime($expired_dates[$key]))
+											);
+											
+											$this->picklist->insert_datapicklist($datapicklist_data);
+											// debug transaction
+											// var_dump($datapicklist_data);exit;
+									}
+
+									$this->db->trans_complete();
+
+									if ($this->db->trans_status() === FALSE) {
+											throw new Exception('Transaction failed');
+									}
+
+									$response = array('status' => 'success', 'message' => 'Picklist inserted successfully.');
+							} else {
+									throw new Exception('No items to process.');
+							}
+					} else {
+							throw new Exception('Failed to insert picklist.');
+					}
+			} catch (Exception $e) {
+					$this->db->trans_rollback();
+					$response = array('status' => 'error', 'message' => $e->getMessage());
 			}
-		} else {
-			$response = array('status' => 'error', 'message' => 'Failed to insert picklist.');
-		}
 
-		echo json_encode($response);
+			echo json_encode($response);
 	}
 
 
