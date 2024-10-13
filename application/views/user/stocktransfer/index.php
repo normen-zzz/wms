@@ -46,8 +46,8 @@
 										<h5 class="card-title">
 											<?= $subtitle2 ?>
 										</h5>
-										<!-- create putaway -->
-										<!-- <a href="<?= base_url('user/putaway/create') ?>" class="btn btn-primary">Create Putaway</a> -->
+										<!-- tombol add stock transfer -->
+										<a href="<?= base_url('user/stocktransfer/add') ?>" class="btn btn-primary">Add Stock Transfer</a>
 									</div>
 
 									<div class="card-body">
@@ -62,16 +62,20 @@
 													</tr>
 												</thead>
 												<tbody>
-													<?php foreach ($stocktransfer->result_array() as $s) : ?>
+													<?php foreach ($stocktransfer->result() as $s) : ?>
                                                         <tr>
                                                             <td><?= $s->no_stocktransfer ?></td>
-                                                            <td><?= $s->status ?></td>
+                                                            <td><?= getStatusStocktransfer($s->status)  ?></td>
                                                             <td><?= $s->created_at ?></td>
                                                             <td>
+																<?php if ($s->status == 0) : ?>
+																	
+																	<a href="<?= base_url('user/stocktransfer/process/' . $s->uuid) ?>" class="btn btn-primary">Process</a>
+																	<?php endif; ?>
                                                                 <a href="<?= base_url('user/stocktransfer/detail/' . $s->uuid) ?>" class="btn btn-primary">Detail</a>
                                                             </td>
                                                         </tr>
-														
+													
 													<?php endforeach; ?>
 												</tbody>
 											</table>
