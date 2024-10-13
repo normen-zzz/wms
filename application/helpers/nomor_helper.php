@@ -3,19 +3,19 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 function generate_picklist_number($prefix = 'PL')
 {
-    $CI = &get_instance();
-    $CI->load->model('Picklist_model');
+	$CI = &get_instance();
+	$CI->load->model('Picklist_model');
 
-    $date = date('ymd');
+	$date = date('ymd');
 
-    $last_counter = $CI->Picklist_model->get_last_counter();
-    $new_counter = $last_counter + 1;
+	$last_counter = $CI->Picklist_model->get_last_counter();
+	$new_counter = $last_counter + 1;
 
-    $formatted_counter = str_pad($new_counter, 2, '0', STR_PAD_LEFT);
+	$formatted_counter = str_pad($new_counter, 2, '0', STR_PAD_LEFT);
 
-    $picklist_number = "{$prefix}/{$date}/{$formatted_counter}";
-		// var_dump($picklist_number);exit;
-    return $picklist_number;
+	$picklist_number = "{$prefix}/{$date}/{$formatted_counter}";
+	// var_dump($picklist_number);exit;
+	return $picklist_number;
 }
 
 function generate_goodsorder_number($prefix = 'GO')
@@ -142,4 +142,22 @@ function generate_deliveryorder_number($prefix = 'DO')
 	$deliveryorder_number = "{$prefix}/{$date}/{$formatted_counter}";
 
 	return $deliveryorder_number;
+}
+
+function generate_stocktransfer_number($prefix = 'STF')
+{
+	$CI = &get_instance();
+	$CI->load->model('Stocktransfer_model');
+
+	$date = date('ymd');
+
+	$last_counter = $CI->Stocktransfer_model->get_last_counter();
+	$new_counter = $last_counter + 1;
+
+	$formatted_counter = str_pad($new_counter, 1, '0', STR_PAD_LEFT);
+
+
+	$stocktransfer_number = "{$prefix}/{$date}/{$formatted_counter}";
+
+	return $stocktransfer_number;
 }

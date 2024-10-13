@@ -59,13 +59,13 @@
 														<label for="first_name">
 															<h4>Customer</h4>
 														</label>
-														
+
 														<select name="customer" id="customer" class="form-select">
-															<?php foreach ($customer->result_array() as $customer1) {?>
+															<?php foreach ($customer->result_array() as $customer1) { ?>
 																<option value="<?= $customer1['id_customer'] ?>"><?= $customer1['nama_customer'] ?></option>
 															<?php } ?>
 														</select>
-														
+
 													</div>
 												</div>
 												<table class="table" id="table">
@@ -164,43 +164,43 @@
 
 				const barang = $('select[name="barang[]"]');
 				for (let i = 0; i < barang.length; i++) {
-						if (barang[i].value === '-' || barang[i].value.trim() === '') { 
-								Swal.fire({
-										title: 'Error!',
-										text: 'Barang tidak boleh kosong!',
-										icon: 'error',
-										confirmButtonText: 'OK'
-								});
-								return; 
-						}
+					if (barang[i].value === '-' || barang[i].value.trim() === '') {
+						Swal.fire({
+							title: 'Error!',
+							text: 'Barang tidak boleh kosong!',
+							icon: 'error',
+							confirmButtonText: 'OK'
+						});
+						return;
+					}
 				}
 
-	    	const batchInputs = $('select[name="batch[]"]');
+				const batchInputs = $('select[name="batch[]"]');
 				for (let i = 0; i < batchInputs.length; i++) {
-						if (batchInputs[i].value === '-' || batchInputs[i].value.trim() === '') { 
-								Swal.fire({
-										title: 'Error!',
-										text: 'Batch tidak boleh kosong!',
-										icon: 'error',
-										confirmButtonText: 'OK'
-								});
-								return; 
-						}
+					if (batchInputs[i].value === '-' || batchInputs[i].value.trim() === '') {
+						Swal.fire({
+							title: 'Error!',
+							text: 'Batch tidak boleh kosong!',
+							icon: 'error',
+							confirmButtonText: 'OK'
+						});
+						return;
+					}
 				}
 
 				const qtyInputs = $('input[name="qty[]"]');
 				for (let i = 0; i < qtyInputs.length; i++) {
-						if (qtyInputs[i].value.trim() === '') {
-								Swal.fire({
-										title: 'Error!',
-										text: 'Quantity tidak boleh kosong!',
-										icon: 'error',
-										confirmButtonText: 'OK'
-								});
-								return; 
-						}
+					if (qtyInputs[i].value.trim() === '') {
+						Swal.fire({
+							title: 'Error!',
+							text: 'Quantity tidak boleh kosong!',
+							icon: 'error',
+							confirmButtonText: 'OK'
+						});
+						return;
+					}
 				}
-				
+
 				Swal.fire({
 					title: 'Please wait...',
 					html: 'Loading...',
@@ -208,7 +208,7 @@
 					didOpen: () => {
 						Swal.showLoading()
 					}
-				});	
+				});
 				$.ajax({
 					url: "<?= base_url('user/purchaseorder/insertPurchaseorder') ?>",
 					type: "POST",
@@ -240,7 +240,7 @@
 
 
 			function initSelect2AndFlatpickr() {
-					$('.selectBarang').select2({
+				$('.selectBarang').select2({
 					ajax: {
 						url: '<?= base_url('user/picklist/getDataBarangSelect') ?>',
 						type: "POST",
@@ -302,7 +302,7 @@
 					});
 				});
 				$('.qty').on('keyup', function() {
-					var qty = parseInt($(this).val()) ;
+					var qty = parseInt($(this).val());
 					var row = $(this).closest('tr'); // Get the current row
 					var barangId = row.find('.selectBarang');
 					var batchId = row.find('.selectBatch'); // Get the selectBatch element in the current row
@@ -320,7 +320,7 @@
 							console.log(response);
 							if (qty > response) {
 								lastqty.val(response);
-								
+
 
 							}
 						}

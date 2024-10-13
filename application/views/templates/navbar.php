@@ -212,11 +212,11 @@
 			<?php endif; ?>
 
 			<?php if ($this->session->userdata('role_id') == 1 || $this->session->userdata('role_id') == 6) : ?>
-				<!-- <li class="menu-item  ">
+				<li class="menu-item  ">
 				<a href="<?= base_url('user/stocktransfer') ?>" class='menu-link'>
 					<span><i class="bi bi-arrow-down-up"></i>Stock transfer</span>
 				</a>
-			</li> -->
+			</li>
 			<?php endif; ?>
 
 
