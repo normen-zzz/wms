@@ -74,6 +74,7 @@
 															<th>Barang</th>
 															<th>Batch</th>
 															<th>Qty</th>
+															<th>Action</th>
 
 														</tr>
 													</thead>
@@ -89,6 +90,11 @@
 																</select></td>
 															<td>
 																<input type="number" class="form-control qty" name="qty[]">
+															</td>
+															<td>
+																<!-- button for remove row  -->
+																<button type="button" class="btn btn-danger remove-row">Remove</button>
+														     
 															</td>
 
 
@@ -148,6 +154,7 @@
                     <td><select name="barang[]" class="form-control selectBarang"></select></td>
 					 <td><select class="form-control selectBatch" name="batch[]"><option selected value="-">Select Batch</option></select></td>
 					<td><input type="text" class="form-control qty" name="qty[]"></td>
+					<td><button type="button" class="btn btn-danger remove-row">Remove</button></td>
                    
                    
                 </tr>`;
@@ -327,6 +334,12 @@
 					});
 				});
 			}
+		});
+	</script>
+
+	<script>
+		$(document).on('click', '.remove-row', function() {
+			$(this).closest('tr').remove();
 		});
 	</script>
 
