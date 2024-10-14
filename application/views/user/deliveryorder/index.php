@@ -193,7 +193,7 @@
                 },
             });
             var no_do = $('#no_do').val();
-            var id_deliveryorder = '<?= $deliveryorder1['id_deliveryorder'] ?>';
+            var id_deliveryorder = $('#id_deliveryorder').val();
             $.ajax({
                 type: "post",
                 url: "<?= base_url('user/Deliveryorder/editDeliveryOrder') ?>",
@@ -209,6 +209,15 @@
                             title: 'Success',
                             text: response.message,
                         }).then(function() {
+                            Swal.fire({
+                                title: 'Please Wait..!',
+                                html: 'Loading...',
+                                allowOutsideClick: false,
+                                showConfirmButton: false,
+                                willOpen: () => {
+                                    Swal.showLoading()
+                                },
+                            });
                             location.reload();
                         });
                     } else {
