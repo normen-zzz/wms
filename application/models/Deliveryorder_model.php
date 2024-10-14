@@ -109,6 +109,23 @@ class Deliveryorder_model extends CI_Model
         $this->db->insert('deliveryorder', $data);
         return $this->db->insert_id();
     }
+
+    // getDeliveryOrderById 
+    public function getDeliveryOrderById($id)
+    {
+        $this->db->select('a.*,b.no_packing,c.no_pickingslip');
+        $this->db->from('deliveryorder a');
+        $this->db->join('packing b', 'a.id_packing =  b.id_packing');
+        $this->db->join('pickingslip c', 'b.id_pickingslip =  c.id_pickingslip');
+        $this->db->where('a.id_deliveryorder', $id);
+        return $this->db->get()->row_array();
+    }
+    // updateDeliveryOrder
+    public function updateDeliveryOrder($id, $data)
+    {
+        $this->db->where('id_deliveryorder', $id);
+        return $this->db->update('deliveryorder', $data);
+    }
 }
 
 /* End of file ModelName.php */

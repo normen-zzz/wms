@@ -208,6 +208,33 @@ class Deliveryorder extends CI_Controller
 
         $mpdf->Output('delivery_order.pdf', 'I');
     }
+
+    // getDeliveryOrderById 
+    public function getDeliveryOrderById()
+    {
+        $id_deliveryorder = $this->input->post('id_deliveryorder');
+        $data = $this->deliveryorder->getDeliveryOrderById($id_deliveryorder);
+        echo json_encode($data);
+    }
+
+    //editDeliveryOrderaction
+    public function editDeliveryOrder()
+    {
+        $id_deliveryorder = $this->input->post('id_deliveryorder');
+        $data = array(
+            'ext_deliveryorder' => $this->input->post('no_do'),
+            'updated_at' => date('Y-m-d H:i:s'),
+            'updated_by' => $this->session->userdata('id_users'),
+        );
+        $update = $this->deliveryorder->updateDeliveryOrder($id_deliveryorder, $data);
+        if ($update) {
+            $response = array('status' => 'success', 'message' => 'Delivery order updated successfully.');
+        } else {
+            $response = array('status' => 'error', 'message' => 'Failed to update delivery order.');
+        }
+        echo json_encode($response);
+    }
+    
 }
 
 /* End of file User.php */
