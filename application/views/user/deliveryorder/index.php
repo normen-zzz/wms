@@ -54,7 +54,7 @@
                                             <table class="table" id="tbldo">
                                                 <thead>
                                                     <tr>
-														<th>No</th>
+                                                        <th>No</th>
                                                         <th>No Do</th>
                                                         <th>No Packing</th>
                                                         <th>No Pickingslip</th>
@@ -67,13 +67,15 @@
                                                 <tbody>
                                                     <?php foreach ($deliveryorder->result_array() as $deliveryorder1) { ?>
                                                         <tr>
-															<td></td>
+                                                            <td></td>
                                                             <td><?= $deliveryorder1['ext_deliveryorder'] ?></td>
                                                             <td><?= $deliveryorder1['no_packing'] ?></td>
                                                             <td><?= $deliveryorder1['no_pickingslip'] ?></td>
                                                             <td><?= dateindo($deliveryorder1['created_at']) ?></td>
                                                             <td><?= getNamaUserById($deliveryorder1['created_by']) ?></td>
                                                             <td>
+                                                                <!-- button  show modal for edit -->
+                                                                <button type="button" class="btn btn-primary btn-sm mb-1" data-bs-toggle="modal" data-bs-target="#edit" data-id_deliveryorder="<?= $deliveryorder1['id_deliveryorder'] ?>">Edit</button>
                                                                 <a href="<?= base_url('user/Deliveryorder/detail/' . $deliveryorder1['uuid']) ?>" class="btn btn-primary btn-sm mb-1">Detail</a>
                                                                 <a target="_blank" href="<?= base_url('user/Deliveryorder/printDeliveryOrder/' . $deliveryorder1['uuid']) ?>" class="btn btn-primary btn-sm mb-1">Print Delivery Order</a>
                                                             </td>
@@ -98,6 +100,31 @@
         </div>
     </div>
 
+    <!-- modal  -->
+    <div class="modal fade" id="edit" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editLabel">Edit Delivery Order</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editDeliveryOrder">
+                        <div class="mb-3">
+                            <label for="no_do" class="form-label">No Delivery Order</label>
+                            <input type="text" class="form-control" id="no_do" name="no_do" required>
+                            <!-- input hidden id deliveryorder  -->
+                            <input type="hidden" name="id_deliveryorder" id="id_deliveryorder">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
 
 
     <script src="<?= base_url() . '/' ?>assets/static/js/components/dark.js"></script>
@@ -109,22 +136,103 @@
     <script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
     <script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
-	<script>
-		// tblpickingslip datatable
-		$(document).ready(function() {
-			$('#tbldo').DataTable({
-				"order": [[4, "desc"]],
-				"columnDefs": [{
-					"searchable": false,
-					"orderable": false,
-					"targets": 0
-				}],
-					rowCallback: function(row, data, index) {
-				$('td:eq(0)', row).html(index + 1); 
-			}
-			});
-		});
-	</script>
+    <script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
+    <script>
+        // tblpickingslip datatable
+        $(document).ready(function() {
+            $('#tbldo').DataTable({
+                "order": [
+                    [4, "desc"]
+                ],
+                "columnDefs": [{
+                    "searchable": false,
+                    "orderable": false,
+                    "targets": 0
+                }],
+                rowCallback: function(row, data, index) {
+                    $('td:eq(0)', row).html(index + 1);
+                }
+            });
+        });
+    </script>
+
+    <script>
+        // editDeliveryOrder
+        $('#edit').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget)
+            var id_deliveryorder = button.data('id_deliveryorder')
+            var modal = $(this)
+
+            $.ajax({
+                type: "post",
+                url: "<?= base_url('user/Deliveryorder/getDeliveryOrderById') ?>",
+                data: {
+                    id_deliveryorder: id_deliveryorder
+                },
+                dataType: "json",
+                success: function(response) {
+                    modal.find('#no_do').val(response.ext_deliveryorder);
+                    modal.find('#id_deliveryorder').val(response.id_deliveryorder)
+                }
+            });
+        })
+    </script>
+
+    <!-- submit editDeliveryOrder -->
+    <script>
+        $('#editDeliveryOrder').submit(function(e) {
+            e.preventDefault();
+            // swal loading process 
+            Swal.fire({
+                title: 'Please Wait..!',
+                html: 'Loading...',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                willOpen: () => {
+                    Swal.showLoading()
+                },
+            });
+            var no_do = $('#no_do').val();
+            var id_deliveryorder = $('#id_deliveryorder').val();
+            $.ajax({
+                type: "post",
+                url: "<?= base_url('user/Deliveryorder/editDeliveryOrder') ?>",
+                data: {
+                    no_do: no_do,
+                    id_deliveryorder: id_deliveryorder
+                },
+                dataType: "json",
+                success: function(response) {
+                    if (response.status == 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.message,
+                        }).then(function() {
+                            Swal.fire({
+                                title: 'Please Wait..!',
+                                html: 'Loading...',
+                                allowOutsideClick: false,
+                                showConfirmButton: false,
+                                willOpen: () => {
+                                    Swal.showLoading()
+                                },
+                            });
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message,
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+
+
 
 
 
