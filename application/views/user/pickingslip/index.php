@@ -54,7 +54,7 @@
                                             <table class="table" id="tblpickingslip">
                                                 <thead>
                                                     <tr>
-														<th>No</th>
+                                                        <th>No</th>
                                                         <th>No PS</th>
                                                         <th>No PO</th>
                                                         <th>Customer</th>
@@ -66,26 +66,54 @@
                                                 </thead>
                                                 <tbody>
                                                     <?php foreach ($ps->result_array() as $ps1) { ?>
-                                                        <tr>
-															<td></td>
-                                                            <td><?= $ps1['no_pickingslip'] ?></td>
-                                                            <td><?= $ps1['no_purchaseorder'] ?></td>
-                                                            <td><?= getNamaCustomer($ps1['customer']) ?></td>
-                                                            <td><?= getStatusPickingslip($ps1['status']) ?></td>
-                                                            <td><?= dateindo($ps1['created_at']) ?></td>
-                                                            <td>
-                                                                <?php if ($ps1['status'] == 0) { ?>
-                                                                    <!-- role 4  -->
-                                                                    <?php if ($this->session->userdata('role_id') == 4 || $this->session->userdata('role_id') == 6 || $this->session->userdata('role_id') == 1) { ?>
-                                                                        <a href="<?= base_url('user/Pickingslip/pick/' . $ps1['uuid']) ?>" class="btn btn-warning btn-sm mb-1">Pick</a>
+
+                                                        <?php if ($this->session->userdata('role_id') == 6 || $this->session->userdata('role_id') == 1) { ?>
+                                                            <tr>
+                                                                <td></td>
+                                                                <td><?= $ps1['no_pickingslip'] ?></td>
+                                                                <td><?= $ps1['no_purchaseorder'] ?></td>
+                                                                <td><?= getNamaCustomer($ps1['customer']) ?></td>
+                                                                <td><?= getStatusPickingslip($ps1['status']) ?></td>
+                                                                <td><?= dateindo($ps1['created_at']) ?></td>
+                                                                <td>
+                                                                    <?php if ($ps1['status'] == 0) { ?>
+                                                                        <!-- role 4  -->
+                                                                        <?php if ($this->session->userdata('role_id') == 4 || $this->session->userdata('role_id') == 6 || $this->session->userdata('role_id') == 1) { ?>
+                                                                            <a href="<?= base_url('user/Pickingslip/pick/' . $ps1['uuid']) ?>" class="btn btn-warning btn-sm mb-1">Pick</a>
+                                                                        <?php } ?>
+
+                                                                    <?php  } else { ?>
+                                                                        <a href="<?= base_url('user/Pickingslip/detail/' . $ps1['uuid']) ?>" class="btn btn-primary btn-sm mb-1">Detail</a>
                                                                     <?php } ?>
+                                                                </td>
+                                                            </tr>
+                                                            <?php } else {
+                                                            if ($this->session->userdata('role_id') == 4 && $this->session->userdata('id_users') == $ps1['picker']) { ?>
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td><?= $ps1['no_pickingslip'] ?></td>
+                                                                    <td><?= $ps1['no_purchaseorder'] ?></td>
+                                                                    <td><?= getNamaCustomer($ps1['customer']) ?></td>
+                                                                    <td><?= getStatusPickingslip($ps1['status']) ?></td>
+                                                                    <td><?= dateindo($ps1['created_at']) ?></td>
+                                                                    <td>
+                                                                        <?php if ($ps1['status'] == 0) { ?>
+                                                                            <!-- role 4  -->
+                                                                            <?php if ($this->session->userdata('role_id') == 4 || $this->session->userdata('role_id') == 6 || $this->session->userdata('role_id') == 1) { ?>
+                                                                                <a href="<?= base_url('user/Pickingslip/pick/' . $ps1['uuid']) ?>" class="btn btn-warning btn-sm mb-1">Pick</a>
+                                                                            <?php } ?>
 
-                                                                <?php  } else { ?>
-                                                                    <a href="<?= base_url('user/Pickingslip/detail/' . $ps1['uuid']) ?>" class="btn btn-primary btn-sm mb-1">Detail</a>
-                                                                <?php } ?>
+                                                                        <?php  } else { ?>
+                                                                            <a href="<?= base_url('user/Pickingslip/detail/' . $ps1['uuid']) ?>" class="btn btn-primary btn-sm mb-1">Detail</a>
+                                                                        <?php } ?>
+                                                                    </td>
+                                                                </tr>
+                                                            <?php }
+                                                            ?>
 
-                                                            </td>
-                                                        </tr>
+                                                        <?php } ?>
+
+                                                        
                                                     <?php } ?>
                                                 </tbody>
                                             </table>
@@ -117,22 +145,24 @@
     <script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
     <script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
-	<script>
-		// tblpickingslip datatable
-		$(document).ready(function() {
-			$('#tblpickingslip').DataTable({
-				"order": [[4, "desc"]],
-				"columnDefs": [{
-					"searchable": false,
-					"orderable": false,
-					"targets": 0
-				}],
-					rowCallback: function(row, data, index) {
-				$('td:eq(0)', row).html(index + 1); 
-			}
-			});
-		});
-	</script>
+    <script>
+        // tblpickingslip datatable
+        $(document).ready(function() {
+            $('#tblpickingslip').DataTable({
+                "order": [
+                    [4, "desc"]
+                ],
+                "columnDefs": [{
+                    "searchable": false,
+                    "orderable": false,
+                    "targets": 0
+                }],
+                rowCallback: function(row, data, index) {
+                    $('td:eq(0)', row).html(index + 1);
+                }
+            });
+        });
+    </script>
 
 
 </body>
