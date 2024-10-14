@@ -61,15 +61,15 @@ function generate_pickingslip_number($prefix = 'PS')
 
 	$date = date('ymd');
 
-	$last_counter = $CI->Purchaseorder_model->get_last_counter_pickingslip();
+	$last_counter = $CI->pickingslip_model->get_last_counter_pickingslip();
 	$new_counter = $last_counter + 1;
 
 	$formatted_counter = str_pad($new_counter, 1, '0', STR_PAD_LEFT);
 
 
-	$pickinglist_number = "{$prefix}/{$date}/{$formatted_counter}";
+	$pickingslip_number = "{$prefix}/{$date}/{$formatted_counter}";
 
-	return $pickinglist_number;
+	return $pickingslip_number;
 }
 
 function generate_inbound_number($prefix = 'IB')
