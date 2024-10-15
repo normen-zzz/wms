@@ -49,9 +49,9 @@
                                             <?= $subtitle2 ?>
                                         </h5>
 
-                                        <?php if ($status1 != 6) { ?>{
+                                        <?php if ($status1 != 6) { ?>
 
-                                        } ?>
+
                                         <?php if ($status1 != 2) { ?>
 
                                             <div style="float: right;">
@@ -65,8 +65,7 @@
 
 
                                             </div>
-                                    <?php }
-                                        } ?>
+                                    <?php }} ?>
 
                                     </div>
 
