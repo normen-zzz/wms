@@ -97,7 +97,7 @@
                                                                     <td><?= getStatusPickingslip($ps1['status']) ?></td>
                                                                     <td><?= dateindo($ps1['created_at']) ?></td>
                                                                     <td>
-                                                                        <?php if ($po1['status'] != 6) { ?>
+                                                                        <?php if ($ps1['status'] != 6) { ?>
                                                                             <?php if ($ps1['status'] == 0) { ?>
                                                                                 <!-- role 4  -->
                                                                                 <?php if ($this->session->userdata('role_id') == 4 || $this->session->userdata('role_id') == 6 || $this->session->userdata('role_id') == 1) { ?>
