@@ -25,7 +25,7 @@ class RackItems_model extends CI_Model
 		}
 
 		if (!empty($filters['sloc'])) {
-			$this->db->like('rack.sloc', $filters['sloc']);
+			$this->db->where('rack.sloc', $filters['sloc']);
 		}
 		// where is_deleted = 0
 		$this->db->where('rack.is_deleted', 0);
