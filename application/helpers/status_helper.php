@@ -36,7 +36,7 @@ function getStatusPurchaseorder($status)
 			return '<span class="badge bg-primary">Picking Slip Created</span>';
 			break;
 		case '6':
-			return '<span class="badge bg-danger">Picking Slip Created</span>';
+			return '<span class="badge bg-danger">Void</span>';
 			break;
 
 		default:
@@ -60,7 +60,7 @@ function getStatusPickingslip($status)
 			return '<span class="badge bg-success">On Packing</span>';
 			break;
 			case '6':
-				return '<span class="badge bg-danger">Picking Slip Created</span>';
+				return '<span class="badge bg-danger">Void</span>';
 				break;
 
 		default:
