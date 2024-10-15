@@ -55,6 +55,7 @@
                                         <label for="customer">Customer</label>
                                         <input type="text" class="form-control" value="<?= $customer ?>" disabled>
                                         <div class="table-responsive">
+                                            <h3>Unpicked</h3>
                                             <table class="table" id="table">
                                                 <thead>
                                                     <tr>
@@ -74,6 +75,35 @@
                                                             <td><?= $detailPo1['nama_barang'] ?></td>
                                                             <td><?= $detailPo1['batchnumber'] ?></td>
                                                             <td><?= $detailPo1['expiration_date'] ?></td>
+                                                            <td><input type="text" class="form-control" value="<?= $detailPo1['qty'] ?>"></td>
+                                                           
+
+                                                        </tr>
+                                                    <?php } ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <h3>Picked</h3>
+                                            <table class="table" id="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>SKU</th>
+                                                        <th>Nama Barang</th>
+                                                        <th>Batch</th>
+                                                        <th>ED</th>
+                                                        <th>Qty</th>
+
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php foreach ($detailPoPicked->result_array() as $detailPo1) { ?>
+                                                        <tr>
+                                                            <td><?= $detailPo1['sku'] ?></td>
+                                                            <td><?= $detailPo1['nama_barang'] ?></td>
+                                                            <td><?= $detailPo1['batchnumber'] ?></td>
+                                                            <td><?= $detailPo1['expiration_date'] ?></td>
                                                             <td><?= $detailPo1['qty'] ?></td>
 
                                                         </tr>
@@ -81,7 +111,7 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                        
+
                                     </div>
                                 </div>
 

@@ -55,6 +55,7 @@
                                         <label for="customer">Customer</label>
                                         <input type="text" class="form-control" value="<?= $customer ?>" disabled>
                                         <div class="table-responsive">
+                                           
                                             <table class="table" id="table">
                                                 <thead>
                                                     <tr>
@@ -88,6 +89,8 @@
                                                     <option value="<?= $userPicker1['id_users'] ?>"><?= $userPicker1['nama'] ?></option>
                                                 <?php } ?>
                                             </select>
+                                            <label class="mt-2" for="notes">Notes</label>
+                                            <textarea class="form-control" name="notes" id="notes"></textarea>
                                             <button type="submit" class="btn btn-primary mt-2">Process Picking Slip</button>
                                         </form>
                                     </div>
