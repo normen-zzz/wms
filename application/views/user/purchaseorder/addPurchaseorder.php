@@ -73,7 +73,7 @@
 														<tr>
 															<th>Barang</th>
 															<th>Batch</th>
-															<th>Qty</th>
+															<th>Quantity</th>
 															<th>Action</th>
 
 														</tr>
