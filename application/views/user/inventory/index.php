@@ -17,6 +17,7 @@
 
 
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/compiled/css/table-datatable-jquery.css">
+
 </head>
 
 <body>
@@ -62,6 +63,13 @@
 													<label for="sloc">Sloc</label>
 													<input type="text" name="sloc" class="form-control" id="sloc" value="<?= isset($_GET['sloc']) ? $_GET['sloc'] : '' ?>">
 												</div>
+
+												<div class="col-md-4">ddd
+												<div id="qr-reader"></div>
+												</div>
+
+
+
 											</div>
 											<button type="submit" class="btn btn-primary mt-3 mb-3">Filter</button>
 										</form>
@@ -69,32 +77,32 @@
 
 										<div class="table-responsive">
 											<table class="table" id="tblinventory">
-													<thead>
+												<thead>
+													<tr>
+														<th>SKU</th>
+														<th>Nama Barang</th>
+														<th>ID Batch</th>
+														<th>Sloc Rack</th>
+														<th>Expiration date</th>
+														<th>Quantity</th>
+													</tr>
+												</thead>
+												<tbody>
+													<?php if (!empty($rack_items)) : ?>
+														<?php foreach ($rack_items as $item) : ?>
 															<tr>
-																	<th>SKU</th>
-																	<th>Nama Barang</th>
-																	<th>ID Batch</th>
-																	<th>Sloc Rack</th>
-																	<th>Expiration date</th>
-																	<th>Quantity</th>
+																<td><?= $item->sku ?></td>
+																<td><?= $item->nama_barang ?></td>
+																<td><?= $item->batchnumber ?></td>
+																<td><?= $item->sloc ?></td>
+																<td><?= date('d-m-Y', strtotime($item->expiration_date)) ?></td>
+																<td><?= $item->total_quantity ?></td>
 															</tr>
-													</thead>
-													<tbody>
-															<?php if (!empty($rack_items)) : ?>
-																	<?php foreach ($rack_items as $item) : ?>
-																			<tr>
-																					<td><?= $item->sku ?></td>
-																					<td><?= $item->nama_barang ?></td>
-																					<td><?= $item->batchnumber ?></td>
-																					<td><?= $item->sloc ?></td>
-																					<td><?= date('d-m-Y', strtotime($item->expiration_date)) ?></td>
-																					<td><?= $item->total_quantity ?></td>
-																			</tr>
-																	<?php endforeach; ?>
-															<?php endif; ?>
-													</tbody>
+														<?php endforeach; ?>
+													<?php endif; ?>
+												</tbody>
 											</table>
-									</div>
+										</div>
 									</div>
 								</div>
 								<!-- Basic Tables end -->
@@ -122,20 +130,51 @@
 	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
+	<script src="https://unpkg.com/html5-qrcode"></script>
+
+
+
 
 	<script>
 		$(document).ready(function() {
 			$('#tblinventory').DataTable({
-						language: {
-								emptyTable: "No results found"
-						},
-						order: [[4, 'asc']]
-				});
+				language: {
+					emptyTable: "No results found"
+				},
+				order: [
+					[4, 'asc']
+				]
+			});
+
 		});
-
-
-
 	</script>
+
+
+    <script type="text/javascript">
+      // var resultContainer = document.getElementById('qr-reader-results');
+      var lastResult, countResults = 0;
+ 
+      function onScanSuccess(decodedText, decodedResult) {
+        if (decodedText !== lastResult) {
+            ++countResults;
+            lastResult = decodedText;
+
+			// decodedText to fill sloc input after that auto submit form
+			$('#sloc').val(decodedText);
+			$('form').submit();
+
+			
+
+            
+            // console.log(`Scan result ${decodedText}`, decodedResult);
+        }
+      }
+ 
+      var html5QrcodeScanner = new Html5QrcodeScanner(
+          "qr-reader", { fps: 10, qrbox: 100 }
+      );
+      html5QrcodeScanner.render(onScanSuccess);
+    </script>
 
 </body>
 
