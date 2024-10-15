@@ -56,10 +56,11 @@
                                                     <tr>
                                                         <th>No</th>
                                                         <th>No PS</th>
-                                                        <th>No PO</th>
+                                                       
                                                         <th>Customer</th>
                                                         <th>Status</th>
                                                         <th>Created At</th>
+                                                        <th>Notes</th>
                                                         <th>Action</th>
 
                                                     </tr>
@@ -70,11 +71,12 @@
                                                         <?php if ($this->session->userdata('role_id') == 6 || $this->session->userdata('role_id') == 1) { ?>
                                                             <tr>
                                                                 <td></td>
-                                                                <td><?= $ps1['no_pickingslip'] ?></td>
-                                                                <td><?= $ps1['no_purchaseorder'] ?></td>
+                                                                <td><?= $ps1['no_pickingslip'] ?><br><?= $ps1['no_purchaseorder'] ?></td>
+                                                                
                                                                 <td><?= getNamaCustomer($ps1['customer']) ?></td>
                                                                 <td><?= getStatusPickingslip($ps1['status']) ?></td>
                                                                 <td><?= dateindo($ps1['created_at']) ?></td>
+                                                                <td><?= $ps1['notes'] ?></td>
                                                                 <td>
                                                                     <?php if ($ps1['status'] == 0) { ?>
                                                                         <!-- role 4  -->
@@ -91,11 +93,11 @@
                                                             if ($this->session->userdata('role_id') == 4 && $this->session->userdata('id_users') == $ps1['picker']) { ?>
                                                                 <tr>
                                                                     <td></td>
-                                                                    <td><?= $ps1['no_pickingslip'] ?></td>
-                                                                    <td><?= $ps1['no_purchaseorder'] ?></td>
-                                                                    <td><?= getNamaCustomer($ps1['customer']) ?></td>
+                                                                    <td><?= $ps1['no_pickingslip'] ?><br><?= $ps1['no_purchaseorder'] ?></td>
+                                                                     <td><?= getNamaCustomer($ps1['customer']) ?></td>
                                                                     <td><?= getStatusPickingslip($ps1['status']) ?></td>
                                                                     <td><?= dateindo($ps1['created_at']) ?></td>
+                                                                    <td><?= $ps1['notes'] ?></td>
                                                                     <td>
                                                                         <?php if ($ps1['status'] != 6) { ?>
                                                                             <?php if ($ps1['status'] == 0) { ?>

@@ -30,7 +30,8 @@ class Purchaseorder extends CI_Controller
 			'title' => 'Purchaseorder',
 			'subtitle' => 'Data Purchaseorder',
 			'subtitle2' => 'Data Purchaseorder',
-			'detailPo' => $this->purchaseorder->getDetailPurchaseOrder($uuidPo),
+			'detailPo' => $this->purchaseorder->getDetailPurchaseOrder($uuidPo,0),
+			'detailPoPicked' => $this->purchaseorder->getDetailPurchaseOrder($uuidPo,1),
 			'uuid' => $uuidPo,
 			'customer' => $customer['nama_customer'],
 			'userPicker' => $this->purchaseorder->getUserPicker()
@@ -183,7 +184,7 @@ class Purchaseorder extends CI_Controller
 			'title' => 'Purchaseorder',
 			'subtitle' => 'Data Purchaseorder',
 			'subtitle2' => 'Data Purchaseorder',
-			'detailPo' => $this->purchaseorder->getDetailPurchaseOrder($uuidPo),
+			'detailPo' => $this->purchaseorder->getDetailPurchaseOrder($uuidPo,0),
 			'uuid' => $uuidPo,
 			'customer' => $customer['nama_customer'],
 			'userPicker' => $this->purchaseorder->getUserPicker()
@@ -204,7 +205,8 @@ class Purchaseorder extends CI_Controller
 			'created_at' => date('Y-m-d H:i:s'),
 			'created_by' => $this->session->userdata('id_users'),
 			'status' => 0,
-			'is_void' => 0
+			'is_void' => 0,
+			'notes' => $this->input->post('notes')
 		);
 
 		$insertPickingslip = $this->db->insert('pickingslip', $pickingslip);
