@@ -48,11 +48,13 @@
                                         <h5 class="card-title">
                                             <?= $subtitle2 ?>
                                         </h5>
-                                        <?php if ($status1 != 2) { ?>
+
+                                        <?php if ($status1 != 2 || $status1 != 6) { ?>
 
                                             <div style="float: right;">
                                                 <!-- create button tag a to process ke packing -->
                                                  <!-- if role 3  -->
+                                                  
                                                   <?php if ($this->session->userdata('role_id') == 3|| $this->session->userdata('role_id') == 1|| $this->session->userdata('role_id') == 6 ) { ?>
                                                     <button type="button" class="btn btn-primary" id="btnProcessToPacking">Process To Packing</button>
                                                  <?php  } ?>
