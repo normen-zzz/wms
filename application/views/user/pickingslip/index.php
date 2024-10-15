@@ -97,15 +97,17 @@
                                                                     <td><?= getStatusPickingslip($ps1['status']) ?></td>
                                                                     <td><?= dateindo($ps1['created_at']) ?></td>
                                                                     <td>
-                                                                        <?php if ($ps1['status'] == 0) { ?>
-                                                                            <!-- role 4  -->
-                                                                            <?php if ($this->session->userdata('role_id') == 4 || $this->session->userdata('role_id') == 6 || $this->session->userdata('role_id') == 1) { ?>
-                                                                                <a href="<?= base_url('user/Pickingslip/pick/' . $ps1['uuid']) ?>" class="btn btn-warning btn-sm mb-1">Pick</a>
-                                                                            <?php } ?>
+                                                                        <?php if ($po1['status'] != 6) { ?>
+                                                                            <?php if ($ps1['status'] == 0) { ?>
+                                                                                <!-- role 4  -->
+                                                                                <?php if ($this->session->userdata('role_id') == 4 || $this->session->userdata('role_id') == 6 || $this->session->userdata('role_id') == 1) { ?>
+                                                                                    <a href="<?= base_url('user/Pickingslip/pick/' . $ps1['uuid']) ?>" class="btn btn-warning btn-sm mb-1">Pick</a>
+                                                                                <?php } ?>
 
-                                                                        <?php  } else { ?>
-                                                                            <a href="<?= base_url('user/Pickingslip/detail/' . $ps1['uuid']) ?>" class="btn btn-primary btn-sm mb-1">Detail</a>
-                                                                        <?php } ?>
+                                                                            <?php  } else { ?>
+                                                                                <a href="<?= base_url('user/Pickingslip/detail/' . $ps1['uuid']) ?>" class="btn btn-primary btn-sm mb-1">Detail</a>
+                                                                        <?php }
+                                                                        } ?>
                                                                     </td>
                                                                 </tr>
                                                             <?php }
@@ -113,7 +115,7 @@
 
                                                         <?php } ?>
 
-                                                        
+
                                                     <?php } ?>
                                                 </tbody>
                                             </table>
