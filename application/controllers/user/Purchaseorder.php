@@ -234,6 +234,20 @@ class Purchaseorder extends CI_Controller
 		}
 		echo json_encode($response);
 	}
+
+	// editRow
+	public function editRow()
+	{
+		$id_datapurchaseorder = $this->input->post('id_datapurchaseorder');
+		$qty = $this->input->post('qty');
+		$update = $this->db->update('datapurchaseorder', ['qty' => $qty], ['id_datapurchaseorder' => $id_datapurchaseorder]);
+		if ($update) {
+			$response = array('status' => 'success', 'message' => 'Edit Data successfully.');
+		} else {
+			$response = array('status' => 'error', 'message' => 'Failed to Edit Data.');
+		}
+		echo json_encode($response);
+	}
 }
 
 /* End of file User.php */
