@@ -152,7 +152,7 @@
         $(document).ready(function() {
             $('#tblpickingslip').DataTable({
                 "order": [
-                    [4, "desc"]
+                    [5, "desc"]
                 ],
                 "columnDefs": [{
                     "searchable": false,
