@@ -72,11 +72,16 @@ class Picklist extends CI_Controller
 
 				if (is_array($barang_ids) && !empty($barang_ids)) {
 					foreach ($barang_ids as $key => $barang_id) {
-						$checkBatchItem = $this->db->query('SELECT id_batchitem, batch.id_batch, batchitem.qty 
-																													FROM batchitem 
-																													INNER JOIN batch ON batchitem.id_batch = batch.id_batch 
-																													WHERE batch.batchnumber = "' . $batches[$key] . '" 
-																													AND batchitem.id_barang = ' . $barang_id);
+						// $checkBatchItem = $this->db->query('SELECT id_batchitem, batch.id_batch, batchitem.qty 
+						// 																							FROM batchitem 
+						// 																							INNER JOIN batch ON batchitem.id_batch = batch.id_batch 
+						// 																							WHERE batch.batchnumber = "' . $batches[$key] . '" 
+						
+						$checkBatchItem = $this->db->query('SELECT ri.id_batch 
+																													FROM rack_items ri
+																													INNER JOIN batch b ON ri.id_batch = b.id_batch
+																													WHERE ri.id_barang = ' . $barang_id . ' 
+																													AND b.batchnumber = "' . $batches[$key] . '"');
 
 
 						if ($checkBatchItem->num_rows() == 0) {
