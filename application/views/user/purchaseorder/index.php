@@ -54,7 +54,7 @@
                                             <table class="table" id="tblpo">
                                                 <thead>
                                                     <tr>
-														<th>No</th>
+                                                        <th>No</th>
                                                         <th>No PO</th>
                                                         <th>Customer</th>
                                                         <th>Status</th>
@@ -66,21 +66,24 @@
                                                 <tbody>
                                                     <?php foreach ($po->result_array() as $po1) { ?>
                                                         <tr>
-															<td></td>
+                                                            <td></td>
                                                             <td><?= $po1['no_purchaseorder'] ?></td>
                                                             <td><?= getNamaCustomer($po1['customer']) ?></td>
-															<td><?= getStatusPurchaseorder($po1['status']) ?></td> 
+                                                            <td><?= getStatusPurchaseorder($po1['status']) ?></td>
                                                             <td><?= dateindo($po1['created_at']) ?></td>
                                                             <td>
-                                                                <?php if ($po1['status'] == 0) { ?>
-                                                                    <a href="<?= base_url('user/purchaseorder/edit/' . $po1['uuid']) ?>" class="btn btn-primary btn-sm mb-1">Edit</a>
-                                                                    <a href="<?= base_url('user/purchaseorder/createPickingSlip/' . $po1['uuid']) ?>" class="btn btn-warning btn-sm mb-1">Create Picking Slip</a>
-                                                                <?php } ?>
+                                                                <?php if ($po1['status'] != 6) { ?>
 
-                                                                <a href="<?= base_url('user/purchaseorder/detail/' . $po1['uuid']) ?>" class="btn btn-primary btn-sm mb-1">Detail</a>
-																
-                                                                
-															</td>
+
+                                                                    <?php if ($po1['status'] == 0) { ?>
+                                                                        <a href="<?= base_url('user/purchaseorder/edit/' . $po1['uuid']) ?>" class="btn btn-primary btn-sm mb-1">Edit</a>
+                                                                        <a href="<?= base_url('user/purchaseorder/createPickingSlip/' . $po1['uuid']) ?>" class="btn btn-warning btn-sm mb-1">Create Picking Slip</a>
+                                                                    <?php } ?>
+
+                                                                    <a href="<?= base_url('user/purchaseorder/detail/' . $po1['uuid']) ?>" class="btn btn-primary btn-sm mb-1">Detail</a>
+
+                                                                <?php  } ?>
+                                                            </td>
                                                         </tr>
                                                     <?php } ?>
                                                 </tbody>
@@ -113,20 +116,22 @@
     <script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
     <script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
-	<script>
-			$('#tblpo').DataTable({
-				"order": [[4, "desc"]],
-				"columnDefs": [{
-						"searchable": false,
-						"orderable": false,
-						"targets": 0
-					}],
-					rowCallback: function(row, data, index) {
-							$('td:eq(0)', row).html(index + 1); 
-					}
-			});
-	</script>																
-    
+    <script>
+        $('#tblpo').DataTable({
+            "order": [
+                [4, "desc"]
+            ],
+            "columnDefs": [{
+                "searchable": false,
+                "orderable": false,
+                "targets": 0
+            }],
+            rowCallback: function(row, data, index) {
+                $('td:eq(0)', row).html(index + 1);
+            }
+        });
+    </script>
+
 
 </body>
 
