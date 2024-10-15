@@ -63,7 +63,8 @@
                                                         <th>Nama Barang</th>
                                                         <th>Batch</th>
                                                         <th>ED</th>
-                                                        <th>Qty</th>
+                                                        <th>Quantity</th>
+                                                        <th>Action</th>
 
 
                                                     </tr>
@@ -76,8 +77,12 @@
                                                             <td><?= $detailPo1['batchnumber'] ?></td>
                                                             <td><?= $detailPo1['expiration_date'] ?></td>
                                                             <td><input type="text" class="form-control" value="<?= $detailPo1['qty'] ?>"></td>
-                                                           
-
+                                                            <td>
+                                                                <!-- button submit -->
+                                                                <button type="button" class="btn btn-primary submitRow" data-id_datapurchaseorder="<?= $detailPo1['id_datapurchaseorder'] ?>">Submit</button>
+                                                                <!-- button delete row  -->
+                                                                <!-- <button type="button" class="btn btn-danger deleteRow">Delete</button> -->
+                                                            </td>
                                                         </tr>
                                                     <?php } ?>
                                                 </tbody>
@@ -167,6 +172,54 @@
                     }).then(() => {
                         if (response.status === 'success') {
                             window.location.href = "<?= base_url('user/pickingslip') ?>";
+                        }
+                    });
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Something went wrong: ' + textStatus,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        });
+    </script>
+
+    <!-- submitrow  -->
+    <script>
+        $(document).on('click', '.submitRow', function() {
+            // show swal loading 
+            Swal.fire({
+                title: 'Loading',
+                html: 'Please wait',
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            });
+
+            var $row = $(this).closest('tr');
+            var sku = $row.find('td:eq(0)').text();
+            var qty = $row.find('input').val();
+            var id_datapurchaseorder = $(this).data('id_datapurchaseorder');
+            $.ajax({
+                url: "<?= base_url('user/purchaseorder/editRow') ?>",
+                type: "POST",
+                data: {
+                    id_datapurchaseorder: id_datapurchaseorder,
+                    qty: qty
+                },
+                dataType: 'json',
+                success: function(response) {
+                    Swal.fire({
+                        title: response.status === 'success' ? 'Success' : 'Error',
+                        text: response.message,
+                        icon: response.status === 'success' ? 'success' : 'error',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        if (response.status === 'success') {
+                            location.reload();
                         }
                     });
                 },
