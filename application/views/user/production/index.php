@@ -63,8 +63,6 @@
 													<tr>
 														<th>No</th>
 														<th>SKU</th>
-														<th>Quantity</th>
-														<th>UOM</th>
 														<th>Batch</th>
 														<th>Created At</th>
 														<th>Action</th>
@@ -76,8 +74,6 @@
 													<tr>
 														<td><?= $production->no_production; ?></td>
 														<td><?= $production->sku; ?></td>
-														<td><?= $production->quantity; ?></td>
-														<td><?= $production->uom; ?></td>
 														<td><?= $production->batch_id; ?></td>
 														<td><?= $production->created_at; ?></td>
 														<td>
