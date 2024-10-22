@@ -20,7 +20,7 @@ class Purchaseorder_model extends CI_Model
 		return $this->db->get();
 	}
 
-	function getDetailPurchaseOrder($uuidPo, $status)
+	function getDetailPurchaseOrder($uuidPo, $status = NULL)
 	{
 		$id_purchaseorder = $this->db->query('SELECT id_purchaseorder FROM purchaseorder WHERE uuid = "' . $uuidPo . '" ')->row_array();
 		$this->db->select('sku,nama_barang,batchnumber,expiration_date,a.qty,a.id_datapurchaseorder');
@@ -28,7 +28,10 @@ class Purchaseorder_model extends CI_Model
 		$this->db->join('barang b', 'a.id_barang = b.id_barang');
 		$this->db->join('batch c', 'a.id_batch = c.id_batch');
 		$this->db->where('id_purchaseorder', $id_purchaseorder['id_purchaseorder']);
-		$this->db->where('a.status', $status);
+		if ($status != NULL) {
+			$this->db->where('a.status', $status);
+		}
+		
 		return $this->db->get();
 	}
 
