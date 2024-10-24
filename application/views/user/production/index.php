@@ -55,37 +55,36 @@
 
 									<div class="card-body">
 										<div class="table-responsive">
-											<table class="table" id="table1">
-												<thead>
-													<tr>
-														<th>No</th>
-														<th>SKU</th>
-														<th>Batch</th>
-														<th>Created At</th>
-														<th>Action</th>
-													</tr>
-												</thead>
-												<tbody>
-													<?php if (!empty($productions)) : ?>
-														<?php foreach ($productions as $production) : ?>
-															<tr>
-																<td><?= $production->no_production; ?></td>
-																<td><?= $production->sku; ?></td>
-																<td><?= $production->batch_id; ?></td>
-																<td><?= $production->created_at; ?></td>
-																<td>
-																	<!-- detail -->
-																	<a href="<?= base_url('user/production/detail/' . $production->id_production) ?>" class="btn btn-sm btn-info text-white">Detail</a>
-																</td>
-															</tr>
-														<?php endforeach; ?>
-													<?php else : ?>
-														<tr>
-															<td colspan="7" class="text-center">No records found.</td>
-														</tr>
-													<?php endif; ?>
-												</tbody>
-											</table>
+											<table class="table" id="tblproduction">
+														<thead>
+																<tr>
+																		<th>No</th>
+																		<th>SKU</th>
+																		<th>Batch</th>
+																		<th>Expired Date</th>
+																		<th>Created At</th>
+																		<th>Action</th>
+																</tr>
+														</thead>
+														<tbody>
+															<?php 
+																				$index = 1; 
+																				foreach ($productions as $production) : 
+																		?>
+																				<tr>
+																						<td><?= $index++; ?></td> 
+																						<td><?= $production->sku_bundling; ?></td>
+																						<td><?= $production->batch_bundling; ?></td>
+																						<td><?= $production->ed_bundling; ?></td>
+																						<td><?= $production->created_at; ?></td>
+																						<td>
+																								<a href="<?= base_url('user/production/detail/' . $production->id_production) ?>" class="btn btn-sm btn-primary text-white">Detail</a>
+																						</td>
+																				</tr>
+																		<?php endforeach; ?>
+															
+														</tbody>
+												</table>
 										</div>
 									</div>
 

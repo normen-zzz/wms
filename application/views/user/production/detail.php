@@ -50,40 +50,64 @@
 									<div class="card-body">
 										<div class="mb-3">
 											<label for="no_production" class="form-label">No Production</label>
-											<input type="text" class="form-control" id="no_production" value="<?= $pl[0]['no_production'] ?>"
+											<input type="text" class="form-control" id="no_production"
+												value="<?= $production->no_production ?>" disabled>
+										</div>
+
+										<div class="mb-3">
+											<label for="sku_bundling" class="form-label">SKU Bundling</label>
+											<input type="text" class="form-control" id="sku_bundling" value="<?= $production->sku_bundling ?>"
+												disabled>
+										</div>
+
+										<div class="mb-3">
+											<label for="batch_bundling" class="form-label">Batch Bundling</label>
+											<input type="text" class="form-control" id="batch_bundling"
+												value="<?= $production->batch_bundling ?>" disabled>
+										</div>
+
+										<div class="mb-3">
+											<label for="ed_bundling" class="form-label">Expired Date</label>
+											<input type="text" class="form-control" id="ed_bundling" value="<?= $production->ed_bundling ?>"
 												disabled>
 										</div>
 
 										<div class="table-responsive">
-											<table class="table table-striped table-hover" id="detailPicklistTable">
+											<table class="table table-striped table-hover" id="detailProductionTable">
 												<thead>
 													<tr>
-														<th>SKU</th>
-														<th>Nama Barang</th>
-														<th>Batch</th>
+														<th>SKU Material</th>
+														<th>Batch ID</th>
 														<th>Quantity</th>
 													</tr>
 												</thead>
 												<tbody>
-													<?php foreach ($pl as $item) : ?>
+													<?php if (!empty($materials)) : ?>
+													<?php foreach ($materials as $material) : ?>
 													<tr>
-														<td><?= $item['sku'] ?></td>
-														<td><?= $item['nama_barang'] ?></td>
-														<td><?= $item['batchnumber'] ?></td>
-														<td><?= $item['qty'] ?></td>
+														<td><?= $material['sku_material'] ?></td> <!-- Updated to match your material key -->
+														<td><?= $material['batch_id'] ?></td>
+														<td><?= $material['quantity'] ?></td>
 													</tr>
 													<?php endforeach; ?>
+													<?php else : ?>
+													<tr>
+														<td colspan="3" class="text-center">No materials found.</td>
+													</tr>
+													<?php endif; ?>
 												</tbody>
 											</table>
 										</div>
 
+										<!-- Back Button -->
 										<div class="mt-3">
 											<a href="<?= base_url('user/production') ?>" class="btn btn-primary btn-sm">Back</a>
 										</div>
 									</div>
+
+
 								</div>
 							</div>
-						</div>
 					</section>
 
 					<!-- // Basic Vertical form layout section end -->

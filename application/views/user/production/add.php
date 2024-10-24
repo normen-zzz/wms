@@ -77,6 +77,12 @@
 												<input type="number" class="form-control" id="quantity_bundling" name="quantity_bundling"
 													placeholder="Quantity">
 
+													<!-- ed_bundling -->
+													<label for="ed_bundling">Expired Date</label>
+													<input type="date" class="form-control" id="ed_bundling" name="ed_bundling"
+														placeholder="Expired Date">
+
+
 												<button type="button" id="search-bundling" class="btn btn-primary mt-2">Search</button>
 											</div>
 
@@ -253,6 +259,48 @@
 
 			$(document).on('click', '.deleteRowBatchMaterial', function () {
 				$(this).closest('tr').remove(); 
+			});
+
+			$('#production-form').submit(function (e) {
+					e.preventDefault(); 
+
+					var formData = {
+							sku_bundling: $('#sku_bundling').val(),
+							batch_bundling: $('#batch_bundling').val(),
+							quantity_bundling: $('#quantity_bundling').val(),
+							ed_bundling: $('#ed_bundling').val(),
+							materials: []
+					};
+
+					// Collect materials data
+					$('#material-rows tr').each(function () {
+							var materialData = {
+									sku_material: $(this).find('input[name="sku_material[]"]').val(),
+									batch: $(this).find('select[name="batch[]"]').val(),
+									qtyBatch: $(this).find('input[name="qtyBatch[]"]').val()
+							};
+							formData.materials.push(materialData);
+					});
+
+					// Send data via AJAX
+					$.ajax({
+							url: '<?= base_url() ?>user/production/save_production',
+							type: 'post',
+							data: formData,
+							success: function (response) {
+									Swal.fire({
+											title: 'Success!',
+											text: 'Production saved successfully!',
+											icon: 'success',
+											confirmButtonText: 'OK'
+									});
+
+									window.location.href = '<?= base_url() ?>user/production';
+							},
+							error: function () {
+									alert('Failed to save production. Please try again.');
+							}
+					});
 			});
 		});
 
