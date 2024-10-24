@@ -77,10 +77,10 @@
 												<input type="number" class="form-control" id="quantity_bundling" name="quantity_bundling"
 													placeholder="Quantity">
 
-													<!-- ed_bundling -->
-													<label for="ed_bundling">Expired Date</label>
-													<input type="date" class="form-control" id="ed_bundling" name="ed_bundling"
-														placeholder="Expired Date">
+												<!-- ed_bundling -->
+												<label for="ed_bundling">Expired Date</label>
+												<input type="date" class="form-control" id="ed_bundling" name="ed_bundling"
+													placeholder="Expired Date">
 
 
 												<button type="button" id="search-bundling" class="btn btn-primary mt-2">Search</button>
@@ -236,18 +236,25 @@
 				});
 			});
 
+			function getRequiredQuantity($materialRow) {
+				var baseQty = parseFloat($materialRow.find('td:eq(2)').text()) || 0;
+				var bundlingQty = parseFloat($('#quantity_bundling').val()) || 0;
+				return baseQty * bundlingQty;
+			}
+
 			$(document).on('click', '.addRowBatchMaterial', function () {
 				var batchOptions = $(this).closest('table').find('select.batchMaterial').html();
+				var $tbody = $(this).closest('table').find('tbody');
 
-				$(this).closest('table').find('tbody').append(`
+				$tbody.append(`
             <tr>
                 <td>
                     <select name="batch[]" class="form-control batchMaterial">
-                        ${batchOptions} <!-- Reuse the batch options here -->
+                        ${batchOptions}
                     </select>
                 </td>
                 <td>
-                    <input type="number" class="form-control" name="qtyBatch[]" placeholder="Qty">
+                    <input type="number" class="form-control qtyBatchInput" name="qtyBatch[]" placeholder="Qty">
                 </td>
                 <td>
                     <button type="button" class="btn btn-danger deleteRowBatchMaterial">Delete</button>
@@ -255,53 +262,157 @@
             </tr>
         `);
 				$('.batchMaterial').select2();
+
+				recalculateTotals($tbody);
 			});
 
 			$(document).on('click', '.deleteRowBatchMaterial', function () {
-				$(this).closest('tr').remove(); 
+				var $tbody = $(this).closest('tbody');
+				$(this).closest('tr').remove();
+				recalculateTotals($tbody);
 			});
+
+			$(document).on('input', '.qtyBatchInput', function () {
+				var $tbody = $(this).closest('tbody');
+				recalculateTotals($tbody);
+			});
+
+			$('#quantity_bundling').on('input', function () {
+				$('.tableBatch tbody').each(function () {
+					recalculateTotals($(this));
+				});
+			});
+
+			function recalculateTotals($tbody) {
+				var $materialRow = $tbody.closest('tr');
+				var requiredQty = getRequiredQuantity($materialRow);
+
+				if (isNaN(requiredQty) || requiredQty <= 0) {
+					console.error('Invalid required quantity:', requiredQty);
+					return false;
+				}
+
+				var totalBatchQty = 0;
+				var remainingQty = requiredQty;
+
+				$tbody.find('input[name="qtyBatch[]"]').each(function () {
+					var qty = parseFloat($(this).val()) || 0;
+					totalBatchQty += qty;
+				});
+
+				if (totalBatchQty > requiredQty) {
+					Swal.fire({
+						title: 'Error!',
+						text: `Jumlah total batch (${totalBatchQty}) melebihi jumlah yang dibutuhkan (${requiredQty})`,
+						icon: 'error',
+						confirmButtonText: 'OK'
+					});
+					$(this).val('');
+					recalculateTotals($tbody); 
+					return false;
+				}
+
+				return true;
+			}
 
 			$('#production-form').submit(function (e) {
-					e.preventDefault(); 
+				e.preventDefault();
 
-					var formData = {
-							sku_bundling: $('#sku_bundling').val(),
-							batch_bundling: $('#batch_bundling').val(),
-							quantity_bundling: $('#quantity_bundling').val(),
-							ed_bundling: $('#ed_bundling').val(),
-							materials: []
-					};
+				var formData = {
+					sku_bundling: $('#sku_bundling').val(),
+					batch_bundling: $('#batch_bundling').val(),
+					quantity_bundling: $('#quantity_bundling').val(),
+					ed_bundling: $('#ed_bundling').val(),
+					materials: []
+				};
 
-					// Collect materials data
-					$('#material-rows tr').each(function () {
-							var materialData = {
-									sku_material: $(this).find('input[name="sku_material[]"]').val(),
-									batch: $(this).find('select[name="batch[]"]').val(),
-									qtyBatch: $(this).find('input[name="qtyBatch[]"]').val()
-							};
-							formData.materials.push(materialData);
+				var isValid = true;
+				var errorMessage = '';
+
+				if (!formData.quantity_bundling || parseFloat(formData.quantity_bundling) <= 0) {
+					Swal.fire({
+						title: 'Error!',
+						text: 'Please enter a valid bundling quantity',
+						icon: 'error',
+						confirmButtonText: 'OK'
+					});
+					return;
+				}
+
+				$('#material-rows tr').each(function () {
+					var $materialRow = $(this);
+					var requiredQty = getRequiredQuantity($materialRow);
+					var materialBatches = [];
+					var totalBatchQty = 0;
+
+					$materialRow.find('.tableBatch tbody tr').each(function () {
+						var batchId = $(this).find('select[name="batch[]"]').val();
+						var qtyBatch = parseFloat($(this).find('input[name="qtyBatch[]"]').val()) || 0;
+
+						if (batchId && qtyBatch > 0) {
+							materialBatches.push({
+								batch: batchId,
+								qtyBatch: qtyBatch
+							});
+							totalBatchQty += qtyBatch;
+						}
 					});
 
-					// Send data via AJAX
-					$.ajax({
-							url: '<?= base_url() ?>user/production/save_production',
-							type: 'post',
-							data: formData,
-							success: function (response) {
-									Swal.fire({
-											title: 'Success!',
-											text: 'Production saved successfully!',
-											icon: 'success',
-											confirmButtonText: 'OK'
-									});
+					var difference = Math.abs(totalBatchQty - requiredQty);
+					if (difference > 0.01) {
+						isValid = false;
+						errorMessage =
+							`Jumlah material tidak sesuai. Dibutuhkan: ${requiredQty}, Total jumlah batch: ${totalBatchQty}`;
+						return false;
+					}
 
-									window.location.href = '<?= base_url() ?>user/production';
-							},
-							error: function () {
-									alert('Failed to save production. Please try again.');
+					formData.materials.push({
+						sku_material: $materialRow.find('input[name="sku_material[]"]').val(),
+						batches: materialBatches
+					});
+				});
+
+				if (!isValid) {
+					Swal.fire({
+						title: 'Validation Error',
+						text: errorMessage,
+						icon: 'error',
+						confirmButtonText: 'OK'
+					});
+					return;
+				}
+
+				$.ajax({
+					url: '<?= base_url() ?>user/production/save_production',
+					type: 'post',
+					data: formData,
+					success: function (response) {
+						Swal.fire({
+							title: 'Success!',
+							text: 'Production saved successfully!',
+							icon: 'success',
+							confirmButtonText: 'OK'
+						}).then((result) => {
+							if (result.isConfirmed) {
+								window.location.href = '<?= base_url() ?>user/production';
 							}
-					});
+						});
+					},
+					error: function (xhr) {
+						var errorMessage = 'Failed to save production. Please try again.';
+						if (xhr.responseJSON && xhr.responseJSON.message) {
+							errorMessage = xhr.responseJSON.message;
+						}
+						Swal.fire({
+							title: 'Error!',
+							text: errorMessage,
+							icon: 'error',
+							confirmButtonText: 'OK'
+						});
+					}
+				});
 			});
+
 		});
 
 	</script>

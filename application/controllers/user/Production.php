@@ -53,34 +53,56 @@ class Production extends CI_Controller {
 		$batch_bundling = $this->input->post('batch_bundling');
 		$quantity_bundling = $this->input->post('quantity_bundling');
 		$ed_bundling = $this->input->post('ed_bundling');
-		$materials = $this->input->post('materials'); 
+		$materials = $this->input->post('materials');
 
-		$production_data = [
-			'no_production' => generate_production_number(),
-			'sku_bundling' => $sku_bundling,
-			'batch_bundling' => $batch_bundling,
-			'ed_bundling' => $ed_bundling,
-			'created_by' => $this->session->userdata('id_users'),
-			'created_at' => date('Y-m-d H:i:s') 
-		];
+		$this->db->trans_start();
 
+		try {
+			$production_data = [
+				'no_production' => generate_production_number(),
+				'sku_bundling' => $sku_bundling,
+				'batch_bundling' => $batch_bundling,
+				'ed_bundling' => $ed_bundling,
+				'created_by' => $this->session->userdata('id_users'),
+				'created_at' => date('Y-m-d H:i:s')
+			];
 
-		$this->db->insert('production', $production_data);
-		$production_id = $this->db->insert_id(); 
+			$this->db->insert('production', $production_data);
+			$production_id = $this->db->insert_id();
 
-		foreach ($materials as $material) {
-			if (!empty($material['sku_material']) && !empty($material['batch']) && !empty($material['qtyBatch'])) {
-				$material_data = [
-					'production_id' => $production_id, 
-					'sku' => $material['sku_material'],
-					'batch_id' => $material['batch'],
-					'quantity' => $material['qtyBatch']
-				];
-				$this->db->insert('production_materials', $material_data);
+			foreach ($materials as $material) {
+				if (!empty($material['sku_material']) && !empty($material['batches'])) {
+					foreach ($material['batches'] as $batch) {
+						$material_data = [
+							'production_id' => $production_id,
+							'sku' => $material['sku_material'],
+							'batch_id' => $batch['batch'],
+							'quantity' => $batch['qtyBatch']
+						];
+						
+						$this->db->insert('production_materials', $material_data);
+					}
+				}
 			}
-		}
 
-		echo json_encode(['status' => 'success']);
+			$this->db->trans_complete();
+
+			if ($this->db->trans_status() === FALSE) {
+				throw new Exception('Transaction failed');
+			}
+
+			echo json_encode([
+				'status' => 'success',
+				'message' => 'Production saved successfully'
+			]);
+		} catch (Exception $e) {
+			$this->db->trans_rollback();
+			http_response_code(500);
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Failed to save production: ' . $e->getMessage()
+			]);
+		}
 	}
 
 	public function detail($id) {
