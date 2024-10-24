@@ -60,7 +60,7 @@ class Production extends CI_Controller {
 			'sku_bundling' => $sku_bundling,
 			'batch_bundling' => $batch_bundling,
 			'ed_bundling' => $ed_bundling,
-			'created_by' => $this->session->userdata('id_user'),
+			'created_by' => $this->session->userdata('id_users'),
 			'created_at' => date('Y-m-d H:i:s') 
 		];
 
