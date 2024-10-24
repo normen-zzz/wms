@@ -1,8 +1,6 @@
 <nav class="main-navbar">
 	<div class="container">
-
 		<ul>
-
 			<li class="menu-item">
 				<div class="theme-toggle d-flex gap-2  align-items-center mt-2">
 					<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--system-uicons" width="20" height="20" preserveAspectRatio="xMidYMid meet" viewBox="0 0 21 21">
@@ -26,11 +24,11 @@
 				</div>
 			</li>
 
-			<li class="menu-item  ">
+			<!-- <li class="menu-item  ">
 				<a href="<?= base_url('dashboard') ?>" class='menu-link'>
 					<span><i class="bi bi-grid-fill"></i> Dashboard</span>
 				</a>
-			</li>
+			</li> -->
 
 			<!-- DATABASE role super Admin 1  dan admin 6  -->
 			<?php if ($this->session->userdata('role_id') == 1 || $this->session->userdata('role_id') == 6) : ?>
@@ -185,14 +183,7 @@
 					<div class="submenu ">
 						<!-- Wrap to submenu-group-wrapper if you want 3-level submenu. Otherwise remove it. -->
 						<div class="submenu-group-wrapper">
-
-
 							<ul class="submenu-group">
-
-
-
-
-
 								<li class="submenu-item  has-sub">
 									<a href="#" class='submenu-link'>PUTAWAY</a>
 									<!-- 3 Level Submenu PICKLIST -->
@@ -213,19 +204,19 @@
 
 			<?php if ($this->session->userdata('role_id') == 1 || $this->session->userdata('role_id') == 6) : ?>
 				<li class="menu-item  ">
-				<a href="<?= base_url('user/stocktransfer') ?>" class='menu-link'>
-					<span><i class="bi bi-arrow-down-up"></i>STOCK TRANSFER</span>
-				</a>
-			</li>
+					<a href="<?= base_url('user/stocktransfer') ?>" class='menu-link'>
+						<span><i class="bi bi-arrow-down-up"></i>STOCK TRANSFER</span>
+					</a>
+				</li>
 			<?php endif; ?>
 
 
 			<?php if ($this->session->userdata('role_id') == 1 || $this->session->userdata('role_id') == 6) : ?>
 				<li class="menu-item  ">
-				<a href="<?= base_url('user/production') ?>" class='menu-link'>
-					<span><i class="bi bi-box-fill"></i>PRODUCTION</span>
-				</a>
-			</li>
+					<a href="<?= base_url('user/production') ?>" class='menu-link'>
+						<span><i class="bi bi-box-fill"></i>PRODUCTION</span>
+					</a>
+				</li>
 			<?php endif; ?>
 
 			<li class="menu-item  ">
