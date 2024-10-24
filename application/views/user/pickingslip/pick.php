@@ -320,8 +320,6 @@
 
 	<script>
 		$('.submitRow').on('click', function() {
-
-
 			var data = [];
 			var row = $(this).closest('tr');
 			var id_datapurchaseorder = $(this).closest('tr').find('input[name="id_datapurchaseorder"]').val();
@@ -334,14 +332,20 @@
 				var row = $(this);
 				var rack = row.find('input[name="rack[]"]').val();
 				var qty = row.find('input[name="qty[]"]').val();
-				totalQty += parseInt(qty);
-				data.push({
-					id_datapurchaseorder: id_datapurchaseorder,
-					id_barang: id_barang,
-					id_batch: id_batch,
-					rack: rack,
-					qty: qty
-				});
+				if (qty == '') {
+					alert('qty tidak boleh kosong');
+					return false;
+				} else {
+					totalQty += parseInt(qty);
+					data.push({
+						id_datapurchaseorder: id_datapurchaseorder,
+						id_barang: id_barang,
+						id_batch: id_batch,
+						rack: rack,
+						qty: qty
+					});
+				}
+
 			});
 
 			if (totalQty < requiredQty) {
@@ -351,6 +355,15 @@
 				alert('Total qty melebihi yang dibutuhkan');
 				return false;
 			}
+
+			// jika total qty nan false 
+			if (totalQty == 0) {
+				alert('Total qty tidak boleh 0');
+				return false;
+			}
+
+			console.log('total qty ' + totalQty);
+
 			Swal.fire({
 				title: 'Loading',
 				text: 'Please wait...',
@@ -359,7 +372,8 @@
 				showConfirmButton: false,
 			});
 
-			console.log(data);
+
+
 
 			//Post the data using jQuery
 			$.ajax({
