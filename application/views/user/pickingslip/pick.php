@@ -478,7 +478,17 @@
 				var id_batch = $(this).closest('tr').parent().find('input[name="id_batch"]').val();
 				var inputQty = $(this); // Simpan referensi ke input qty[]
 				console.log(id_barang, id_batch, rack, qty);
-
+				// show loading swal setelah jeda 2 detik
+				setTimeout(function() {
+					Swal.fire({
+						title: 'Loading',
+						text: 'Please wait...',
+						icon: 'info',
+						showCancelButton: false,
+						showConfirmButton: false,
+					});
+				}, 1000);
+			
 				$.ajax({
 					url: '<?= base_url("user/Pickingslip/getQuantityRackItems") ?>',
 					method: 'POST',
@@ -491,13 +501,18 @@
 					success: function(response) {
 						console.log(qty, response);
 						if (qty > response) {
-
+							// close swal 
+							
 							inputQty.val(response); // Gunakan variabel inputQty untuk mengakses input qty[]
+
 						}
+						swal.close();
 					},
 					error: function(jqXHR, textStatus, errorThrown) {
 
 						inputQty.val('');
+						// close swal 
+						swal.close();
 					}
 				});
 			});
