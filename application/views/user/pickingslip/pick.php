@@ -478,43 +478,51 @@
 				var id_batch = $(this).closest('tr').parent().find('input[name="id_batch"]').val();
 				var inputQty = $(this); // Simpan referensi ke input qty[]
 				console.log(id_barang, id_batch, rack, qty);
-				// show loading swal setelah jeda 2 detik
+
+				// show loading swal 
+				// jeda 1000ms
 				setTimeout(function() {
 					Swal.fire({
 						title: 'Loading',
-						text: 'Please wait...',
+						text: 'Checking Quantity On Rack...Please wait...',
 						icon: 'info',
 						showCancelButton: false,
 						showConfirmButton: false,
 					});
-				}, 1000);
-			
-				$.ajax({
-					url: '<?= base_url("user/Pickingslip/getQuantityRackItems") ?>',
-					method: 'POST',
-					data: {
-						id_barang: id_barang,
-						id_batch: id_batch,
-						rack: rack
-					},
-					dataType: 'json',
-					success: function(response) {
-						console.log(qty, response);
-						if (qty > response) {
+					$.ajax({
+						url: '<?= base_url("user/Pickingslip/getQuantityRackItems") ?>',
+						method: 'POST',
+						data: {
+							id_barang: id_barang,
+							id_batch: id_batch,
+							rack: rack
+						},
+						dataType: 'json',
+						success: function(response) {
+							Swal.close();
+							console.log(qty, response);
+
+							if (qty > response) {
+
+
+								inputQty.val(response); // Gunakan variabel inputQty untuk mengakses input qty[]
+
+							}
+						},
+						error: function(jqXHR, textStatus, errorThrown) {
+							Swal.close();
+							inputQty.val('');
 							// close swal 
-							
-							inputQty.val(response); // Gunakan variabel inputQty untuk mengakses input qty[]
+
 
 						}
-						swal.close();
-					},
-					error: function(jqXHR, textStatus, errorThrown) {
+					});
+				}, 1000)
 
-						inputQty.val('');
-						// close swal 
-						swal.close();
-					}
-				});
+
+
+
+
 			});
 		}
 	</script>
