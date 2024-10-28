@@ -284,35 +284,34 @@
 			});
 
 			function recalculateTotals($tbody) {
-				var $materialRow = $tbody.closest('tr');
-				var requiredQty = getRequiredQuantity($materialRow);
+					var $materialRow = $tbody.closest('tr');
+					var requiredQty = getRequiredQuantity($materialRow);
 
-				if (isNaN(requiredQty) || requiredQty <= 0) {
-					console.error('Invalid required quantity:', requiredQty);
-					return false;
-				}
+					if (isNaN(requiredQty) || requiredQty <= 0) {
+							console.error('Invalid required quantity:', requiredQty);
+							return false;
+					}
 
-				var totalBatchQty = 0;
-				var remainingQty = requiredQty;
+					var totalBatchQty = 0;
 
-				$tbody.find('input[name="qtyBatch[]"]').each(function () {
-					var qty = parseFloat($(this).val()) || 0;
-					totalBatchQty += qty;
-				});
-
-				if (totalBatchQty > requiredQty) {
-					Swal.fire({
-						title: 'Error!',
-						text: `Jumlah total batch (${totalBatchQty}) melebihi jumlah yang dibutuhkan (${requiredQty})`,
-						icon: 'error',
-						confirmButtonText: 'OK'
+					$tbody.find('input[name="qtyBatch[]"]').each(function () {
+							var qty = parseFloat($(this).val()) || 0;
+							totalBatchQty += qty;
 					});
-					$(this).val('');
-					recalculateTotals($tbody); 
-					return false;
-				}
 
-				return true;
+					if (totalBatchQty > requiredQty) {
+							Swal.fire({
+									title: 'Error!',
+									text: `Jumlah total batch (${totalBatchQty}) melebihi jumlah yang dibutuhkan (${requiredQty})`,
+									icon: 'error',
+									confirmButtonText: 'OK'
+							});
+
+							$tbody.find('input[name="qtyBatch[]"]').last().val('');
+							return false;
+					}
+
+					return true;
 			}
 
 			$('#production-form').submit(function (e) {
