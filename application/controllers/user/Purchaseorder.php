@@ -6,8 +6,10 @@ class Purchaseorder extends CI_Controller
 
 	public function __construct()
 	{
+
 		parent::__construct();
 		is_login();
+		$this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));");
 		date_default_timezone_set('Asia/Jakarta');
 		$this->load->model('Purchaseorder_model', 'purchaseorder');
 	}
@@ -30,8 +32,8 @@ class Purchaseorder extends CI_Controller
 			'title' => 'Purchaseorder',
 			'subtitle' => 'Data Purchaseorder',
 			'subtitle2' => 'Data Purchaseorder',
-			'detailPo' => $this->purchaseorder->getDetailPurchaseOrder($uuidPo,0),
-			'detailPoPicked' => $this->purchaseorder->getDetailPurchaseOrder($uuidPo,1),
+			'detailPo' => $this->purchaseorder->getDetailPurchaseOrderUnpicked($uuidPo),
+			'detailPoPicked' => $this->purchaseorder->getDetailPurchaseOrderPicked($uuidPo),
 			'uuid' => $uuidPo,
 			'customer' => $customer['nama_customer'],
 			'userPicker' => $this->purchaseorder->getUserPicker()
@@ -184,7 +186,7 @@ class Purchaseorder extends CI_Controller
 			'title' => 'Purchaseorder',
 			'subtitle' => 'Data Purchaseorder',
 			'subtitle2' => 'Data Purchaseorder',
-			'detailPo' => $this->purchaseorder->getDetailPurchaseOrder($uuidPo,0),
+			'detailPo' => $this->purchaseorder->getDetailPurchaseOrder($uuidPo, 0),
 			'uuid' => $uuidPo,
 			'customer' => $customer['nama_customer'],
 			'userPicker' => $this->purchaseorder->getUserPicker()
