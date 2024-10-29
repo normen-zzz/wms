@@ -103,13 +103,13 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <?php foreach ($detailPoPicked->result_array() as $detailPo1) { ?>
+                                                    <?php foreach ($detailPoPicked->result_array() as $detailPo2) { ?>
                                                         <tr>
-                                                            <td><?= $detailPo1['sku'] ?></td>
-                                                            <td><?= $detailPo1['nama_barang'] ?></td>
-                                                            <td><?= $detailPo1['batchnumber'] ?></td>
-                                                            <td><?= $detailPo1['expiration_date'] ?></td>
-                                                            <td><?= $detailPo1['qty'] ?></td>
+                                                            <td><?= $detailPo2['sku'] ?></td>
+                                                            <td><?= $detailPo2['nama_barang'] ?></td>
+                                                            <td><?= $detailPo2['batchnumber'] ?></td>
+                                                            <td><?= $detailPo2['expiration_date'] ?></td>
+                                                            <td><?= $detailPo2['qty'] ?></td>
 
                                                         </tr>
                                                     <?php } ?>
