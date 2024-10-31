@@ -66,7 +66,7 @@
 												<select id="sku_bundling" class="form-control select-sku-bundling">
 													<option value="">Select SKU Bundling</option>
 													<?php foreach ($sku_bundling->result() as $row) : ?>
-													<option value="<?= $row->sku ?>"><?= $row->sku ?></option>
+													<option value="<?= $row->sku ?>"><?= $row->sku ?> || <?= $row->nama_barang ?></option>
 													<?php endforeach; ?>
 												</select>
 												<label for="batch_bundling">Batch Bundling</label>
