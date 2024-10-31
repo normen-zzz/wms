@@ -60,6 +60,13 @@
 
 
 								</li>
+
+								<li class="submenu-item">
+									<a href="<?= base_url('user/Log') ?>" class='submenu-link'>LOG</a>
+
+
+								</li>
+
 							</ul>
 
 
@@ -212,11 +219,39 @@
 
 
 			<?php if ($this->session->userdata('role_id') == 1 || $this->session->userdata('role_id') == 6) : ?>
-				<li class="menu-item  ">
-					<a href="<?= base_url('user/production') ?>" class='menu-link'>
+				
+				<li class="menu-item  has-sub">
+					<a href="#" class='menu-link'>
 						<span><i class="bi bi-box-fill"></i>PRODUCTION</span>
 					</a>
+					<div class="submenu ">
+						<!-- Wrap to submenu-group-wrapper if you want 3-level submenu. Otherwise remove it. -->
+						<div class="submenu-group-wrapper">
+
+
+							<ul class="submenu-group">
+
+								<li class="submenu-item">
+									<a href="<?= base_url('user/Production') ?>" class='submenu-link'>BUNDLING</a>
+
+
+								</li>
+
+								<li class="submenu-item">
+									<a href="<?= base_url('user/Production/listBundlingMaterial') ?>" class='submenu-link'>MATERIAL BUNDLING</a>
+
+
+								</li>
+
+								
+
+							</ul>
+
+
+						</div>
+					</div>
 				</li>
+				
 			<?php endif; ?>
 
 			<li class="menu-item  ">

@@ -14,6 +14,8 @@
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/compiled/css/iconly.css" />
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.min.css">
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 
 
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/compiled/css/table-datatable-jquery.css">
@@ -34,183 +36,181 @@
 				</div>
 				<div class="page-content">
 					<!-- Basic Vertical form layout section start -->
-					<section id="basic-vertical-layouts">
+					<section id="picklist-detail">
 						<div class="row match-height">
-
 							<div class="col">
-								<!-- Minimal jQuery Datatable end -->
-								<!-- Basic Tables start -->
-
 								<div class="card">
 									<div class="card-header">
-										<h5 class="card-title">
-											<?= $subtitle2 ?>
-
-											<!-- add production -->
-										</h5>
-										<a href="<?= base_url('user/production/add') ?>" class="btn btn-primary btn-sm">Add
-											Production</a>
-
+										<h5 class="card-title"><?= $subtitle2 ?></h5>
 									</div>
 
 									<div class="card-body">
+										<div class="mb-3">
+											<label for="no_production" class="form-label">No Production</label>
+											<input type="text" class="form-control" id="no_production" value="<?= $production->no_production ?>" disabled>
+										</div>
+
+										<div class="mb-3">
+											<label for="sku_bundling" class="form-label">SKU Bundling</label>
+											<input type="text" class="form-control" id="sku_bundling" value="<?= $production->sku_bundling ?>" disabled>
+										</div>
+
+										<div class="mb-3">
+											<label for="batch_bundling" class="form-label">Batch Bundling</label>
+											<input type="text" class="form-control" id="batch_bundling" value="<?= $production->batch_bundling ?>" disabled>
+										</div>
+
+										<div class="mb-3">
+											<label for="ed_bundling" class="form-label">Expired Date</label>
+											<input type="text" class="form-control" id="ed_bundling" value="<?= $production->ed_bundling ?>" disabled>
+										</div>
+
+										<div class="mb-3">
+											<label for="ed_bundling" class="form-label">Quantity</label>
+											<input type="text" class="form-control" id="ed_bundling" value="<?= $production->qty_bundling ?>"
+												disabled>
+										</div>
+
 										<div class="table-responsive">
-											<table class="table" id="tblproduction">
+											<table class="table table-striped table-hover" id="detailProductionTable">
 												<thead>
 													<tr>
-														<th>No</th>
-														<th>SKU</th>
-														<th>Batch</th>
-														<th>Expired Date</th>
-														<th>Qty</th>
-														<th>Created At</th>
-														<th>Action</th>
+														<th>SKU Material</th>
+														<th>Batch ID</th>
+														<th>Quantity</th>
 													</tr>
 												</thead>
 												<tbody>
-													<?php
-													$index = 1;
-													foreach ($productions as $production) :
-													?>
+													<?php if (!empty($materials)) : ?>
+														<?php foreach ($materials as $material) : ?>
+															<tr>
+																<td><?= $material['sku_material'] ?></td> <!-- Updated to match your material key -->
+																<td><?= $material['batchnumber'] ?></td>
+																<td><?= $material['quantity'] ?></td>
+															</tr>
+														<?php endforeach; ?>
+													<?php else : ?>
 														<tr>
-															<td><?= $index++; ?></td>
-															<td><?= $production->sku_bundling; ?></td>
-															<td><?= $production->batch_bundling; ?></td>
-															<td><?= $production->ed_bundling; ?></td>
-															<td><?= $production->qty_bundling; ?></td>
-															<td><?= date('d-m-Y H:i:s', strtotime($production->dibuat))  ?></td>
-															<td>
-																<a href="<?= base_url('user/production/detail/' . $production->id_production) ?>" class="btn btn-sm btn-primary text-white">Detail</a>
-																<?php if ($production->status == 0) { ?>
-																	<a href="<?= base_url('user/production/assign/' . $production->id_production) ?>" class="btn btn-sm btn-primary text-white">Assign Picker</a>
-																<?php } ?>
-
-																<?php if ($production->status == 1) { ?>
-																	<?php if ($this->session->userdata('role_id') == 1 || $this->session->userdata('role_id') == 4 || $this->session->userdata('role_id') == 6  ) { ?>
-																	
-								
-																	<a href="<?= base_url('user/production/pick/' . $production->id_production) ?>" class="btn btn-sm btn-warning text-black">Pick</a>
-																<?php }} ?>
-
-																<?php if ($production->status == 2) { ?>
-																	<?php if ($this->session->userdata('role_id') == 1 ||  $this->session->userdata('role_id') == 6  ) { ?>
-																	
-																	<a href="<?= base_url('user/production/finish/' . $production->id_production) ?>" class="btn btn-sm btn-warning text-black">Finish</a>
-																<?php }} ?>
-															</td>
+															<td colspan="3" class="text-center">No materials found.</td>
 														</tr>
-													<?php endforeach; ?>
-
+													<?php endif; ?>
 												</tbody>
 											</table>
 										</div>
+
+										<!-- Back Button -->
+										<div class="mt-3">
+											<!-- form assign picker  -->
+											<form id="formAssignPicker">
+												<input type="hidden" name="production_id" value="<?= $production->id_production ?>">
+												<select name="picker" id="selectPicker" class="form-control">
+													<option value="">Select Picker</option>
+													<?php foreach ($pickers->result() as $picker) : ?>
+														<option value="<?= $picker->id_users ?>"><?= $picker->nama ?></option>
+													<?php endforeach; ?>
+												</select>
+												<button type="submit" class="btn btn-primary mt-2">Assign Picker</button>
+											</form>
+
+										</div>
 									</div>
 
+
 								</div>
-								<!-- Basic Tables end -->
 							</div>
-						</div>
 					</section>
+
 					<!-- // Basic Vertical form layout section end -->
 				</div>
 			</div>
 
-			<!-- Modal Inbound -->
 			<?php $this->load->view('templates/footer') ?>
 		</div>
 	</div>
+
+
 
 	<script src="<?= base_url() . '/' ?>assets/static/js/components/dark.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/static/js/pages/horizontal-layout.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 
 	<script src="<?= base_url() . '/' ?>assets/compiled/js/app.js"></script>
-	<script src="<?= base_url() . '/' ?>assets/extensions/jquery/jquery.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 	<script>
-		// datatable tblproduction
-		$(document).ready(function() {
-			$('#tblproduction').DataTable();
-		});
+		// selectPicker select2
+		$('#selectPicker').select2({
 
-		// onclick deleteData
-		function deleteData(id) {
+			width: '100%'
+		});
+	</script>
+
+	<script>
+		// formAssignPicker 
+		$('#formAssignPicker').submit(function(e) {
+			e.preventDefault();
+			// confirm
 			Swal.fire({
 				title: 'Are you sure?',
-				text: "You won't be able to revert this!",
+				text: 'You are about to assign picker to this production',
 				icon: 'warning',
 				showCancelButton: true,
+				confirmButtonText: 'Yes, assign it!',
+				cancelButtonText: 'No, cancel!',
 				confirmButtonColor: '#3085d6',
 				cancelButtonColor: '#d33',
-				confirmButtonText: 'Yes, delete it!'
 			}).then((result) => {
 				if (result.isConfirmed) {
-					$.ajax({
-						url: '<?= base_url('picklist / delete ') ?>',
-						type: 'POST',
-						data: {
-							id_picklist: id
+					Swal.fire({
+						title: 'Please wait...',
+						html: 'Assigning picker',
+						timerProgressBar: true,
+						didOpen: () => {
+							Swal.showLoading()
 						},
-						success: function(data) {
-							Swal.fire(
-								'Deleted!',
-								'Your data has been deleted.',
-								'success'
-							).then((result) => {
-								location.reload();
+						// no click outside 
+						allowOutsideClick: false,
+					});
+					$.ajax({
+						url: '<?= base_url('user/production/assignPicker') ?>',
+						type: 'POST',
+						data: $(this).serialize(),
+						success: function(response) {
+							Swal.fire({
+								title: 'Success',
+								text: 'Picker assigned successfully',
+								icon: 'success',
+								showCancelButton: false,
+								showConfirmButton: false,
+								timer: 1500
+							}).then(function() {
+								Swal.fire({
+									title: 'Please wait...',
+									html: 'Assigning picker',
+									timerProgressBar: true,
+									didOpen: () => {
+										Swal.showLoading()
+									},
+									// no click outside 
+									allowOutsideClick: false,
+								});
+								window.location.href = '<?= base_url('user/production') ?>';
 							});
 						}
 					});
 				}
-			})
-		}
-
-		function editData(id) {
-			$.ajax({
-				url: '<?= base_url('picklist / get_picklist_details ') ?>',
-				type: 'GET',
-				data: {
-					id_picklist: id
-				},
-				success: function(data) {
-					var picklist = JSON.parse(data);
-
-					$('#id_picklist').val(picklist.id_picklist);
-					$('#no_picklist').val(picklist.no_picklist);
-					$('#batch').val(picklist.batch);
-					$('#qty').val(picklist.qty);
-					$('#status').val(picklist.status);
-
-
-					$('#editModal').modal('show');
-				}
 			});
-		}
 
-		$('#editForm').on('submit', function(e) {
-			e.preventDefault();
 
-			$.ajax({
-				url: '<?= base_url('picklist / update ') ?>',
-				type: 'POST',
-				data: $(this).serialize(),
-				success: function(response) {
-					Swal.fire(
-						'Updated!',
-						'Your data has been updated.',
-						'success'
-					).then((result) => {
-						location.reload();
-					});
-				}
-			});
+
+
 		});
 	</script>
-
 
 </body>
 

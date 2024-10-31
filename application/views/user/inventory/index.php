@@ -63,13 +63,6 @@
 													<label for="sloc">Sloc</label>
 													<input type="text" name="sloc" class="form-control" id="sloc" value="<?= isset($_GET['sloc']) ? $_GET['sloc'] : '' ?>">
 												</div>
-
-												<div class="col-md-4">ddd
-												<div id="qr-reader"></div>
-												</div>
-
-
-
 											</div>
 											<button type="submit" class="btn btn-primary mt-3 mb-3">Filter</button>
 										</form>
@@ -150,31 +143,34 @@
 	</script>
 
 
-    <script type="text/javascript">
-      // var resultContainer = document.getElementById('qr-reader-results');
-      var lastResult, countResults = 0;
- 
-      function onScanSuccess(decodedText, decodedResult) {
-        if (decodedText !== lastResult) {
-            ++countResults;
-            lastResult = decodedText;
+	<script type="text/javascript">
+		// var resultContainer = document.getElementById('qr-reader-results');
+		var lastResult, countResults = 0;
 
-			// decodedText to fill sloc input after that auto submit form
-			$('#sloc').val(decodedText);
-			$('form').submit();
+		function onScanSuccess(decodedText, decodedResult) {
+			if (decodedText !== lastResult) {
+				++countResults;
+				lastResult = decodedText;
 
-			
+				// decodedText to fill sloc input after that auto submit form
+				$('#sloc').val(decodedText);
+				$('form').submit();
 
-            
-            // console.log(`Scan result ${decodedText}`, decodedResult);
-        }
-      }
- 
-      var html5QrcodeScanner = new Html5QrcodeScanner(
-          "qr-reader", { fps: 10, qrbox: 100 }
-      );
-      html5QrcodeScanner.render(onScanSuccess);
-    </script>
+
+
+
+				// console.log(`Scan result ${decodedText}`, decodedResult);
+			}
+		}
+
+		var html5QrcodeScanner = new Html5QrcodeScanner(
+			"qr-reader", {
+				fps: 10,
+				qrbox: 100
+			}
+		);
+		html5QrcodeScanner.render(onScanSuccess);
+	</script>
 
 </body>
 

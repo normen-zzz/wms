@@ -17,6 +17,7 @@
 
 
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/compiled/css/table-datatable-jquery.css">
+
 </head>
 
 <body>
@@ -45,67 +46,63 @@
 									<div class="card-header">
 										<h5 class="card-title">
 											<?= $subtitle2 ?>
-
-											<!-- add production -->
 										</h5>
-										<a href="<?= base_url('user/production/add') ?>" class="btn btn-primary btn-sm">Add
-											Production</a>
-
 									</div>
+									<div class="card-body mb-4">
+										<form method="GET" action="">
+											<div class="row">
+												<div class="col-md-4">
+													<label for="sku">SKU</label>
+													<input type="text" name="sku" class="form-control" id="sku" value="<?= isset($_GET['sku']) ? $_GET['sku'] : '' ?>">
+												</div>
+												<div class="col-md-4">
+													<label for="batchnumber">Batch Number</label>
+													<input type="text" name="batchnumber" class="form-control" id="batchnumber" value="<?= isset($_GET['batchnumber']) ? $_GET['batchnumber'] : '' ?>">
+												</div>
+												<div class="col-md-4">
+													<label for="sloc">Sloc</label>
+													<input type="text" name="sloc" class="form-control" id="sloc" value="<?= isset($_GET['sloc']) ? $_GET['sloc'] : '' ?>">
+												</div>
+											</div>
+											<button type="submit" class="btn btn-primary mt-3 mb-3">Filter</button>
+										</form>
 
-									<div class="card-body">
+
 										<div class="table-responsive">
-											<table class="table" id="tblproduction">
+											<table class="table" id="tblLog">
 												<thead>
 													<tr>
-														<th>No</th>
 														<th>SKU</th>
-														<th>Batch</th>
-														<th>Expired Date</th>
-														<th>Qty</th>
-														<th>Created At</th>
-														<th>Action</th>
+														<th>Nama Barang</th>
+														<th>ID Batch</th>
+														<th>Sloc Rack</th>
+														<th>Expiration date</th>
+														<th>Quantity</th>
+                                                        <th>Condition</th>
+                                                        <th>At</th>
+														<th>No Document</th>
 													</tr>
 												</thead>
 												<tbody>
-													<?php
-													$index = 1;
-													foreach ($productions as $production) :
-													?>
-														<tr>
-															<td><?= $index++; ?></td>
-															<td><?= $production->sku_bundling; ?></td>
-															<td><?= $production->batch_bundling; ?></td>
-															<td><?= $production->ed_bundling; ?></td>
-															<td><?= $production->qty_bundling; ?></td>
-															<td><?= date('d-m-Y H:i:s', strtotime($production->dibuat))  ?></td>
-															<td>
-																<a href="<?= base_url('user/production/detail/' . $production->id_production) ?>" class="btn btn-sm btn-primary text-white">Detail</a>
-																<?php if ($production->status == 0) { ?>
-																	<a href="<?= base_url('user/production/assign/' . $production->id_production) ?>" class="btn btn-sm btn-primary text-white">Assign Picker</a>
-																<?php } ?>
-
-																<?php if ($production->status == 1) { ?>
-																	<?php if ($this->session->userdata('role_id') == 1 || $this->session->userdata('role_id') == 4 || $this->session->userdata('role_id') == 6  ) { ?>
-																	
-								
-																	<a href="<?= base_url('user/production/pick/' . $production->id_production) ?>" class="btn btn-sm btn-warning text-black">Pick</a>
-																<?php }} ?>
-
-																<?php if ($production->status == 2) { ?>
-																	<?php if ($this->session->userdata('role_id') == 1 ||  $this->session->userdata('role_id') == 6  ) { ?>
-																	
-																	<a href="<?= base_url('user/production/finish/' . $production->id_production) ?>" class="btn btn-sm btn-warning text-black">Finish</a>
-																<?php }} ?>
-															</td>
-														</tr>
-													<?php endforeach; ?>
-
+													<?php if (!empty($log)) : ?>
+														<?php foreach ($log as $item) : ?>
+															<tr>
+																<td><?= $item->sku ?></td>
+																<td><?= $item->nama_barang ?></td>
+																<td><?= $item->batchnumber ?></td>
+																<td><?= $item->sloc ?></td>
+																<td><?= date('d-m-Y', strtotime($item->expiration_date)) ?></td>
+																<td><?= $item->qty ?></td>
+																<td><?= $item->condition ?></td>
+																<td><?= date('d-m-Y H:i:s', strtotime($item->at)) ?></td>
+																<td><?= $item->no_document ?></td>
+															</tr>
+														<?php endforeach; ?>
+													<?php endif; ?>
 												</tbody>
 											</table>
 										</div>
 									</div>
-
 								</div>
 								<!-- Basic Tables end -->
 							</div>
@@ -115,10 +112,12 @@
 				</div>
 			</div>
 
-			<!-- Modal Inbound -->
+
 			<?php $this->load->view('templates/footer') ?>
 		</div>
 	</div>
+
+
 
 	<script src="<?= base_url() . '/' ?>assets/static/js/components/dark.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/static/js/pages/horizontal-layout.js"></script>
@@ -130,87 +129,53 @@
 	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
+	<script src="https://unpkg.com/html5-qrcode"></script>
+
+
+
 
 	<script>
-		// datatable tblproduction
 		$(document).ready(function() {
-			$('#tblproduction').DataTable();
-		});
-
-		// onclick deleteData
-		function deleteData(id) {
-			Swal.fire({
-				title: 'Are you sure?',
-				text: "You won't be able to revert this!",
-				icon: 'warning',
-				showCancelButton: true,
-				confirmButtonColor: '#3085d6',
-				cancelButtonColor: '#d33',
-				confirmButtonText: 'Yes, delete it!'
-			}).then((result) => {
-				if (result.isConfirmed) {
-					$.ajax({
-						url: '<?= base_url('picklist / delete ') ?>',
-						type: 'POST',
-						data: {
-							id_picklist: id
-						},
-						success: function(data) {
-							Swal.fire(
-								'Deleted!',
-								'Your data has been deleted.',
-								'success'
-							).then((result) => {
-								location.reload();
-							});
-						}
-					});
-				}
-			})
-		}
-
-		function editData(id) {
-			$.ajax({
-				url: '<?= base_url('picklist / get_picklist_details ') ?>',
-				type: 'GET',
-				data: {
-					id_picklist: id
+			$('#tblLog').DataTable({
+				language: {
+					emptyTable: "No results found"
 				},
-				success: function(data) {
-					var picklist = JSON.parse(data);
-
-					$('#id_picklist').val(picklist.id_picklist);
-					$('#no_picklist').val(picklist.no_picklist);
-					$('#batch').val(picklist.batch);
-					$('#qty').val(picklist.qty);
-					$('#status').val(picklist.status);
-
-
-					$('#editModal').modal('show');
-				}
+				// auto order false but still cant order 
+				"order": [],
 			});
-		}
 
-		$('#editForm').on('submit', function(e) {
-			e.preventDefault();
-
-			$.ajax({
-				url: '<?= base_url('picklist / update ') ?>',
-				type: 'POST',
-				data: $(this).serialize(),
-				success: function(response) {
-					Swal.fire(
-						'Updated!',
-						'Your data has been updated.',
-						'success'
-					).then((result) => {
-						location.reload();
-					});
-				}
-			});
 		});
 	</script>
 
+
+	<script type="text/javascript">
+		// var resultContainer = document.getElementById('qr-reader-results');
+		var lastResult, countResults = 0;
+
+		function onScanSuccess(decodedText, decodedResult) {
+			if (decodedText !== lastResult) {
+				++countResults;
+				lastResult = decodedText;
+
+				// decodedText to fill sloc input after that auto submit form
+				$('#sloc').val(decodedText);
+				$('form').submit();
+
+
+
+
+				// console.log(`Scan result ${decodedText}`, decodedResult);
+			}
+		}
+
+		var html5QrcodeScanner = new Html5QrcodeScanner(
+			"qr-reader", {
+				fps: 10,
+				qrbox: 100
+			}
+		);
+		html5QrcodeScanner.render(onScanSuccess);
+	</script>
 
 </body>
 

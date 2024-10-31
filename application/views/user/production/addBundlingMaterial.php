@@ -14,10 +14,19 @@
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/compiled/css/iconly.css" />
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.min.css">
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
+	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/extensions/flatpickr/flatpickr.min.css">
+	<!-- select2 -->
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/compiled/css/table-datatable-jquery.css">
 </head>
+
+<style>
+	.select2-container {
+		width: 100% !important;
+	}
+</style>
 
 <body>
 	<script src="<?= base_url() . '/' ?>assets/static/js/initTheme.js"></script>
@@ -42,70 +51,55 @@
 								<!-- Basic Tables start -->
 
 								<div class="card">
-									<div class="card-header">
-										<h5 class="card-title">
-											<?= $subtitle2 ?>
-
-											<!-- add production -->
-										</h5>
-										<a href="<?= base_url('user/production/add') ?>" class="btn btn-primary btn-sm">Add
-											Production</a>
-
-									</div>
-
 									<div class="card-body">
 										<div class="table-responsive">
-											<table class="table" id="tblproduction">
-												<thead>
-													<tr>
-														<th>No</th>
-														<th>SKU</th>
-														<th>Batch</th>
-														<th>Expired Date</th>
-														<th>Qty</th>
-														<th>Created At</th>
-														<th>Action</th>
-													</tr>
-												</thead>
-												<tbody>
-													<?php
-													$index = 1;
-													foreach ($productions as $production) :
-													?>
+											<form id="materialBundlingForm">
+												<div class="form-group">
+													<div class="col-xs-12">
+														<label for="first_name">
+															<h4>Sku Bundling</h4>
+														</label>
+
+														<select name="sku_bundling" id="sku_bundling" class="form-select">
+															<?php foreach ($skuBundling->result_array() as $data) { ?>
+																<option value="<?= $data['sku'] ?>"><?= $data['sku'] ?></option>
+															<?php } ?>
+														</select>
+
+													</div>
+												</div>
+												<table class="table">
+													<thead>
 														<tr>
-															<td><?= $index++; ?></td>
-															<td><?= $production->sku_bundling; ?></td>
-															<td><?= $production->batch_bundling; ?></td>
-															<td><?= $production->ed_bundling; ?></td>
-															<td><?= $production->qty_bundling; ?></td>
-															<td><?= date('d-m-Y H:i:s', strtotime($production->dibuat))  ?></td>
+															<th>SKU Material</th>
+
+															<th>Quantity</th>
+															<th>#</th>
+														</tr>
+													</thead>
+													<tbody id="addMaterialBundlingBody">
+														<tr>
 															<td>
-																<a href="<?= base_url('user/production/detail/' . $production->id_production) ?>" class="btn btn-sm btn-primary text-white">Detail</a>
-																<?php if ($production->status == 0) { ?>
-																	<a href="<?= base_url('user/production/assign/' . $production->id_production) ?>" class="btn btn-sm btn-primary text-white">Assign Picker</a>
-																<?php } ?>
+																<select name="sku_material[]" class="form-select skuMaterial"></select>
+															</td>
 
-																<?php if ($production->status == 1) { ?>
-																	<?php if ($this->session->userdata('role_id') == 1 || $this->session->userdata('role_id') == 4 || $this->session->userdata('role_id') == 6  ) { ?>
-																	
-								
-																	<a href="<?= base_url('user/production/pick/' . $production->id_production) ?>" class="btn btn-sm btn-warning text-black">Pick</a>
-																<?php }} ?>
-
-																<?php if ($production->status == 2) { ?>
-																	<?php if ($this->session->userdata('role_id') == 1 ||  $this->session->userdata('role_id') == 6  ) { ?>
-																	
-																	<a href="<?= base_url('user/production/finish/' . $production->id_production) ?>" class="btn btn-sm btn-warning text-black">Finish</a>
-																<?php }} ?>
+															<td>
+																<input type="number" name="quantity[]" id="quantity" class="form-control">
 															</td>
 														</tr>
-													<?php endforeach; ?>
-
-												</tbody>
-											</table>
+													</tbody>
+													<tfoot>
+														<tr>
+															<td>
+																<button type="button" class="btn btn-warning btn-sm" id="add-row-btn">Add Row</button>
+																<button type="submit" class="btn btn-success btn-sm">Submit</button>
+															</td>
+														</tr>
+													</tfoot>
+												</table>
+											</form>
 										</div>
 									</div>
-
 								</div>
 								<!-- Basic Tables end -->
 							</div>
@@ -115,101 +109,130 @@
 				</div>
 			</div>
 
-			<!-- Modal Inbound -->
 			<?php $this->load->view('templates/footer') ?>
 		</div>
 	</div>
+
+
 
 	<script src="<?= base_url() . '/' ?>assets/static/js/components/dark.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/static/js/pages/horizontal-layout.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 
 	<script src="<?= base_url() . '/' ?>assets/compiled/js/app.js"></script>
-	<script src="<?= base_url() . '/' ?>assets/extensions/jquery/jquery.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
+	<script src="<?= base_url() . '/' ?>assets/extensions/flatpickr/flatpickr.min.js"></script>
+	<script src="<?= base_url() . '/' ?>assets/static/js/pages/date-picker.js"></script>
+	<!-- select2 -->
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
 
-	<script>
-		// datatable tblproduction
+
+	<script type="text/javascript">
 		$(document).ready(function() {
-			$('#tblproduction').DataTable();
-		});
 
-		// onclick deleteData
-		function deleteData(id) {
-			Swal.fire({
-				title: 'Are you sure?',
-				text: "You won't be able to revert this!",
-				icon: 'warning',
-				showCancelButton: true,
-				confirmButtonColor: '#3085d6',
-				cancelButtonColor: '#d33',
-				confirmButtonText: 'Yes, delete it!'
-			}).then((result) => {
-				if (result.isConfirmed) {
-					$.ajax({
-						url: '<?= base_url('picklist / delete ') ?>',
-						type: 'POST',
-						data: {
-							id_picklist: id
+			selectMaterial();
+
+			// #add-row-btn
+			$('#add-row-btn').click(function() {
+				var html = '';
+				html += '<tr>';
+				html += '<td><select name="sku_material[]" class="form-select skuMaterial"></select></td>';
+
+				html += '<td><input type="number" name="quantity[]" id="quantity" class="form-control"></td>';
+				html += '<td><button type="button" class="btn btn-danger btn-sm remove-row">Remove</button></td>';
+				html += '</tr>';
+				$('#addMaterialBundlingBody').append(html);
+				selectMaterial();
+			});
+
+			$('#materialBundlingForm').on('submit', function(e) {
+				e.preventDefault();
+				Swal.fire({
+					title: 'Please wait...',
+					html: 'Loading...',
+					timerProgressBar: true,
+					didOpen: () => {
+						Swal.showLoading()
+					}
+				});
+				$.ajax({
+					url: "<?= base_url('user/production/addBundlingMaterialProcess') ?>",
+					type: "POST",
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function(response) {
+						Swal.fire({
+							title: response.status === 'success' ? 'Success' : 'Error',
+							text: response.message,
+							icon: response.status === 'success' ? 'success' : 'error',
+							confirmButtonText: 'OK'
+						}).then(() => {
+							if (response.status === 'success') {
+								Swal.fire({
+									title: 'Please wait...',
+									html: 'Loading...',
+									timerProgressBar: true,
+									didOpen: () => {
+										Swal.showLoading()
+									}
+								});
+								window.location.href = "<?= base_url('user/production/listBundlingMaterial') ?>";
+							}
+						});
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+						Swal.fire({
+							title: 'Error',
+							text: 'Something went wrong: ' + textStatus,
+							icon: 'error',
+							confirmButtonText: 'OK'
+						});
+					}
+				});
+			});
+
+			function selectMaterial() {
+				$('.skuMaterial').select2({
+					ajax: {
+						url: '<?= base_url('user/production/getDataBarangSelect') ?>',
+						type: "POST",
+						dataType: 'json',
+						delay: 250,
+						data: function(params) {
+							return {
+								searchTerm: params.term || ''
+							};
 						},
-						success: function(data) {
-							Swal.fire(
-								'Deleted!',
-								'Your data has been deleted.',
-								'success'
-							).then((result) => {
-								location.reload();
-							});
-						}
-					});
-				}
-			})
-		}
-
-		function editData(id) {
-			$.ajax({
-				url: '<?= base_url('picklist / get_picklist_details ') ?>',
-				type: 'GET',
-				data: {
-					id_picklist: id
-				},
-				success: function(data) {
-					var picklist = JSON.parse(data);
-
-					$('#id_picklist').val(picklist.id_picklist);
-					$('#no_picklist').val(picklist.no_picklist);
-					$('#batch').val(picklist.batch);
-					$('#qty').val(picklist.qty);
-					$('#status').val(picklist.status);
+						processResults: function(response) {
+							return {
+								results: response
+							};
+						},
+						cache: true
+					},
+					minimumInputLength: 0,
+					placeholder: "Pilih barang",
+					allowClear: true
+				});
 
 
-					$('#editModal').modal('show');
-				}
-			});
-		}
 
-		$('#editForm').on('submit', function(e) {
-			e.preventDefault();
-
-			$.ajax({
-				url: '<?= base_url('picklist / update ') ?>',
-				type: 'POST',
-				data: $(this).serialize(),
-				success: function(response) {
-					Swal.fire(
-						'Updated!',
-						'Your data has been updated.',
-						'success'
-					).then((result) => {
-						location.reload();
-					});
-				}
-			});
+			}
 		});
 	</script>
+
+	<script>
+		$(document).on('click', '.remove-row', function() {
+			$(this).closest('tr').remove();
+		});
+	</script>
+
+
+
 
 
 </body>
