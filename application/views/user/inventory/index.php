@@ -67,6 +67,9 @@
 											<button type="submit" class="btn btn-primary mt-3 mb-3">Filter</button>
 										</form>
 
+										<a id="downloadDataToExcel" href="<?= base_url('user') . '/' ?>inventory/export_excel" class="btn btn-success float-right">Download All Data To Excel</a>
+
+
 
 										<div class="table-responsive">
 											<table class="table" id="tblinventory">
@@ -170,6 +173,25 @@
 			}
 		);
 		html5QrcodeScanner.render(onScanSuccess);
+	</script>
+
+	<script>
+		// downloadDataToExcel loading swal 
+		$('#downloadDataToExcel').click(function() {
+			Swal.fire({
+				title: 'Loading',
+				html: 'Please wait...',
+				timerProgressBar: true,
+				didOpen: () => {
+					Swal.showLoading()
+				},
+				allowOutsideClick: false,
+			})
+
+			setTimeout(function() {
+				Swal.close()
+			}, 2000)
+		});
 	</script>
 
 </body>
