@@ -14,10 +14,11 @@
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/compiled/css/iconly.css" />
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.min.css">
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 
 
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/compiled/css/table-datatable-jquery.css">
-
 </head>
 
 <body>
@@ -35,77 +36,110 @@
 				</div>
 				<div class="page-content">
 					<!-- Basic Vertical form layout section start -->
-					<section id="basic-vertical-layouts">
+					<section id="picklist-detail">
 						<div class="row match-height">
-
 							<div class="col">
-								<!-- Minimal jQuery Datatable end -->
-								<!-- Basic Tables start -->
-
 								<div class="card">
 									<div class="card-header">
-										<h5 class="card-title">
-											<?= $subtitle2 ?>
-										</h5>
+										<h5 class="card-title"><?= $subtitle2 ?></h5>
 									</div>
-									<div class="card-body mb-4">
-										<form method="GET" action="">
-											<div class="row">
-												<div class="col-md-4">
-													<label for="sku">SKU</label>
-													<input type="text" name="sku" class="form-control" id="sku" value="<?= isset($_GET['sku']) ? $_GET['sku'] : '' ?>">
-												</div>
-												<div class="col-md-4">
-													<label for="batchnumber">Batch Number</label>
-													<input type="text" name="batchnumber" class="form-control" id="batchnumber" value="<?= isset($_GET['batchnumber']) ? $_GET['batchnumber'] : '' ?>">
-												</div>
-												<div class="col-md-4">
-													<label for="sloc">Sloc</label>
-													<input type="text" name="sloc" class="form-control" id="sloc" value="<?= isset($_GET['sloc']) ? $_GET['sloc'] : '' ?>">
-												</div>
-											</div>
-											<button type="submit" class="btn btn-primary mt-3 mb-3">Filter</button>
-										</form>
 
+									<div class="card-body">
+										<div class="mb-3">
+											<label for="no_production" class="form-label">No Production</label>
+											<input type="text" class="form-control" id="no_production" value="<?= $production->no_production ?>" disabled>
+										</div>
+
+										<div class="mb-3">
+											<label for="sku_bundling" class="form-label">SKU Bundling</label>
+											<input type="text" class="form-control" id="sku_bundling" value="<?= $production->sku_bundling ?>" disabled>
+										</div>
+
+										<div class="mb-3">
+											<label for="batch_bundling" class="form-label">Batch Bundling</label>
+											<input type="text" class="form-control" id="batch_bundling" value="<?= $production->batch_bundling ?>" disabled>
+										</div>
+
+										<div class="mb-3">
+											<label for="ed_bundling" class="form-label">Expired Date</label>
+											<input type="text" class="form-control" id="ed_bundling" value="<?= $production->ed_bundling ?>" disabled>
+										</div>
+
+										<div class="mb-3">
+											<label for="ed_bundling" class="form-label">Quantity</label>
+											<input type="text" class="form-control" id="ed_bundling" value="<?= $production->qty_bundling ?>" disabled>
+										</div>
 
 										<div class="table-responsive">
-											<table class="table" id="tblinventory">
+											<table class="table table-striped table-hover" id="detailProductionTable">
 												<thead>
 													<tr>
-														<th>SKU</th>
-														<th>Nama Barang</th>
-														<th>ID Batch</th>
-														<th>Sloc Rack</th>
-														<th>Expiration date</th>
+														<th>SKU Material</th>
+														<th>Batch ID</th>
 														<th>Quantity</th>
+														<th>#</th>
 													</tr>
 												</thead>
 												<tbody>
-													<?php if (!empty($rack_items)) : ?>
-														<?php foreach ($rack_items as $item) : ?>
+													<?php if (!empty($materials)) : ?>
+														<?php foreach ($materials as $material) :
+
+														?>
 															<tr>
-																<td><?= $item->sku ?></td>
-																<td><?= $item->nama_barang ?></td>
-																<td><?= $item->batchnumber ?></td>
-																<td><?= $item->sloc ?></td>
-																<td><?= date('d-m-Y', strtotime($item->expiration_date)) ?></td>
-																<td><?= $item->total_quantity ?></td>
+																<td><?= $material['sku_material'] ?></td> <!-- Updated to match your material key -->
+																<td><?= $material['batchnumber'] ?></td>
+																<td><?= $material['quantity'] ?></td>
+																<td>
+																	<?php $picks =  $this->db->query("SELECT b.nama_barang,c.batchnumber,d.sloc,a.qty  FROM pick_production a JOIN barang b ON a.id_barang = b.id_barang JOIN batch c ON a.id_batch = c.id_batch JOIN rack d ON a.id_rack = d.id_rack  WHERE id_material = " . $material['id_material']);
+																	if ($picks->num_rows() > 0) { ?>
+																		<table class="table">
+																			<thead>
+																				<tr>
+																					<th>Nama Material</th>
+																					<th>Batch</th>
+																					<th>Rack</th>
+																					<th>Qty</th>
+																				</tr>
+																			</thead>
+																			<tbody>
+																				<?php foreach ($picks->result_array() as $pick) { ?>
+																					<tr>
+																						<td><?= $pick['nama_barang'] ?></td>
+																						<td><?= $pick['batchnumber'] ?></td>
+																						<td><?= $pick['sloc'] ?></td>
+																						<td><?= $pick['qty'] ?></td>
+																					</tr>
+																				<?php } ?>
+																			</tbody>
+																		</table>
+																	<?php }
+																	?>
+																</td>
 															</tr>
 														<?php endforeach; ?>
+													<?php else : ?>
+														<tr>
+															<td colspan="3" class="text-center">No materials found.</td>
+														</tr>
 													<?php endif; ?>
 												</tbody>
 											</table>
 										</div>
+
+										<!-- Back Button -->
+										<div class="mt-3">
+											<a href="<?= base_url('user/production') ?>" class="btn btn-primary btn-sm">Back</a>
+										</div>
 									</div>
+
+
 								</div>
-								<!-- Basic Tables end -->
 							</div>
-						</div>
 					</section>
+
 					<!-- // Basic Vertical form layout section end -->
 				</div>
 			</div>
-
 
 			<?php $this->load->view('templates/footer') ?>
 		</div>
@@ -118,58 +152,48 @@
 	<script src="<?= base_url() . '/' ?>assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 
 	<script src="<?= base_url() . '/' ?>assets/compiled/js/app.js"></script>
-	<script src="<?= base_url() . '/' ?>assets/extensions/jquery/jquery.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
-	<script src="https://unpkg.com/html5-qrcode"></script>
-
-
-
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 	<script>
 		$(document).ready(function() {
-			$('#tblinventory').DataTable({
-				language: {
-					emptyTable: "No results found"
-				},
-				order: [
-					[4, 'asc']
-				]
+			$('.done-button').on('click', function() {
+				var idDataputaway = $(this).closest('tr').find('.id_dataputaway').val();
+				var button = $(this);
+
+				$.ajax({
+					url: '<?= base_url('user / putaway / update_status ') ?>',
+					type: 'POST',
+					data: {
+						id_dataputaway: idDataputaway
+					},
+					dataType: 'json',
+					success: function(response) {
+						if (response.status === 'success') {
+							button.text('Completed').prop('disabled', true);
+							Swal.fire({
+								icon: 'success',
+								title: 'Success',
+								text: response.message
+							});
+						} else {
+							Swal.fire({
+								icon: 'error',
+								title: 'Error',
+								text: response.message
+							});
+						}
+					},
+					error: function() {
+						alert('An error occurred while processing your request.');
+					}
+				});
 			});
-
 		});
-	</script>
-
-
-	<script type="text/javascript">
-		// var resultContainer = document.getElementById('qr-reader-results');
-		var lastResult, countResults = 0;
-
-		function onScanSuccess(decodedText, decodedResult) {
-			if (decodedText !== lastResult) {
-				++countResults;
-				lastResult = decodedText;
-
-				// decodedText to fill sloc input after that auto submit form
-				$('#sloc').val(decodedText);
-				$('form').submit();
-
-
-
-
-				// console.log(`Scan result ${decodedText}`, decodedResult);
-			}
-		}
-
-		var html5QrcodeScanner = new Html5QrcodeScanner(
-			"qr-reader", {
-				fps: 10,
-				qrbox: 100
-			}
-		);
-		html5QrcodeScanner.render(onScanSuccess);
 	</script>
 
 </body>

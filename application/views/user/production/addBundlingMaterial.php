@@ -14,11 +14,19 @@
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/compiled/css/iconly.css" />
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.min.css">
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
+	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/extensions/flatpickr/flatpickr.min.css">
+	<!-- select2 -->
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/compiled/css/table-datatable-jquery.css">
-
 </head>
+
+<style>
+	.select2-container {
+		width: 100% !important;
+	}
+</style>
 
 <body>
 	<script src="<?= base_url() . '/' ?>assets/static/js/initTheme.js"></script>
@@ -43,58 +51,53 @@
 								<!-- Basic Tables start -->
 
 								<div class="card">
-									<div class="card-header">
-										<h5 class="card-title">
-											<?= $subtitle2 ?>
-										</h5>
-									</div>
-									<div class="card-body mb-4">
-										<form method="GET" action="">
-											<div class="row">
-												<div class="col-md-4">
-													<label for="sku">SKU</label>
-													<input type="text" name="sku" class="form-control" id="sku" value="<?= isset($_GET['sku']) ? $_GET['sku'] : '' ?>">
-												</div>
-												<div class="col-md-4">
-													<label for="batchnumber">Batch Number</label>
-													<input type="text" name="batchnumber" class="form-control" id="batchnumber" value="<?= isset($_GET['batchnumber']) ? $_GET['batchnumber'] : '' ?>">
-												</div>
-												<div class="col-md-4">
-													<label for="sloc">Sloc</label>
-													<input type="text" name="sloc" class="form-control" id="sloc" value="<?= isset($_GET['sloc']) ? $_GET['sloc'] : '' ?>">
-												</div>
-											</div>
-											<button type="submit" class="btn btn-primary mt-3 mb-3">Filter</button>
-										</form>
-
-
+									<div class="card-body">
 										<div class="table-responsive">
-											<table class="table" id="tblinventory">
-												<thead>
-													<tr>
-														<th>SKU</th>
-														<th>Nama Barang</th>
-														<th>ID Batch</th>
-														<th>Sloc Rack</th>
-														<th>Expiration date</th>
-														<th>Quantity</th>
-													</tr>
-												</thead>
-												<tbody>
-													<?php if (!empty($rack_items)) : ?>
-														<?php foreach ($rack_items as $item) : ?>
-															<tr>
-																<td><?= $item->sku ?></td>
-																<td><?= $item->nama_barang ?></td>
-																<td><?= $item->batchnumber ?></td>
-																<td><?= $item->sloc ?></td>
-																<td><?= date('d-m-Y', strtotime($item->expiration_date)) ?></td>
-																<td><?= $item->total_quantity ?></td>
-															</tr>
-														<?php endforeach; ?>
-													<?php endif; ?>
-												</tbody>
-											</table>
+											<form id="materialBundlingForm">
+												<div class="form-group">
+													<div class="col-xs-12">
+														<label for="first_name">
+															<h4>Sku Bundling</h4>
+														</label>
+
+														<select name="sku_bundling" id="sku_bundling" class="form-select">
+															<?php foreach ($skuBundling->result_array() as $data) { ?>
+																<option value="<?= $data['sku'] ?>"><?= $data['sku'] ?></option>
+															<?php } ?>
+														</select>
+
+													</div>
+												</div>
+												<table class="table">
+													<thead>
+														<tr>
+															<th>SKU Material</th>
+
+															<th>Quantity</th>
+															<th>#</th>
+														</tr>
+													</thead>
+													<tbody id="addMaterialBundlingBody">
+														<tr>
+															<td>
+																<select name="sku_material[]" class="form-select skuMaterial"></select>
+															</td>
+
+															<td>
+																<input type="number" name="quantity[]" id="quantity" class="form-control">
+															</td>
+														</tr>
+													</tbody>
+													<tfoot>
+														<tr>
+															<td>
+																<button type="button" class="btn btn-warning btn-sm" id="add-row-btn">Add Row</button>
+																<button type="submit" class="btn btn-success btn-sm">Submit</button>
+															</td>
+														</tr>
+													</tfoot>
+												</table>
+											</form>
 										</div>
 									</div>
 								</div>
@@ -105,7 +108,6 @@
 					<!-- // Basic Vertical form layout section end -->
 				</div>
 			</div>
-
 
 			<?php $this->load->view('templates/footer') ?>
 		</div>
@@ -118,59 +120,120 @@
 	<script src="<?= base_url() . '/' ?>assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 
 	<script src="<?= base_url() . '/' ?>assets/compiled/js/app.js"></script>
-	<script src="<?= base_url() . '/' ?>assets/extensions/jquery/jquery.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
+	<script src="<?= base_url() . '/' ?>assets/extensions/flatpickr/flatpickr.min.js"></script>
+	<script src="<?= base_url() . '/' ?>assets/static/js/pages/date-picker.js"></script>
+	<!-- select2 -->
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
-	<script src="https://unpkg.com/html5-qrcode"></script>
 
 
-
-
-	<script>
+	<script type="text/javascript">
 		$(document).ready(function() {
-			$('#tblinventory').DataTable({
-				language: {
-					emptyTable: "No results found"
-				},
-				order: [
-					[4, 'asc']
-				]
+
+			selectMaterial();
+
+			// #add-row-btn
+			$('#add-row-btn').click(function() {
+				var html = '';
+				html += '<tr>';
+				html += '<td><select name="sku_material[]" class="form-select skuMaterial"></select></td>';
+
+				html += '<td><input type="number" name="quantity[]" id="quantity" class="form-control"></td>';
+				html += '<td><button type="button" class="btn btn-danger btn-sm remove-row">Remove</button></td>';
+				html += '</tr>';
+				$('#addMaterialBundlingBody').append(html);
+				selectMaterial();
 			});
 
+			$('#materialBundlingForm').on('submit', function(e) {
+				e.preventDefault();
+				Swal.fire({
+					title: 'Please wait...',
+					html: 'Loading...',
+					timerProgressBar: true,
+					didOpen: () => {
+						Swal.showLoading()
+					}
+				});
+				$.ajax({
+					url: "<?= base_url('user/production/addBundlingMaterialProcess') ?>",
+					type: "POST",
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function(response) {
+						Swal.fire({
+							title: response.status === 'success' ? 'Success' : 'Error',
+							text: response.message,
+							icon: response.status === 'success' ? 'success' : 'error',
+							confirmButtonText: 'OK'
+						}).then(() => {
+							if (response.status === 'success') {
+								Swal.fire({
+									title: 'Please wait...',
+									html: 'Loading...',
+									timerProgressBar: true,
+									didOpen: () => {
+										Swal.showLoading()
+									}
+								});
+								window.location.href = "<?= base_url('user/production/listBundlingMaterial') ?>";
+							}
+						});
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+						Swal.fire({
+							title: 'Error',
+							text: 'Something went wrong: ' + textStatus,
+							icon: 'error',
+							confirmButtonText: 'OK'
+						});
+					}
+				});
+			});
+
+			function selectMaterial() {
+				$('.skuMaterial').select2({
+					ajax: {
+						url: '<?= base_url('user/production/getDataBarangSelect') ?>',
+						type: "POST",
+						dataType: 'json',
+						delay: 250,
+						data: function(params) {
+							return {
+								searchTerm: params.term || ''
+							};
+						},
+						processResults: function(response) {
+							return {
+								results: response
+							};
+						},
+						cache: true
+					},
+					minimumInputLength: 0,
+					placeholder: "Pilih barang",
+					allowClear: true
+				});
+
+
+
+			}
+		});
+	</script>
+
+	<script>
+		$(document).on('click', '.remove-row', function() {
+			$(this).closest('tr').remove();
 		});
 	</script>
 
 
-	<script type="text/javascript">
-		// var resultContainer = document.getElementById('qr-reader-results');
-		var lastResult, countResults = 0;
-
-		function onScanSuccess(decodedText, decodedResult) {
-			if (decodedText !== lastResult) {
-				++countResults;
-				lastResult = decodedText;
-
-				// decodedText to fill sloc input after that auto submit form
-				$('#sloc').val(decodedText);
-				$('form').submit();
 
 
-
-
-				// console.log(`Scan result ${decodedText}`, decodedResult);
-			}
-		}
-
-		var html5QrcodeScanner = new Html5QrcodeScanner(
-			"qr-reader", {
-				fps: 10,
-				qrbox: 100
-			}
-		);
-		html5QrcodeScanner.render(onScanSuccess);
-	</script>
 
 </body>
 

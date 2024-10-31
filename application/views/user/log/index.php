@@ -69,7 +69,7 @@
 
 
 										<div class="table-responsive">
-											<table class="table" id="tblinventory">
+											<table class="table" id="tblLog">
 												<thead>
 													<tr>
 														<th>SKU</th>
@@ -78,18 +78,24 @@
 														<th>Sloc Rack</th>
 														<th>Expiration date</th>
 														<th>Quantity</th>
+                                                        <th>Condition</th>
+                                                        <th>At</th>
+														<th>No Document</th>
 													</tr>
 												</thead>
 												<tbody>
-													<?php if (!empty($rack_items)) : ?>
-														<?php foreach ($rack_items as $item) : ?>
+													<?php if (!empty($log)) : ?>
+														<?php foreach ($log as $item) : ?>
 															<tr>
 																<td><?= $item->sku ?></td>
 																<td><?= $item->nama_barang ?></td>
 																<td><?= $item->batchnumber ?></td>
 																<td><?= $item->sloc ?></td>
 																<td><?= date('d-m-Y', strtotime($item->expiration_date)) ?></td>
-																<td><?= $item->total_quantity ?></td>
+																<td><?= $item->qty ?></td>
+																<td><?= $item->condition ?></td>
+																<td><?= date('d-m-Y H:i:s', strtotime($item->at)) ?></td>
+																<td><?= $item->no_document ?></td>
 															</tr>
 														<?php endforeach; ?>
 													<?php endif; ?>
@@ -130,13 +136,12 @@
 
 	<script>
 		$(document).ready(function() {
-			$('#tblinventory').DataTable({
+			$('#tblLog').DataTable({
 				language: {
 					emptyTable: "No results found"
 				},
-				order: [
-					[4, 'asc']
-				]
+				// auto order false but still cant order 
+				"order": [],
 			});
 
 		});

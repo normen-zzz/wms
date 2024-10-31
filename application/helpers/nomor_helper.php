@@ -161,3 +161,22 @@ function generate_stocktransfer_number($prefix = 'STF')
 
 	return $stocktransfer_number;
 }
+
+
+function generate_production_number($prefix = 'PRD')
+{
+	$CI = &get_instance();
+	$CI->load->model('Production_model');
+
+	$date = date('ymd');
+
+	$last_counter = $CI->Production_model->get_last_counter();
+	$new_counter = $last_counter + 1;
+
+	$formatted_counter = str_pad($new_counter, 1, '0', STR_PAD_LEFT);
+
+
+	$production_number = "{$prefix}/{$date}/{$formatted_counter}";
+
+	return $production_number;
+}

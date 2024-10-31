@@ -14,10 +14,11 @@
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/compiled/css/iconly.css" />
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.min.css">
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 
 
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/compiled/css/table-datatable-jquery.css">
-
 </head>
 
 <body>
@@ -35,77 +36,93 @@
 				</div>
 				<div class="page-content">
 					<!-- Basic Vertical form layout section start -->
-					<section id="basic-vertical-layouts">
+					<section id="picklist-detail">
 						<div class="row match-height">
-
 							<div class="col">
-								<!-- Minimal jQuery Datatable end -->
-								<!-- Basic Tables start -->
-
 								<div class="card">
 									<div class="card-header">
-										<h5 class="card-title">
-											<?= $subtitle2 ?>
-										</h5>
+										<h5 class="card-title"><?= $subtitle2 ?></h5>
 									</div>
-									<div class="card-body mb-4">
-										<form method="GET" action="">
-											<div class="row">
-												<div class="col-md-4">
-													<label for="sku">SKU</label>
-													<input type="text" name="sku" class="form-control" id="sku" value="<?= isset($_GET['sku']) ? $_GET['sku'] : '' ?>">
-												</div>
-												<div class="col-md-4">
-													<label for="batchnumber">Batch Number</label>
-													<input type="text" name="batchnumber" class="form-control" id="batchnumber" value="<?= isset($_GET['batchnumber']) ? $_GET['batchnumber'] : '' ?>">
-												</div>
-												<div class="col-md-4">
-													<label for="sloc">Sloc</label>
-													<input type="text" name="sloc" class="form-control" id="sloc" value="<?= isset($_GET['sloc']) ? $_GET['sloc'] : '' ?>">
-												</div>
-											</div>
-											<button type="submit" class="btn btn-primary mt-3 mb-3">Filter</button>
-										</form>
 
+									<div class="card-body">
+										<div class="mb-3">
+											<label for="no_production" class="form-label">No Production</label>
+											<input type="text" class="form-control" id="no_production" value="<?= $production->no_production ?>" disabled>
+										</div>
+
+										<div class="mb-3">
+											<label for="sku_bundling" class="form-label">SKU Bundling</label>
+											<input type="text" class="form-control" id="sku_bundling" value="<?= $production->sku_bundling ?>" disabled>
+										</div>
+
+										<div class="mb-3">
+											<label for="batch_bundling" class="form-label">Batch Bundling</label>
+											<input type="text" class="form-control" id="batch_bundling" value="<?= $production->batch_bundling ?>" disabled>
+										</div>
+
+										<div class="mb-3">
+											<label for="ed_bundling" class="form-label">Expired Date</label>
+											<input type="text" class="form-control" id="ed_bundling" value="<?= $production->ed_bundling ?>" disabled>
+										</div>
+
+										<div class="mb-3">
+											<label for="ed_bundling" class="form-label">Quantity</label>
+											<input type="text" class="form-control" id="ed_bundling" value="<?= $production->qty_bundling ?>"
+												disabled>
+										</div>
 
 										<div class="table-responsive">
-											<table class="table" id="tblinventory">
+											<table class="table table-striped table-hover" id="detailProductionTable">
 												<thead>
 													<tr>
-														<th>SKU</th>
-														<th>Nama Barang</th>
-														<th>ID Batch</th>
-														<th>Sloc Rack</th>
-														<th>Expiration date</th>
+														<th>SKU Material</th>
+														<th>Batch ID</th>
 														<th>Quantity</th>
 													</tr>
 												</thead>
 												<tbody>
-													<?php if (!empty($rack_items)) : ?>
-														<?php foreach ($rack_items as $item) : ?>
+													<?php if (!empty($materials)) : ?>
+														<?php foreach ($materials as $material) : ?>
 															<tr>
-																<td><?= $item->sku ?></td>
-																<td><?= $item->nama_barang ?></td>
-																<td><?= $item->batchnumber ?></td>
-																<td><?= $item->sloc ?></td>
-																<td><?= date('d-m-Y', strtotime($item->expiration_date)) ?></td>
-																<td><?= $item->total_quantity ?></td>
+																<td><?= $material['sku_material'] ?></td> <!-- Updated to match your material key -->
+																<td><?= $material['batchnumber'] ?></td>
+																<td><?= $material['quantity'] ?></td>
 															</tr>
 														<?php endforeach; ?>
+													<?php else : ?>
+														<tr>
+															<td colspan="3" class="text-center">No materials found.</td>
+														</tr>
 													<?php endif; ?>
 												</tbody>
 											</table>
 										</div>
+
+										<!-- Back Button -->
+										<div class="mt-3">
+											<!-- form assign picker  -->
+											<form id="formAssignPicker">
+												<input type="hidden" name="production_id" value="<?= $production->id_production ?>">
+												<select name="picker" id="selectPicker" class="form-control">
+													<option value="">Select Picker</option>
+													<?php foreach ($pickers->result() as $picker) : ?>
+														<option value="<?= $picker->id_users ?>"><?= $picker->nama ?></option>
+													<?php endforeach; ?>
+												</select>
+												<button type="submit" class="btn btn-primary mt-2">Assign Picker</button>
+											</form>
+
+										</div>
 									</div>
+
+
 								</div>
-								<!-- Basic Tables end -->
 							</div>
-						</div>
 					</section>
+
 					<!-- // Basic Vertical form layout section end -->
 				</div>
 			</div>
-
 
 			<?php $this->load->view('templates/footer') ?>
 		</div>
@@ -118,58 +135,81 @@
 	<script src="<?= base_url() . '/' ?>assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 
 	<script src="<?= base_url() . '/' ?>assets/compiled/js/app.js"></script>
-	<script src="<?= base_url() . '/' ?>assets/extensions/jquery/jquery.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
-	<script src="https://unpkg.com/html5-qrcode"></script>
-
-
-
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 	<script>
-		$(document).ready(function() {
-			$('#tblinventory').DataTable({
-				language: {
-					emptyTable: "No results found"
-				},
-				order: [
-					[4, 'asc']
-				]
-			});
+		// selectPicker select2
+		$('#selectPicker').select2({
 
+			width: '100%'
 		});
 	</script>
 
+	<script>
+		// formAssignPicker 
+		$('#formAssignPicker').submit(function(e) {
+			e.preventDefault();
+			// confirm
+			Swal.fire({
+				title: 'Are you sure?',
+				text: 'You are about to assign picker to this production',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: 'Yes, assign it!',
+				cancelButtonText: 'No, cancel!',
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+			}).then((result) => {
+				if (result.isConfirmed) {
+					Swal.fire({
+						title: 'Please wait...',
+						html: 'Assigning picker',
+						timerProgressBar: true,
+						didOpen: () => {
+							Swal.showLoading()
+						},
+						// no click outside 
+						allowOutsideClick: false,
+					});
+					$.ajax({
+						url: '<?= base_url('user/production/assignPicker') ?>',
+						type: 'POST',
+						data: $(this).serialize(),
+						success: function(response) {
+							Swal.fire({
+								title: 'Success',
+								text: 'Picker assigned successfully',
+								icon: 'success',
+								showCancelButton: false,
+								showConfirmButton: false,
+								timer: 1500
+							}).then(function() {
+								Swal.fire({
+									title: 'Please wait...',
+									html: 'Assigning picker',
+									timerProgressBar: true,
+									didOpen: () => {
+										Swal.showLoading()
+									},
+									// no click outside 
+									allowOutsideClick: false,
+								});
+								window.location.href = '<?= base_url('user/production') ?>';
+							});
+						}
+					});
+				}
+			});
 
-	<script type="text/javascript">
-		// var resultContainer = document.getElementById('qr-reader-results');
-		var lastResult, countResults = 0;
-
-		function onScanSuccess(decodedText, decodedResult) {
-			if (decodedText !== lastResult) {
-				++countResults;
-				lastResult = decodedText;
-
-				// decodedText to fill sloc input after that auto submit form
-				$('#sloc').val(decodedText);
-				$('form').submit();
 
 
 
-
-				// console.log(`Scan result ${decodedText}`, decodedResult);
-			}
-		}
-
-		var html5QrcodeScanner = new Html5QrcodeScanner(
-			"qr-reader", {
-				fps: 10,
-				qrbox: 100
-			}
-		);
-		html5QrcodeScanner.render(onScanSuccess);
+		});
 	</script>
 
 </body>

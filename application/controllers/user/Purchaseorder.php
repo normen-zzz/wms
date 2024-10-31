@@ -6,6 +6,7 @@ class Purchaseorder extends CI_Controller
 
 	public function __construct()
 	{
+
 		parent::__construct();
 		is_login();
 		$this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));");
