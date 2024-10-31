@@ -8,6 +8,7 @@ class Production extends CI_Controller
 	{
 		parent::__construct();
 		// Load necessary models, libraries, etc.
+		$this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));");
 		$this->load->model('Production_model', 'production');
 		$this->load->helper('url');
 	}
