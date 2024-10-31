@@ -73,7 +73,7 @@ class Inventory extends CI_Controller
 		$spreadsheet = $reader->load($file['tmp_name']);
 		$sheetData = $spreadsheet->getActiveSheet()->toArray();
 		$data = [];
-		
+
 		foreach ($sheetData as $key => $value) {
 			if ($key > 0) {
 				$id_barang = '';
@@ -84,7 +84,7 @@ class Inventory extends CI_Controller
 				$sloc = $this->db->query('SELECT id_rack FROM rack WHERE sloc = "' . $value[4] . '" ');
 				if ($barang->num_rows() > 0) {
 					$id_barang = $barang->row()->id_barang;
-				} else{
+				} else {
 					$this->db->insert('barang', [
 						'uuid' => uniqid(),
 						'sku' => $value[0],
@@ -104,7 +104,7 @@ class Inventory extends CI_Controller
 					$this->db->insert('batch', [
 						'uuid' => uniqid(),
 						'batchnumber' => $value[2],
-						'expiration_date' => date('Y-m-d',strtotime($value[3])) ,
+						'expiration_date' => date('Y-m-d', strtotime($value[3])),
 						'qty' => 0
 					]);
 					// get id from insert
@@ -148,6 +148,37 @@ class Inventory extends CI_Controller
 		} else {
 			echo json_encode(['error' => true]);
 		}
+	}
+
+	// export to excel 
+	public function export_excel()
+	{
+		$spreadsheet = new Spreadsheet();
+		$sheet = $spreadsheet->getActiveSheet();
+		$sheet->setCellValue('A1', 'SKU');
+		$sheet->setCellValue('B1', 'Nama Barang');
+		$sheet->setCellValue('C1', 'Batch Number');
+		$sheet->setCellValue('D1', 'expiration_date');
+		$sheet->setCellValue('E1', 'SLOC');
+		$sheet->setCellValue('F1', 'Quantity');
+		$rack_items = $this->RackItems_model->get_all_rack_items();
+		$no = 2;
+		foreach ($rack_items as $item) {
+			$sheet->setCellValue('A' . $no, $item->sku);
+			$sheet->setCellValue('B' . $no, $item->nama_barang);
+			$sheet->setCellValue('C' . $no, $item->batchnumber);
+			$sheet->setCellValue('D' . $no, $item->expiration_date);
+			$sheet->setCellValue('E' . $no, $item->sloc);
+			$sheet->setCellValue('F' . $no, $item->quantity);
+			$no++;
+		}
+		$writer = new Xlsx($spreadsheet);
+		$filename = 'INVENTORY WMS TRANSTAMA ' . date('d-M-Y') . '.xlsx';
+		header('Content-Type: application/vnd.ms-excel');
+		header('Content-Disposition: attachment;filename="' . $filename . '"');
+		header('Cache-Control: max-age=0');
+		$writer->save('php://output');
+		
 	}
 
 
