@@ -81,7 +81,7 @@
 													<tbody id="table-body">
 														<tr>
 															<td>
-																<select name="barang[]" class="form-select selectBarang "></select>
+																<select name="barang[]" class="form-select selectBarang"></select>
 															</td>
 															<td><select name="batch[]" class="form-select selectBatch">
 
@@ -249,7 +249,7 @@
 			function initSelect2AndFlatpickr() {
 				$('.selectBarang').select2({
 					ajax: {
-						url: '<?= base_url('user/picklist/getDataBarangSelect') ?>',
+						url: '<?= base_url('user/purchaseorder/getDataBarangSelect') ?>',
 						type: "POST",
 						dataType: 'json',
 						delay: 250,
