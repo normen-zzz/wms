@@ -60,9 +60,9 @@
 															<h4>Sku Bundling</h4>
 														</label>
 
-														<select name="sku_bundling" id="sku_bundling" class="form-select">
+														<select name="sku_bundling" id="sku_bundling" class="form-select sku_bundling">
 															<?php foreach ($skuBundling->result_array() as $data) { ?>
-																<option value="<?= $data['sku'] ?>"><?= $data['sku'] ?></option>
+																<option value="<?= $data['sku'] ?>"><?= $data['sku'] ?> || <?=$data['nama_barang'] ?></option>
 															<?php } ?>
 														</select>
 
@@ -135,6 +135,8 @@
 		$(document).ready(function() {
 
 			selectMaterial();
+
+
 
 			// #add-row-btn
 			$('#add-row-btn').click(function() {
@@ -218,6 +220,9 @@
 					placeholder: "Pilih barang",
 					allowClear: true
 				});
+				// sku_bundling select 2
+				$('.sku_bundling').select2();
+
 
 
 
