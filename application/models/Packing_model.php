@@ -9,7 +9,7 @@ class Packing_model extends CI_Model
         $this->db->from('packing a');
         $this->db->join('pickingslip b', 'a.id_pickingslip =  b.id_pickingslip');
 		// order by created_at
-		$this->db->order_by('a.created_at', 'DESC');
+		$this->db->order_by('a.id_packing', 'DESC');
         return $this->db->get(); 
     }
 

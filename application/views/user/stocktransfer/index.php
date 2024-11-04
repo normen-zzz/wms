@@ -52,7 +52,7 @@
 
 									<div class="card-body">
 										<div class="table-responsive">
-											<table class="table" id="table1">
+											<table class="table" id="tableStockTransfer">
 												<thead>
 													<tr>
 														<th>No Stocktransfer</th>
@@ -103,6 +103,18 @@
 		<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
 		<script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
 		<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
+
+		<script>
+			// tableStockTransfer
+			$(document).ready(function() {
+				$('#tableStockTransfer').DataTable(
+					// order false 
+					{
+						"order": false
+					}
+				);
+			});
+		</script>
 
 
 </body>

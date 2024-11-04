@@ -8,6 +8,8 @@ class Purchaseorder_model extends CI_Model
 		$this->db->select('*');
 		$this->db->from('purchaseorder');
 		$this->db->where('is_deleted', 0);
+		// order by id 
+		$this->db->order_by('id_purchaseorder', 'DESC');
 		return $this->db->get();
 	}
 

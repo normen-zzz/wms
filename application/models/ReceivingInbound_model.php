@@ -18,7 +18,7 @@ class ReceivingInbound_model extends CI_Model
 			$this->db->join('picklist', 'inbound.id_picklist = picklist.id_picklist', 'left');
 			$this->db->join('data_inbound', 'inbound.id_inbound = data_inbound.id_inbound', 'left');
 			$this->db->group_by('inbound.no_inbound');
-			$this->db->order_by('picklist.created_at', 'DESC');
+			$this->db->order_by('inbound.id_inbound', 'DESC');
 			
 			$query = $this->db->get();
 			return $query->result();

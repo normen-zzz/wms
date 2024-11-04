@@ -137,9 +137,7 @@
 				language: {
 					emptyTable: "No results found"
 				},
-				order: [
-					[4, 'asc']
-				]
+				order: [],
 			});
 
 		});

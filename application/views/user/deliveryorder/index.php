@@ -141,9 +141,7 @@
         // tblpickingslip datatable
         $(document).ready(function() {
             $('#tbldo').DataTable({
-                "order": [
-                    [4, "desc"]
-                ],
+                "order":[],
                 "columnDefs": [{
                     "searchable": false,
                     "orderable": false,

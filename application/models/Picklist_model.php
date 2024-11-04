@@ -10,6 +10,7 @@ class Picklist_model extends CI_Model
 		$this->db->join('datapicklist', 'datapicklist.id_picklist = picklist.id_picklist');
 		$this->db->where('picklist.is_deleted', 0);
 		$this->db->group_by('picklist.no_picklist');
+		$this->db->order_by('picklist.id_picklist', 'DESC');
 		return $this->db->get();
 	}
 

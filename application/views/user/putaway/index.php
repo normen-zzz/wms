@@ -112,7 +112,7 @@
 		<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
 		<script>
 			$('#tblputaway').DataTable({
-				"order": [[5, "desc"]],
+				"order":[],
 				"columnDefs": [{
 						"searchable": false,
 						"orderable": false,
