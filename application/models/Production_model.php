@@ -16,7 +16,7 @@ class Production_model extends CI_Model
 		$this->db->select('*,production.created_at as dibuat');
 		$this->db->from('production');
 		$this->db->join('users', 'production.created_by = users.id_users');
-		$this->db->order_by('production.created_at', 'DESC');
+		$this->db->order_by('production.id_production', 'DESC');
 		$query = $this->db->get();
 		return $query->result();
 	}
@@ -332,6 +332,8 @@ class Production_model extends CI_Model
 		$this->db->join('barang b', 'a.sku_bundling = b.sku');
 		// group by sku bundling
 		$this->db->group_by('a.sku_bundling');
+		// order by 
+		$this->db->order_by('a.id_bundlingmaterial', 'DESC');
 		$query = $this->db->get();
 		return $query;
 	}

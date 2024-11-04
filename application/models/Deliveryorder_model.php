@@ -9,6 +9,7 @@ class Deliveryorder_model extends CI_Model
         $this->db->from('deliveryorder a');
         $this->db->join('packing b', 'a.id_packing =  b.id_packing');
         $this->db->join('pickingslip c', 'b.id_pickingslip =  c.id_pickingslip');
+        $this->db->order_by('a.id_deliveryorder', 'DESC');
         return $this->db->get();
     }
 

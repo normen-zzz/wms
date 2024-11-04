@@ -12,6 +12,7 @@ class Stocktransfer_model extends CI_Model {
     public function get_all_stocktransfer() {
         $this->db->select('*');
         $this->db->from('stocktransfer');
+        $this->db->order_by('id_stocktransfer', 'DESC');
         $query = $this->db->get();
         return $query;
     }

@@ -31,6 +31,7 @@ class RackItems_model extends CI_Model
 		$this->db->where('rack.is_deleted', 0);
 		$this->db->where('rack_items.quantity !=', 0);
 		$this->db->group_by(array('id_barang', 'id_batch', 'id_rack'));
+		$this->db->order_by('rack_items.id', 'DESC');
 
 		$query = $this->db->get();
 		return $query->result();

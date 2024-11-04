@@ -161,9 +161,7 @@
 		// datatable tblpicklist
 		$(document).ready(function() {
 			$('#tblpicklist').DataTable({
-				"order": [
-					[4, "desc"]
-				],
+				"order": [],
 				"columnDefs": [{
 					"searchable": false,
 					"orderable": false,

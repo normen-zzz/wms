@@ -118,9 +118,8 @@
     <script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
     <script>
         $('#tblpo').DataTable({
-            "order": [
-                [4, "desc"]
-            ],
+            // order false 
+            "order": [],
             "columnDefs": [{
                 "searchable": false,
                 "orderable": false,

@@ -9,7 +9,7 @@ class Pickingslip_model extends CI_Model
 			$this->db->from('pickingslip a');
 			$this->db->join('purchaseorder b', 'a.id_purchaseorder = b.id_purchaseorder', 'right');
 			$this->db->where('a.is_void', 0);
-			$this->db->order_by('a.created_at', 'DESC');
+			$this->db->order_by('a.id_pickingslip', 'DESC');
 			return $this->db->get();
 	}
 

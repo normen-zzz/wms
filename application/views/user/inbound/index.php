@@ -143,7 +143,7 @@
 
 		// data table inboundTable
 		$('#inboundTable').DataTable({
-			"order": [[3, "desc"]],
+			"order": false,
 			"columnDefs": [{
 					"searchable": false,
 					"orderable": false,

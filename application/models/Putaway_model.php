@@ -13,7 +13,7 @@ class Putaway_model extends CI_Model
 		$this->db->from('putaway');
 		$this->db->join('users', 'putaway.id_users = users.id_users', 'left');
 		$this->db->join('inbound', 'putaway.id_inbound = inbound.id_inbound', 'left');
-		$this->db->order_by('putaway.created_at', 'DESC');
+		$this->db->order_by('putaway.id_putaway', 'DESC');
 
 		$query = $this->db->get();
 		return $query->result();
