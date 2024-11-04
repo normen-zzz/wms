@@ -81,6 +81,7 @@
                                                         <th>Condition</th>
                                                         <th>At</th>
 														<th>No Document</th>
+														<th>By</th>
 													</tr>
 												</thead>
 												<tbody>
@@ -96,6 +97,7 @@
 																<td><?= $item->condition ?></td>
 																<td><?= date('d-m-Y H:i:s', strtotime($item->at)) ?></td>
 																<td><?= $item->no_document ?></td>
+																<td><?= $item->nama ?></td>
 															</tr>
 														<?php endforeach; ?>
 													<?php endif; ?>
