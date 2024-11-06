@@ -7,6 +7,7 @@ class Pickingslip extends CI_Controller
 	public function __construct()
 	{
 		
+
 		parent::__construct();
 		is_login();
 		$this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));");
@@ -84,53 +85,72 @@ class Pickingslip extends CI_Controller
 
 	function pickFromRackProcess($uuid)
 	{
-		$data = $this->input->post('data');
 
-		foreach ($data as $row) {
-			$id_barang = $row['id_barang'];
-			$id_batch = $row['id_batch'];
-			$sloc = $row['rack'];
-			$qty = $row['qty'];
-			$id_datapurchaseorder =  $row['id_datapurchaseorder'];
+		$this->db->trans_start();
+		try {
+			$data = $this->input->post('data');
 
-			$id_rack =  $this->pickingslip->getIdRackFromSloc($sloc);
-			$id_pickingslip =  $this->pickingslip->getIdPickingslipFromUuid($uuid);
-			$nodoc_pickingslip = $this->pickingslip->getNoDocumentPickingslip($uuid);
+			foreach ($data as $row) {
+				$id_barang = $row['id_barang'];
+				$id_batch = $row['id_batch'];
+				$sloc = $row['rack'];
+				$qty = $row['qty'];
+				$id_datapurchaseorder =  $row['id_datapurchaseorder'];
 
-			$getLastQtyRackItems = $this->pickingslip->getLastQtyRackItems($id_barang, $id_batch, $id_rack['id_rack']);
+				$id_rack =  $this->pickingslip->getIdRackFromSloc($sloc);
+				$id_pickingslip =  $this->pickingslip->getIdPickingslipFromUuid($uuid);
+				$nodoc_pickingslip = $this->pickingslip->getNoDocumentPickingslip($uuid);
 
-			$dataPickingslip = [
-				'id_datapurchaseorder' => $id_datapurchaseorder,
-				'id_pickingslip' =>  $id_pickingslip['id_pickingslip'],
-				'id_barang' => $id_barang,
-				'id_batch' => $id_batch,
-				'id_rack' =>  $id_rack['id_rack'],
-				'qty' => $qty,
-				'pick_at' => date('Y-m-d H:i:s'),
-				'pick_by' =>  $this->session->userdata('id_users')
-			];
-			$this->pickingslip->insert_datapickingslip($dataPickingslip);
-			$this->db->update('datapurchaseorder', ['status' => 1], ['id_datapurchaseorder' => $id_datapurchaseorder]);
-			$this->db->update('rack_items', ['quantity' => $getLastQtyRackItems - $qty], ['id_barang' => $id_barang, 'id_batch' => $id_batch, 'id_rack' => $id_rack['id_rack']]);
-			$dataLog = [
-				
-				'id_barang' => $id_barang,
-				'id_batch' => $id_batch,
-				'id_rack' =>  $id_rack['id_rack'],
-				'condition' => 'out',
-				'qty' => $qty,
-				'at' => date('Y-m-d H:i:s'),
-				'by' =>  $this->session->userdata('id_users'),
-				'no_document' => $nodoc_pickingslip,
-				'description' => 'Picking Slip'
-			];
-			$this->db->insert('wms_log', $dataLog);
+				$getLastQtyRackItems = $this->pickingslip->getLastQtyRackItems($id_barang, $id_batch, $id_rack['id_rack']);
+				if ($getLastQtyRackItems >= $qty) {
+					$dataPickingslip = [
+						'id_datapurchaseorder' => $id_datapurchaseorder,
+						'id_pickingslip' =>  $id_pickingslip['id_pickingslip'],
+						'id_barang' => $id_barang,
+						'id_batch' => $id_batch,
+						'id_rack' =>  $id_rack['id_rack'],
+						'qty' => $qty,
+						'pick_at' => date('Y-m-d H:i:s'),
+						'pick_by' =>  $this->session->userdata('id_users')
+					];
+					$insert_datapickingslip = $this->pickingslip->insert_datapickingslip($dataPickingslip);
+					$updateDataPurchaseOrder = $this->db->update('datapurchaseorder', ['status' => 1], ['id_datapurchaseorder' => $id_datapurchaseorder]);
+					$updateQuantityRackItems = $this->db->update('rack_items', ['quantity' => $getLastQtyRackItems - $qty], ['id_barang' => $id_barang, 'id_batch' => $id_batch, 'id_rack' => $id_rack['id_rack']]);
+					if ($insert_datapickingslip && $updateDataPurchaseOrder && $updateQuantityRackItems) {
+						$dataLog = [
+
+							'id_barang' => $id_barang,
+							'id_batch' => $id_batch,
+							'id_rack' =>  $id_rack['id_rack'],
+							'condition' => 'out',
+							'qty' => $qty,
+							'at' => date('Y-m-d H:i:s'),
+							'by' =>  $this->session->userdata('id_users'),
+							'no_document' => $nodoc_pickingslip,
+							'description' => 'Picking Slip'
+						];
+						$log = $this->db->insert('wms_log', $dataLog);
+						if ($log) {
+							$response = array('status' => 'success', 'message' => 'Pickingslip has been picked');
+						} else {
+							throw new Exception('Failed to insert log,All process has been rollback');
+						}
+					} else {
+						throw new Exception('Failed to insert data pickingslip');
+					}
+				} else {
+					throw new Exception('Quantity exceeds the available quantity');
+				}
+			}
+			$this->db->trans_complete();
+			if ($this->db->trans_status() === FALSE) {
+				throw new Exception('Transaction failed');
+			}
+		} catch (Exception $e) {
+			$this->db->trans_rollback();
+			$response = array('status' => 'error', 'message' => $e->getMessage());
 		}
-
-		echo json_encode([
-			'status' => 'success',
-			'message' => 'Picking processed successfully.'
-		]);
+		echo json_encode($response);
 	}
 
 	public function getQuantityRackItems()

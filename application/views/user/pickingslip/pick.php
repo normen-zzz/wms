@@ -384,19 +384,32 @@
 				},
 				dataType: 'json',
 				success: function(response) {
+					if (response.status === 'success') {
+						Swal.fire({
+							title: 'Success',
+							text: response.message,
+							icon: 'success',
+							confirmButtonText: 'OK'
+						}).then(() => {
+							Swal.fire({
+								title: 'Loading',
+								text: 'Please wait...',
+								icon: 'info',
+								showCancelButton: false,
+								showConfirmButton: false,
+							});
+							window.location.reload();
+						});
+					} else {
+						Swal.fire({
+							title: 'Error',
+							text: response.message,
+							icon: 'error',
+							confirmButtonText: 'OK'
+						});
 
+					}
 
-					Swal.fire({
-						title: response.status === 'success' ? 'Success' : 'Error',
-						text: response.message,
-						icon: response.status === 'success' ? 'success' : 'error',
-						confirmButtonText: 'OK'
-					}).then(() => {
-						if (response.status === 'success') {
-
-							row.remove();
-						}
-					});
 				},
 				error: function(jqXHR, textStatus, errorThrown) {
 					Swal.fire({
