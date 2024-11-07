@@ -110,13 +110,7 @@ class Picklist extends CI_Controller
 															]);
 															$id_batch =  $this->db->insert_id();
 													} else {
-															// create a new batch if the combination of batch number and SKU does not exist
-														$this->db->insert('batch', [
-																'uuid' => uniqid(),
-																'batchnumber' => $batches[$key],
-																'expiration_date' => date('Y-m-d H:i:s', strtotime($expired_dates[$key]))
-														]);
-														$id_batch = $this->db->insert_id();
+															$id_batch = $checkBatch->row()->id_batch;
 													}
 
 													$dataBatchItem = [
