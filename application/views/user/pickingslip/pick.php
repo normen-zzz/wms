@@ -406,6 +406,8 @@
 							text: response.message,
 							icon: 'error',
 							confirmButtonText: 'OK'
+						}).then(() => {
+							window.location.reload();
 						});
 
 					}
@@ -417,6 +419,8 @@
 						text: 'Something went wrong: ' + textStatus,
 						icon: 'error',
 						confirmButtonText: 'OK'
+					}).then(() => {
+						window.location.reload();
 					});
 				}
 			});
@@ -531,10 +535,6 @@
 						}
 					});
 				}, 1000)
-
-
-
-
 
 			});
 		}
