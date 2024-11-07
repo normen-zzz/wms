@@ -64,6 +64,7 @@
 														<th>Expired Date</th>
 														<th>Qty</th>
 														<th>Created At</th>
+														<th>Status</th>
 														<th>Action</th>
 													</tr>
 												</thead>
@@ -79,16 +80,17 @@
 															<td><?= $production->ed_bundling; ?></td>
 															<td><?= $production->qty_bundling; ?></td>
 															<td><?= date('d-m-Y H:i:s', strtotime($production->dibuat))  ?></td>
+															<td><?= getStatusProduction($production->status,$production->pick_by) ?></td>
 															<td>
 																<a href="<?= base_url('user/production/detail/' . $production->id_production) ?>" class="btn btn-sm btn-primary text-white">Detail</a>
 																<?php if ($production->status == 0) { ?>
+																	<?php if ($this->session->userdata('role_id') == 1 ||  $this->session->userdata('role_id') == 6  ) { ?>
 																	<a href="<?= base_url('user/production/assign/' . $production->id_production) ?>" class="btn btn-sm btn-primary text-white">Assign Picker</a>
+																	<?php } ?>
 																<?php } ?>
 
 																<?php if ($production->status == 1) { ?>
 																	<?php if ($this->session->userdata('role_id') == 1 || $this->session->userdata('role_id') == 4 || $this->session->userdata('role_id') == 6  ) { ?>
-																	
-								
 																	<a href="<?= base_url('user/production/pick/' . $production->id_production) ?>" class="btn btn-sm btn-warning text-black">Pick</a>
 																<?php }} ?>
 

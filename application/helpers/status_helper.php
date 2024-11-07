@@ -123,4 +123,24 @@ if (!function_exists('getStatusPutaway')) {
 			}
 		}
 	}
+
+	// statusProduction 
+	if (!function_exists('getStatusProduction')) {
+		function getStatusProduction($status,$pick_by = NULL)
+		{
+			$CI = &get_instance();
+			$user = $CI->db->query("SELECT * FROM users WHERE id_users = '$pick_by'")->row_array();
+			if ($status == 0) {
+				return '<span class="badge bg-warning">Created</span>';
+			} else if ($status == 1) {
+				return '<span class="badge bg-primary">Picker Assigned To ('.$user['nama'].')</span>';
+			} elseif ($status == 2) {
+				return '<span class="badge bg-primary">Picked By ('.$user['nama'].')</span>';
+			} elseif ($status == 3) {
+				return '<span class="badge bg-info">Finish</span>';
+			} elseif ($status == 4) {
+				return '<span class="badge bg-danger">Canceled</span>';
+			}
+		}
+	}
 }
