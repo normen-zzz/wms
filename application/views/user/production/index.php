@@ -48,8 +48,11 @@
 
 											<!-- add production -->
 										</h5>
-										<a href="<?= base_url('user/production/add') ?>" class="btn btn-primary btn-sm">Add
-											Production</a>
+										<?php if ($this->session->userdata('role_id') == 1 || $this->session->userdata('role_id') == 6) { ?>
+											<a href="<?= base_url('user/production/add') ?>" class="btn btn-primary btn-sm">Add
+												Production</a>
+										<?php } ?>
+										
 
 									</div>
 
