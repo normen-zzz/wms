@@ -16,6 +16,9 @@ class Production_model extends CI_Model
 		$this->db->select('*,production.created_at as dibuat');
 		$this->db->from('production');
 		$this->db->join('users', 'production.created_by = users.id_users');
+		if ($this->session->userdata('role_id') == 4) {
+			$this->db->where('production.pick_by', $this->session->userdata('id_users'));
+		}
 		$this->db->order_by('production.id_production', 'DESC');
 		$query = $this->db->get();
 		return $query->result();
