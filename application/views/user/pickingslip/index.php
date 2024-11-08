@@ -73,7 +73,12 @@
                                                                 <td><?= $ps1['no_pickingslip'] ?><br><?= $ps1['no_purchaseorder'] ?></td>
                                                                 
                                                                 <td><?= getNamaCustomer($ps1['customer']) ?></td>
-                                                                <td><?= getStatusPickingslip($ps1['status']) ?></td>
+                                                                <td><?= getStatusPickingslip($ps1['status']) ?> <br>
+                                                                <?php if ($ps1['status'] == 0) {  ?>   
+                                                                    <span class="badge bg-primary">Assigned To <?= $ps1['picker'] ?></span>
+                                                                <?php } ?>
+                                                                
+                                                                </td>
                                                                 <td><?= dateindo($ps1['created_at']) ?></td>
                                                                 <td><?= $ps1['notes'] ?></td>
                                                                 <td>
