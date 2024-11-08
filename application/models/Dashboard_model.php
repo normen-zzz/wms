@@ -24,8 +24,8 @@ class Dashboard_model extends CI_Model
 
 	public function count_incoming_items_per_month()
 	{
-			$this->db->select('DATE_FORMAT(created_at, "%Y-%m-01") as month, COUNT(id) as total_incoming_items');
-			$this->db->from('rack_items');
+			$this->db->select('DATE_FORMAT(created_at, "%Y-%m-01") as month, SUM(qty) as total_incoming_items');
+			$this->db->from('datapicklist');
 			$this->db->group_by('month');
 			$this->db->order_by('month', 'DESC'); 
 			$query = $this->db->get();
@@ -35,7 +35,7 @@ class Dashboard_model extends CI_Model
 
 	public function count_outgoing_items_per_month()
 	{
-			$this->db->select('DATE_FORMAT(pick_at, "%Y-%m-01") as month, COUNT(id_datapickingslip) as total_outgoing_items');
+			$this->db->select('DATE_FORMAT(pick_at, "%Y-%m-01") as month, sum(qty) as total_outgoing_items');
 			$this->db->from('datapickingslip');
 			$this->db->group_by('month');
 			$this->db->order_by('month', 'DESC'); 

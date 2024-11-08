@@ -155,6 +155,17 @@
 		$('#formAssignPicker').submit(function(e) {
 			e.preventDefault();
 			// confirm
+			if ($('#selectPicker').val() == '') {
+						Swal.fire({
+							title: 'Error',
+							text: 'Please select picker',
+							icon: 'error',
+							showCancelButton: false,
+							showConfirmButton: false,
+							timer: 1500
+						});
+						return false;
+					}
 			Swal.fire({
 				title: 'Are you sure?',
 				text: 'You are about to assign picker to this production',
@@ -166,6 +177,8 @@
 				cancelButtonColor: '#d33',
 			}).then((result) => {
 				if (result.isConfirmed) {
+					// jika name picker isinya tidak ada maka muncul error lalu false 
+					
 					Swal.fire({
 						title: 'Please wait...',
 						html: 'Assigning picker',
