@@ -75,7 +75,7 @@
                                                                 <td><?= getNamaCustomer($ps1['customer']) ?></td>
                                                                 <td><?= getStatusPickingslip($ps1['status']) ?> <br>
                                                                 <?php if ($ps1['status'] == 0) {  ?>   
-                                                                    <span class="badge bg-primary">Assigned To <?= $ps1['picker'] ?></span>
+                                                                    <span class="badge bg-primary">Assigned To <?= $ps1['nama_picker'] ?></span>
                                                                 <?php } ?>
                                                                 
                                                                 </td>
