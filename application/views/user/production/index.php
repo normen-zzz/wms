@@ -62,6 +62,7 @@
 												<thead>
 													<tr>
 														<th>No</th>
+														<th>No Production</th>
 														<th>SKU</th>
 														<th>Batch</th>
 														<th>Expired Date</th>
@@ -78,6 +79,7 @@
 													?>
 														<tr>
 															<td><?= $index++; ?></td>
+															<td><?= $production->no_production; ?></td>
 															<td><?= $production->sku_bundling; ?></td>
 															<td><?= $production->batch_bundling; ?></td>
 															<td><?= $production->ed_bundling; ?></td>
