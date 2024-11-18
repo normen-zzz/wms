@@ -315,28 +315,32 @@ class Production extends CI_Controller
 				foreach ($picks as $pick) {
 					// ambil data quantity rack items berdasarkan id_barang,id_batch,id_rack
 					$lastQuantityRackItemsMaterial = $this->production->getLastQtyRackItemsMaterial($pick['id_barang'], $pick['id_batch'], $pick['id_rack']);
-					$updateQuantityRackItemsMaterial = $this->db->update('rack_items', ['quantity' => $lastQuantityRackItemsMaterial - $pick['qty']], ['id_barang' => $pick['id_barang'], 'id_batch' => $pick['id_batch'], 'id_rack' => $pick['id_rack']]);
+					if ($pick['qty'] <= $lastQuantityRackItemsMaterial) {
+						$updateQuantityRackItemsMaterial = $this->db->update('rack_items', ['quantity' => $lastQuantityRackItemsMaterial - $pick['qty']], ['id_barang' => $pick['id_barang'], 'id_batch' => $pick['id_batch'], 'id_rack' => $pick['id_rack']]);
 
-					if ($updateQuantityRackItemsMaterial) {
-						$updateStatusPickProduction = $this->db->update('pick_production', ['status' => 1], ['id_pick_production' => $pick['id_pick_production']]);
-						if ($updateStatusPickProduction) {
-							// log wms 
-							$dataLog1 = [
-								'id_barang' => $pick['id_barang'],
-								'id_batch' => $pick['id_batch'],
-								'id_rack' => $pick['id_rack'],
-								'condition' => 'out',
-								'qty' => $pick['qty'],
-								'at' => date('Y-m-d H:i:s'),
-								'by' => $this->session->userdata('id_users'),
-								'no_document' => $production['no_production'],
-							];
-							$this->db->insert('wms_log', $dataLog1);
+						if ($updateQuantityRackItemsMaterial) {
+							$updateStatusPickProduction = $this->db->update('pick_production', ['status' => 1], ['id_pick_production' => $pick['id_pick_production']]);
+							if ($updateStatusPickProduction) {
+								// log wms 
+								$dataLog1 = [
+									'id_barang' => $pick['id_barang'],
+									'id_batch' => $pick['id_batch'],
+									'id_rack' => $pick['id_rack'],
+									'condition' => 'out',
+									'qty' => $pick['qty'],
+									'at' => date('Y-m-d H:i:s'),
+									'by' => $this->session->userdata('id_users'),
+									'no_document' => $production['no_production'],
+								];
+								$this->db->insert('wms_log', $dataLog1);
+							} else {
+								throw new Exception('Failed to update pick production status');
+							}
 						} else {
-							throw new Exception('Failed to update pick production status');
+							throw new Exception('Failed to update rack items1');
 						}
-					} else {
-						throw new Exception('Failed to update rack items1');
+					} else{
+						throw new Exception('Quantity rack items not enough');
 					}
 				}
 				// update status material 
