@@ -64,7 +64,11 @@
 													<input type="text" name="sloc" class="form-control" id="sloc" value="<?= isset($_GET['sloc']) ? $_GET['sloc'] : '' ?>">
 												</div>
 											</div>
+											<div class="col-md-4 mt-2">
+												<div id="qr-reader"></div>
+											</div>
 											<button type="submit" class="btn btn-primary mt-3 mb-3">Filter</button>
+
 										</form>
 
 										<a id="downloadDataToExcel" href="<?= base_url('user') . '/' ?>inventory/export_excel" class="btn btn-success float-right">Download All Data To Excel</a>
@@ -191,6 +195,7 @@
 			}, 2000)
 		});
 	</script>
+	
 
 </body>
 

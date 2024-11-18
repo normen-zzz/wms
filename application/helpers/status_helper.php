@@ -143,4 +143,18 @@ if (!function_exists('getStatusPutaway')) {
 			}
 		}
 	}
+
+	//statusStocktransfer
+	if (!function_exists('getStatusAdjuststock')) {
+		function getStatusAdjuststock($status)
+		{
+			if ($status == 0) {
+				return '<span class="badge bg-warning">Created</span>';
+			} else if ($status == 1) {
+				return '<span class="badge bg-success">Done</span>';
+			} else {
+				return '<span class="badge bg-danger">Canceled</span>';
+			}
+		}
+	}
 }

@@ -220,6 +220,24 @@
 				</div>
 			</div>
 
+			<!-- modal show camera  -->
+			<div class="modal fade" id="showCamera" tabindex="-1" aria-labelledby="showCameraLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="showCameraLabel">Scan QR Code</h5>
+							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<div id="qr-reader"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
 			<?php $this->load->view('templates/footer') ?>
 		</div>
 	</div>
@@ -237,6 +255,7 @@
 	<script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
 	<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+	<script src="https://unpkg.com/html5-qrcode"></script>
 
 	<script>
 		$(document).ready(function() {
@@ -537,7 +556,53 @@
 				}, 1000)
 
 			});
+
+			$('input.rack').on('click', function(e) {
+				// show modal showCamera
+				$('#showCamera').modal('show');
+				// var resultContainer = document.getElementById('qr-reader-results');
+				var lastResult, countResults = 0;
+
+				function onScanSuccess(decodedText, decodedResult) {
+					if (decodedText !== lastResult) {
+						++countResults;
+						lastResult = decodedText;
+
+
+
+						// change val e with decodedText 
+						$(e.target).val(decodedText);
+						// close camera 
+						html5QrcodeScanner.clear();
+
+						// close modal 
+						$('#showCamera').modal('hide');
+
+
+
+
+
+						// console.log(`Scan result ${decodedText}`, decodedResult);
+					}
+				}
+
+				var html5QrcodeScanner = new Html5QrcodeScanner(
+					"qr-reader", {
+						fps: 10,
+						qrbox: 100
+					}
+				);
+				html5QrcodeScanner.render(onScanSuccess);
+				// close camera 
+				// html5QrcodeScanner.clear();
+			});
 		}
+	</script>
+
+
+
+	<script>
+
 	</script>
 
 

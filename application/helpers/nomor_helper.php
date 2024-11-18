@@ -162,6 +162,24 @@ function generate_stocktransfer_number($prefix = 'STF')
 	return $stocktransfer_number;
 }
 
+function generate_adjuststock_number($prefix = 'ADJ')
+{
+	$CI = &get_instance();
+	$CI->load->model('Adjuststock_model');
+
+	$date = date('ymd');
+
+	$last_counter = $CI->Adjuststock_model->get_last_counter();
+	$new_counter = $last_counter + 1;
+
+	$formatted_counter = str_pad($new_counter, 1, '0', STR_PAD_LEFT);
+
+
+	$adjuststock_number = "{$prefix}/{$date}/{$formatted_counter}";
+
+	return $adjuststock_number;
+}
+
 
 function generate_production_number($prefix = 'PRD')
 {
