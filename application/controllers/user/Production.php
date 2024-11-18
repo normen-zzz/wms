@@ -329,7 +329,7 @@ class Production extends CI_Controller
 									'condition' => 'out',
 									'qty' => $pick['qty'],
 									'at' => date('Y-m-d H:i:s'),
-									'by' => $this->session->userdata('id_users'),
+									'by' => $pick['created_by'],
 									'no_document' => $production['no_production'],
 								];
 								$this->db->insert('wms_log', $dataLog1);
