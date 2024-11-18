@@ -41,8 +41,7 @@
 							<div class="col">
 								<!-- Minimal jQuery Datatable end -->
 								<!-- Basic Tables start -->
-								<iframe width="500" height="500" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://www.google.com/maps?q=-6.245877,106.78269&hl=es;z%3D14&amp&output=embed">
-								</iframe>
+							
 								
 
 								<div class="card">
