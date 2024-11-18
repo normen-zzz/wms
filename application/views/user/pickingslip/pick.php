@@ -557,45 +557,52 @@
 
 			});
 
-			$('input.rack').on('click', function(e) {
-				// show modal showCamera
-				$('#showCamera').modal('show');
-				// var resultContainer = document.getElementById('qr-reader-results');
-				var lastResult, countResults = 0;
+			<?php if ($this->session->userdata('role_id') != 1) {
+				if ($this->session->userdata('role_id') != 6) {
+			?>
+					$('input.rack').on('click', function(e) {
+						// show modal showCamera
+						$('#showCamera').modal('show');
+						// var resultContainer = document.getElementById('qr-reader-results');
+						var lastResult, countResults = 0;
 
-				function onScanSuccess(decodedText, decodedResult) {
-					if (decodedText !== lastResult) {
-						++countResults;
-						lastResult = decodedText;
+						function onScanSuccess(decodedText, decodedResult) {
+							if (decodedText !== lastResult) {
+								++countResults;
+								lastResult = decodedText;
 
 
 
-						// change val e with decodedText 
-						$(e.target).val(decodedText);
+								// change val e with decodedText 
+								$(e.target).val(decodedText);
+								// close camera 
+								html5QrcodeScanner.clear();
+
+								// close modal 
+								$('#showCamera').modal('hide');
+
+
+
+
+
+								// console.log(`Scan result ${decodedText}`, decodedResult);
+							}
+						}
+
+						var html5QrcodeScanner = new Html5QrcodeScanner(
+							"qr-reader", {
+								fps: 10,
+								qrbox: 100
+							}
+						);
+						html5QrcodeScanner.render(onScanSuccess);
 						// close camera 
-						html5QrcodeScanner.clear();
-
-						// close modal 
-						$('#showCamera').modal('hide');
-
-
+						// html5QrcodeScanner.clear();
+					});
+			<?php }
+			} ?>
 
 
-
-						// console.log(`Scan result ${decodedText}`, decodedResult);
-					}
-				}
-
-				var html5QrcodeScanner = new Html5QrcodeScanner(
-					"qr-reader", {
-						fps: 10,
-						qrbox: 100
-					}
-				);
-				html5QrcodeScanner.render(onScanSuccess);
-				// close camera 
-				// html5QrcodeScanner.clear();
-			});
 		}
 	</script>
 
