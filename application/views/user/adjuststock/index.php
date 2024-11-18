@@ -17,7 +17,6 @@
 
 
 	<link rel="stylesheet" href="<?= base_url() . '/' ?>assets/compiled/css/table-datatable-jquery.css">
-
 </head>
 
 <body>
@@ -41,82 +40,53 @@
 							<div class="col">
 								<!-- Minimal jQuery Datatable end -->
 								<!-- Basic Tables start -->
-								<iframe width="500" height="500" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://www.google.com/maps?q=-6.245877,106.78269&hl=es;z%3D14&amp&output=embed">
-								</iframe>
-								
 
 								<div class="card">
 									<div class="card-header">
 										<h5 class="card-title">
 											<?= $subtitle2 ?>
 										</h5>
+										<!-- tombol add stock transfer -->
+										<a href="<?= base_url('user/adjuststock/add') ?>" class="btn btn-primary">Add Adjust Stock</a>
 									</div>
-									<div class="card-body mb-4">
-										<form method="GET" action="">
-											<div class="row">
-												<div class="col-md-4">
-													<label for="sku">SKU</label>
-													<input type="text" name="sku" class="form-control" id="sku" value="<?= isset($_GET['sku']) ? $_GET['sku'] : '' ?>">
-												</div>
-												<div class="col-md-4">
-													<label for="batchnumber">Batch Number</label>
-													<input type="text" name="batchnumber" class="form-control" id="batchnumber" value="<?= isset($_GET['batchnumber']) ? $_GET['batchnumber'] : '' ?>">
-												</div>
-												<div class="col-md-4">
-													<label for="sloc">Sloc</label>
-													<input type="text" name="sloc" class="form-control" id="sloc" value="<?= isset($_GET['sloc']) ? $_GET['sloc'] : '' ?>">
-												</div>
-											</div>
-											<button type="submit" class="btn btn-primary mt-3 mb-3">Filter</button>
-										</form>
 
-										<!-- export excel  -->
-										<a href="<?= base_url('user/log/exportLog') ?>" id="btnExportLog" class="btn btn-success mb-3"><span><i class="bi bi-file-earmark-spreadsheet"></i></span> Export All Log</a>
-
-
+									<div class="card-body">
 										<div class="table-responsive">
-											<table class="table" id="tblLog">
+											<table class="table" id="tableStockTransfer">
 												<thead>
 													<tr>
-
-														<th>Nama Barang</th>
-														<th>Batch</th>
-														<th>Sloc Rack</th>
-														<th>Quantity</th>
-														<th>Condition</th>
-														<th>Date</th>
-														<th>No Document</th>
-														<th>By</th>
-														<th>Description</th>
+														<th>No Adjust Stock</th>
+														<th>Status</th>
+														<th>Created At</th>
+														<th>Created By</th>
+														<th>Action</th>
 													</tr>
 												</thead>
 												<tbody>
-													<?php if (!empty($log)) : ?>
-														<?php foreach ($log as $item) : ?>
-															<tr>
-
-																<td><b><?= $item->sku ?></b><br><?= $item->nama_barang ?></td>
-																<td><b><?= $item->batchnumber ?></b><br><?= date('d-m-Y', strtotime($item->expiration_date)) ?></td>
-																<td><?= $item->sloc ?></td>
-
-																<td><?= $item->qty ?></td>
-																<td><?= $item->condition ?></td>
-																<td><?= date('d-m-Y H:i:s', strtotime($item->at)) ?></td>
-																<td><?= $item->no_document ?></td>
-																<td><?= $item->nama ?></td>
-																<?php if ($item->description == '') { ?>
-																	<td>-</td>
-																<?php } else { ?>
-																	<td><?= $item->description ?></td>
-																<?php } ?>
-															</tr>
-														<?php endforeach; ?>
-													<?php endif; ?>
+													<?php foreach ($adjuststock as $s) : ?>
+                                                        <tr>
+                                                            <td><?= $s->no_adjuststock ?></td>
+                                                            <td><?= getStatusAdjuststock($s->status)  ?></td>
+                                                            <td><?= $s->created_at ?></td>
+															<td><?= $s->nama ?></td>
+                                                            <td>
+																<?php if ($s->status == 0) : ?>
+																	
+																	<a href="<?= base_url('user/adjuststock/process/' . $s->uuid) ?>" class="btn btn-primary">Process</a>
+																	<?php endif; ?>
+                                                                <a href="<?= base_url('user/adjuststock/detail/' . $s->uuid) ?>" class="btn btn-primary">Detail</a>
+                                                            </td>
+                                                        </tr>
+													
+													<?php endforeach; ?>
 												</tbody>
 											</table>
 										</div>
+										
 									</div>
 								</div>
+
+
 								<!-- Basic Tables end -->
 							</div>
 						</div>
@@ -124,100 +94,31 @@
 					<!-- // Basic Vertical form layout section end -->
 				</div>
 			</div>
-
-
-			<?php $this->load->view('templates/footer') ?>
 		</div>
-	</div>
 
+		<script src="<?= base_url() . '/' ?>assets/static/js/components/dark.js"></script>
+		<script src="<?= base_url() . '/' ?>assets/static/js/pages/horizontal-layout.js"></script>
+		<script src="<?= base_url() . '/' ?>assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 
+		<script src="<?= base_url() . '/' ?>assets/compiled/js/app.js"></script>
+		<script src="<?= base_url() . '/' ?>assets/extensions/jquery/jquery.min.js"></script>
+		<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
+		<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
+		<script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
+		<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
 
-	<script src="<?= base_url() . '/' ?>assets/static/js/components/dark.js"></script>
-	<script src="<?= base_url() . '/' ?>assets/static/js/pages/horizontal-layout.js"></script>
-	<script src="<?= base_url() . '/' ?>assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-
-	<script src="<?= base_url() . '/' ?>assets/compiled/js/app.js"></script>
-	<script src="<?= base_url() . '/' ?>assets/extensions/jquery/jquery.min.js"></script>
-	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
-	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
-	<script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
-	<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
-	<script src="https://unpkg.com/html5-qrcode"></script>
-
-
-
-
-	<script>
-		$(document).ready(function() {
-			$('#tblLog').DataTable({
-				language: {
-					emptyTable: "No results found"
-				},
-				// auto order false but still cant order 
-				"order": [],
+		<script>
+			// tableStockTransfer
+			$(document).ready(function() {
+				$('#tableStockTransfer').DataTable(
+					// order false 
+					{
+						"order": false
+					}
+				);
 			});
+		</script>
 
-		});
-	</script>
-
-
-	<script type="text/javascript">
-		// var resultContainer = document.getElementById('qr-reader-results');
-		var lastResult, countResults = 0;
-
-		function onScanSuccess(decodedText, decodedResult) {
-			if (decodedText !== lastResult) {
-				++countResults;
-				lastResult = decodedText;
-
-				// decodedText to fill sloc input after that auto submit form
-				$('#sloc').val(decodedText);
-				$('form').submit();
-
-
-
-
-				// console.log(`Scan result ${decodedText}`, decodedResult);
-			}
-		}
-
-		var html5QrcodeScanner = new Html5QrcodeScanner(
-			"qr-reader", {
-				fps: 10,
-				qrbox: 100
-			}
-		);
-		html5QrcodeScanner.render(onScanSuccess);
-	</script>
-
-	<!-- btnExportLog loading until loading done  -->
-	<script>
-		$('#btnExportLog').click(function() {
-			// swal loading in 5 second using set timeout
-			Swal.fire({
-				title: 'Exporting Data',
-				html: 'Please wait...',
-				timer: 5000,
-				timerProgressBar: true,
-				willOpen: () => {
-					Swal.showLoading()
-				},
-				showConfirmButton: false,
-				allowOutsideClick: false
-
-			}).then((result) => {
-				if (result.dismiss === Swal.DismissReason.timer) {
-					// swal loading 
-					Swal.fire({
-						icon: 'success',
-						title: 'Export Success',
-						showConfirmButton: false,
-						timer: 1500
-					})
-				}
-			})
-		});
-	</script>
 
 </body>
 

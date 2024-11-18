@@ -60,6 +60,14 @@
 							</div>
 						</div>
 						<div class="form-group">
+							<div class="col-xs-12">
+								<label for="mobile">
+									<h4>No Handphone</h4>
+								</label>
+								<input type="number" class="form-control" name="no_handphone" id="no_handphone" value="<?= $users['no_handphone'] ?>">
+							</div>
+						</div>
+						<div class="form-group">
 
 							<div class="col-xs-12">
 								<label for="password">
