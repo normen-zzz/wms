@@ -507,53 +507,65 @@
 
 	<script>
 		function checkQtyOnRack() {
+			// ketika buka keyboard maka tampilan di scroll hingga inputnya berada di atas keyboardnya
+			$('table.addRackRow tbody').off('focus', 'input[name="qty[]"]').on('focus', 'input[name="qty[]"]', function() {
+				$('html, body').animate({
+					scrollTop: $(this).offset().top - 100
+				}, 500);
+			});
+			
 			$('table.addRackRow tbody').off('keyup', 'input[name="qty[]"]').on('keyup', 'input[name="qty[]"]', function() {
 				var rack = $(this).closest('tr').find('input[name="rack[]"]').val();
 				var qty = parseInt($(this).val());
 				var id_barang = $(this).closest('tr').parent().find('input[name="id_barang"]').val();
 				var id_batch = $(this).closest('tr').parent().find('input[name="id_batch"]').val();
 				var inputQty = $(this); // Simpan referensi ke input qty[]
+
+
+
 				console.log(id_barang, id_batch, rack, qty);
 
 				// show loading swal 
 				// jeda 1000ms
-				setTimeout(function() {
-					Swal.fire({
-						title: 'Loading',
-						text: 'Checking Quantity On Rack...Please wait...',
-						icon: 'info',
-						showCancelButton: false,
-						showConfirmButton: false,
-					});
-					$.ajax({
-						url: '<?= base_url("user/Pickingslip/getQuantityRackItems") ?>',
-						method: 'POST',
-						data: {
-							id_barang: id_barang,
-							id_batch: id_batch,
-							rack: rack
-						},
-						dataType: 'json',
-						success: function(response) {
-							Swal.close();
-							console.log(qty, response);
-
-							if (qty > response) {
 
 
-								inputQty.val(response); // Gunakan variabel inputQty untuk mengakses input qty[]
+				// ubah button .submitRow yang sebaris jadi disable dan ubah textnya jadi loading
+				$('.submitRow').prop('disabled', true);
+				// munculkan animasi loading didalam button
+				$('.submitRow').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
+				$.ajax({
+					url: '<?= base_url("user/Pickingslip/getQuantityRackItems") ?>',
+					method: 'POST',
+					data: {
+						id_barang: id_barang,
+						id_batch: id_batch,
+						rack: rack
+					},
+					dataType: 'json',
+					success: function(response) {
 
-							}
-						},
-						error: function(jqXHR, textStatus, errorThrown) {
-							Swal.close();
-							inputQty.val('');
-							// close swal 
+						console.log(qty, response);
 
+						if (qty > response) {
+							inputQty.val(response); // Gunakan variabel inputQty untuk mengakses input qty[]
 
 						}
-					});
-				}, 1000)
+						// ubah button .submitRow yang sebaris jadi enable dan ubah textnya jadi submit
+						$('.submitRow').prop('disabled', false);
+						$('.submitRow').html('Submit');
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+						
+						inputQty.val('');
+						// ubah button .submitRow yang sebaris jadi enable dan ubah textnya jadi submit
+						$('.submitRow').prop('disabled', false);
+						$('.submitRow').html('Submit');
+						// close swal 
+
+
+					}
+				});
+
 
 			});
 
