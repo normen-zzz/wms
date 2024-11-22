@@ -22,6 +22,8 @@ class Pickingslip extends CI_Controller
 			'subtitle' => 'Data Pickingslip',
 			'subtitle2' => 'Data Pickingslip',
 			'ps' => $this->pickingslip->getDataPickingslip(),
+			'picker' => $this->db->query('SELECT id_users,nama FROM users WHERE role_id = 4'),
+
 		];
 		$this->load->view('user/pickingslip/index', $data);
 	}
@@ -173,6 +175,32 @@ class Pickingslip extends CI_Controller
 			$this->session->set_flashdata('error', 'Pickingslip failed to finish');
 		}
 		redirect('user/Pickingslip');
+	}
+
+	// changePicker
+	public function changePicker()
+	{
+		$this->db->trans_start();
+		try {
+			$id_pickingslip = $this->input->post('id_pickingslip');
+			$id_picker = $this->input->post('picker');
+			$update = $this->db->update('pickingslip', ['picker' => $id_picker], ['id_pickingslip' => $id_pickingslip]);
+			if ($update) {
+				$response = array('status' => 'success', 'message' => 'Picker has been changed');
+			} else {
+				throw new Exception('Failed to change picker');
+			}
+			$this->db->trans_complete();
+			if ($this->db->trans_status() === FALSE) {
+				throw new Exception('Transaction failed');
+			}
+
+		} catch (Exception $e) {
+			$this->db->trans_rollback();
+			$response = array('status' => 'error', 'message' => $e->getMessage());
+		}
+
+		echo json_encode($response);
 	}
 }
 

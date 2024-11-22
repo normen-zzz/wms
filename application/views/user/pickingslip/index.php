@@ -71,13 +71,13 @@
                                                             <tr>
                                                                 <td></td>
                                                                 <td><?= $ps1['no_pickingslip'] ?><br><?= $ps1['no_purchaseorder'] ?></td>
-                                                                
+
                                                                 <td><?= getNamaCustomer($ps1['customer']) ?></td>
                                                                 <td><?= getStatusPickingslip($ps1['status']) ?> <br>
-                                                                <?php if ($ps1['status'] == 0) {  ?>   
-                                                                    <span class="badge bg-primary">Assigned To <?= $ps1['nama_picker'] ?></span>
-                                                                <?php } ?>
-                                                                
+                                                                    <?php if ($ps1['status'] == 0) {  ?>
+                                                                        <span class="badge bg-primary">Assigned To <?= $ps1['nama_picker'] ?></span>
+                                                                    <?php } ?>
+
                                                                 </td>
                                                                 <td><?= dateindo($ps1['created_at']) ?></td>
                                                                 <td><?= $ps1['notes'] ?></td>
@@ -86,6 +86,14 @@
                                                                         <!-- role 4  -->
                                                                         <?php if ($this->session->userdata('role_id') == 4 || $this->session->userdata('role_id') == 6 || $this->session->userdata('role_id') == 1) { ?>
                                                                             <a href="<?= base_url('user/Pickingslip/pick/' . $ps1['uuid']) ?>" class="btn btn-warning btn-sm mb-1">Pick</a>
+                                                                        <?php } ?>
+                                                                        <?php if ($this->session->userdata('role_id') == 6 || $this->session->userdata('role_id') == 1) { ?>
+                                                                            <!-- button modal change picker  -->
+                                                                            <button type="button" class="btn btn-primary btn-sm mb-1" data-bs-toggle="modal" data-bs-target="#modalChangePicker" data-id_pickingslip="<?= $ps1['id_pickingslip'] ?>" data-id_picker="<?= $ps1['picker'] ?>">
+                                                                                Change Picker
+                                                                            </button>
+
+
                                                                         <?php } ?>
 
                                                                     <?php  } else { ?>
@@ -98,7 +106,7 @@
                                                                 <tr>
                                                                     <td></td>
                                                                     <td><?= $ps1['no_pickingslip'] ?><br><?= $ps1['no_purchaseorder'] ?></td>
-                                                                     <td><?= getNamaCustomer($ps1['customer']) ?></td>
+                                                                    <td><?= getNamaCustomer($ps1['customer']) ?></td>
                                                                     <td><?= getStatusPickingslip($ps1['status']) ?></td>
                                                                     <td><?= dateindo($ps1['created_at']) ?></td>
                                                                     <td><?= $ps1['notes'] ?></td>
@@ -109,6 +117,8 @@
                                                                                 <?php if ($this->session->userdata('role_id') == 4 || $this->session->userdata('role_id') == 6 || $this->session->userdata('role_id') == 1) { ?>
                                                                                     <a href="<?= base_url('user/Pickingslip/pick/' . $ps1['uuid']) ?>" class="btn btn-warning btn-sm mb-1">Pick</a>
                                                                                 <?php } ?>
+
+
 
                                                                             <?php  } else { ?>
                                                                                 <a href="<?= base_url('user/Pickingslip/detail/' . $ps1['uuid']) ?>" class="btn btn-primary btn-sm mb-1">Detail</a>
@@ -142,6 +152,38 @@
         </div>
     </div>
 
+    <!-- Modal Change Picker -->
+    <div class="modal fade" id="modalChangePicker" tabindex="-1" aria-labelledby="modalChangePickerLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalChangePickerLabel">Change Picker</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="changePicker">
+                    <div class="modal-body">
+                        <input type="hidden" name="id_pickingslip" id="id_pickingslip">
+                        <div class="mb-3">
+                            <label for="picker" class="form-label">Picker</label>
+                            <select class="form-select" name="picker" id="picker">
+                                <option value="">-- Select Picker --</option>
+                                <?php foreach ($picker->result_array() as $picker1) { ?>
+                                    <option value="<?= $picker1['id_users'] ?>"><?= $picker1['nama'] ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Change</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
 
 
     <script src="<?= base_url() . '/' ?>assets/static/js/components/dark.js"></script>
@@ -153,11 +195,13 @@
     <script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
     <script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
+    <!-- sweetalert  -->
+    <script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.min.js"></script>
     <script>
         // tblpickingslip datatable
         $(document).ready(function() {
             $('#tblpickingslip').DataTable({
-               "order": [],
+                "order": [],
                 "columnDefs": [{
                     "searchable": false,
                     "orderable": false,
@@ -165,6 +209,84 @@
                 }],
                 rowCallback: function(row, data, index) {
                     $('td:eq(0)', row).html(index + 1);
+                }
+            });
+
+
+        });
+    </script>
+
+    <script>
+        // modal change picker
+        $('#modalChangePicker').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+            var id_pickingslip = button.data('id_pickingslip');
+            var id_picker = button.data('id_picker');
+            var modal = $(this);
+            modal.find('.modal-body #id_pickingslip').val(id_pickingslip);
+            modal.find('.modal-body #picker').val(id_picker);
+        });
+        // change picker
+        $('#changePicker').submit(function(e) {
+            e.preventDefault();
+            var id_pickingslip = $('#id_pickingslip').val();
+            var picker = $('#picker').val();
+            // if picker value is empty
+            if (picker == '') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Picker is required',
+                });
+                return false;
+            }
+            // swal loading 
+            Swal.fire({
+                title: 'Please Wait..!',
+                html: 'Change Picker',
+                didOpen: () => {
+                    Swal.showLoading()
+                },
+                showConfirmButton: false,
+                allowOutsideClick: false
+            });
+            console.log(picker);
+
+            var formData = $(this).serialize();
+            console.log(formData);
+            $.ajax({
+
+                url: "<?= base_url('user/Pickingslip/changePicker') ?>",
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+              
+                success: function(response) {
+                    if (response.status == 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.message,
+                        }).then(function() {
+                            // swal loading 
+                            Swal.fire({
+                                title: 'Please Wait..!',
+                                html: 'Reloading Page',
+                                didOpen: () => {
+                                    Swal.showLoading()
+                                },
+                                showConfirmButton: false,
+                                allowOutsideClick: false
+                            });
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message,
+                        });
+                    }
                 }
             });
         });
