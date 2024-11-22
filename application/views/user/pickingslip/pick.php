@@ -143,7 +143,7 @@
 																	<tbody>
 																		<tr>
 																			<td><input type="text" name="rack[]" id="rack" class="form-control rack"></td>
-																			<td><input type="number" name="qty[]" id="qty" class="form-control qty">
+																			<td><input type="number" name="qty[]" id="qty" autocomplete="off" class="form-control qty">
 																				<input type="number" name="id_batch" hidden value="<?= $item['id_batch'] ?>">
 																				<input type="number" name="id_barang" hidden value="<?= $item['id_barang'] ?>">
 																			</td>
@@ -259,6 +259,9 @@
 
 	<script>
 		$(document).ready(function() {
+			// ketika mau input qty dan buka keyboard maka tampilan web di scroll hingga inputnya berada di atas keyboardnya
+
+
 			$('.assignPicker').select2();
 			checkQtyOnRack();
 
@@ -286,7 +289,7 @@
 			var newRow = `
     <tr>
       <td><input type="text" name="rack[]" id="rack" class="form-control rack"></td>
-      <td><input type="number" name="qty[]" id="qty" class="form-control qty"></td>
+      <td><input type="number" name="qty[]" id="qty" autocomplete="off" class="form-control qty"></td>
       <td><button class="deleteRowBtn btn btn-danger">Hapus</button></td>
     </tr>
   `;
@@ -507,13 +510,17 @@
 
 	<script>
 		function checkQtyOnRack() {
-			// ketika buka keyboard maka tampilan di scroll hingga inputnya berada di atas keyboardnya
+			// ketika buka keyboard maka tampilan di scroll hingga inputnya berada di atas keyboardnya jangan pake animasi
 			$('table.addRackRow tbody').off('focus', 'input[name="qty[]"]').on('focus', 'input[name="qty[]"]', function() {
 				$('html, body').animate({
-					scrollTop: $(this).offset().top - 100
-				}, 500);
+					scrollTop: $(this).offset().top
+
+				}, 0);
 			});
-			
+
+
+
+
 			$('table.addRackRow tbody').off('keyup', 'input[name="qty[]"]').on('keyup', 'input[name="qty[]"]', function() {
 				var rack = $(this).closest('tr').find('input[name="rack[]"]').val();
 				var qty = parseInt($(this).val());
@@ -547,6 +554,22 @@
 						console.log(qty, response);
 
 						if (qty > response) {
+							// swal mixin 
+							const Toast = Swal.mixin({
+								toast: true,
+								position: "top-end",
+								showConfirmButton: false,
+								timer: 2000,
+								timerProgressBar: true,
+								didOpen: (toast) => {
+									toast.onmouseenter = Swal.stopTimer;
+									toast.onmouseleave = Swal.resumeTimer;
+								}
+							});
+							Toast.fire({
+								icon: "warning",
+								title: "Qty melebihi yang ada di rak, jumlah di rak hanya " + response + " pcs"
+							});
 							inputQty.val(response); // Gunakan variabel inputQty untuk mengakses input qty[]
 
 						}
@@ -555,7 +578,23 @@
 						$('.submitRow').html('Submit');
 					},
 					error: function(jqXHR, textStatus, errorThrown) {
-						
+
+						const Toast = Swal.mixin({
+							toast: true,
+							position: "top-end",
+							showConfirmButton: false,
+							timer: 3000,
+							timerProgressBar: true,
+							didOpen: (toast) => {
+								toast.onmouseenter = Swal.stopTimer;
+								toast.onmouseleave = Swal.resumeTimer;
+							}
+						});
+						Toast.fire({
+							icon: "warning",
+							title: "Barang tidak ada di rak " + rack
+						});
+
 						inputQty.val('');
 						// ubah button .submitRow yang sebaris jadi enable dan ubah textnya jadi submit
 						$('.submitRow').prop('disabled', false);
@@ -572,45 +611,38 @@
 			<?php if ($this->session->userdata('role_id') != 1) {
 				if ($this->session->userdata('role_id') != 6) {
 			?>
-					$('input.rack').on('click', function(e) {
-						// show modal showCamera
-						$('#showCamera').modal('show');
-						// var resultContainer = document.getElementById('qr-reader-results');
-						var lastResult, countResults = 0;
+					// $('input.rack').on('click', function(e) {
+					// 	// show modal showCamera
+					// 	$('#showCamera').modal('show');
 
-						function onScanSuccess(decodedText, decodedResult) {
-							if (decodedText !== lastResult) {
-								++countResults;
-								lastResult = decodedText;
+					// 	// var resultContainer = document.getElementById('qr-reader-results');
+					// 	var lastResult, countResults = 0;
 
-
-
-								// change val e with decodedText 
-								$(e.target).val(decodedText);
-								// close camera 
-								html5QrcodeScanner.clear();
-
-								// close modal 
-								$('#showCamera').modal('hide');
-
-
-
-
-
-								// console.log(`Scan result ${decodedText}`, decodedResult);
-							}
-						}
-
-						var html5QrcodeScanner = new Html5QrcodeScanner(
-							"qr-reader", {
-								fps: 10,
-								qrbox: 100
-							}
-						);
-						html5QrcodeScanner.render(onScanSuccess);
-						// close camera 
-						// html5QrcodeScanner.clear();
-					});
+					// 	function onScanSuccess(decodedText, decodedResult) {
+					// 		if (decodedText !== lastResult) {
+					// 			++countResults;
+					// 			lastResult = decodedText;
+					// 			// change val e with decodedText 
+					// 			$(e.target).val(decodedText);
+					// 			// close camera 
+					// 			html5QrcodeScanner.clear();
+					// 			// close modal 
+					// 			$('#showCamera').modal('hide');
+					// 		}
+					// 	}
+					// 	// jika sudah menyala kameranya jangan dinyalakan ulang
+					// 	if (typeof html5QrcodeScanner == 'undefined') {
+					// 		var html5QrcodeScanner = new Html5QrcodeScanner(
+					// 			// nyalakan flash 
+					// 			"qr-reader", {
+					// 				fps: 30,
+					// 				qrbox: 250,
+					// 				torch: true
+					// 			}
+					// 		);
+					// 		html5QrcodeScanner.render(onScanSuccess);
+					// 	}
+					// });
 			<?php }
 			} ?>
 
