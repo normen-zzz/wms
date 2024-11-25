@@ -48,6 +48,7 @@
 										</h5>
 
 										<a href="<?= base_url('picklist/add') ?>" class="btn btn-primary btn-sm">Add Picklist</a>
+										<button type="button" data-bs-toggle="modal" data-bs-target="#modalAddPicklistBulky" class="btn btn-primary">Add Picklist Bulky</button>
 									</div>
 
 									<div class="card-body">
@@ -68,7 +69,7 @@
 														<tr>
 															<td></td>
 															<td><?= $pl1['no_picklist'] ?></td>
-															
+
 															<td><?= $pl1['total_qty'] ?></td>
 															<td><?= getStatusPicklist($pl1['status']) ?></td>
 															<td><?= dateindo($pl1['created_at']) ?></td>
@@ -137,6 +138,28 @@
 					</div>
 				</div>
 			</div>
+			<!-- modalAddPicklistBulky -->
+			<div class="modal fade" id="modalAddPicklistBulky" tabindex="-1" aria-labelledby="modalAddPicklistBulkyLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="modalAddPicklistBulkyLabel">Add Picklist Bulky</h5><br>
+							<a href="<?= base_url('user/Picklist/templateImport') ?>" class="btn btn-primary ml-4">Download Template</a>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						
+						<div class="modal-body">
+							<form action="<?= base_url('user/Picklist/dataPicklistImport') ?>" method="POST" enctype="multipart/form-data">
+								<div class="form-group">
+									<label for="file">File Excel</label>
+									<input type="file" name="file" id="file" class="form-control" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+								</div>
+								<button type="submit" class="btn btn-primary">Upload</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
 
 			<!-- Modal Inbound -->
 			<?php $this->load->view('templates/footer') ?>
@@ -157,7 +180,6 @@
 	<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
 
 	<script>
-
 		// datatable tblpicklist
 		$(document).ready(function() {
 			$('#tblpicklist').DataTable({
@@ -168,8 +190,8 @@
 					"targets": 0
 				}],
 				rowCallback: function(row, data, index) {
-            $('td:eq(0)', row).html(index + 1); 
-        }
+					$('td:eq(0)', row).html(index + 1);
+				}
 			});
 		});
 

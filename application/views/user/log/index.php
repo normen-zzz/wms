@@ -65,6 +65,10 @@
 													<label for="sloc">Sloc</label>
 													<input type="text" name="sloc" class="form-control" id="sloc" value="<?= isset($_GET['sloc']) ? $_GET['sloc'] : '' ?>">
 												</div>
+												<div class="col-md-4">
+													<label for="no_document">No Document</label>
+													<input type="text" name="no_document" class="form-control" id="no_document" value="<?= isset($_GET['no_document']) ? $_GET['no_document'] : '' ?>">
+												</div>
 											</div>
 											<button type="submit" class="btn btn-primary mt-3 mb-3">Filter</button>
 										</form>

@@ -34,6 +34,11 @@ class Log_model extends CI_Model
 		if (!empty($filters['sloc'])) {
 			$this->db->where('rack.sloc', $filters['sloc']);
 		}
+
+		if (!empty($filters['no_document'])) {
+			$this->db->where('wms_log.no_document', $filters['no_document']);
+		}
+
 		
 		// sort by id_log 
 		$this->db->order_by('wms_log.id_log', 'desc');

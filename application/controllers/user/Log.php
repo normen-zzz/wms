@@ -19,9 +19,12 @@ class Log extends CI_Controller
 	public function index()
 	{
 		$filters = [
-			'sku' => $this->input->get('sku'),
-			'batchnumber' => $this->input->get('batchnumber'),
-			'sloc' => $this->input->get('sloc')
+			// remove space 
+			
+			'sku' => trim($this->input->get('sku')),
+			'batchnumber' => trim($this->input->get('batchnumber')),
+			'sloc' => trim($this->input->get('sloc')),
+			'no_document' => trim($this->input->get('no_document')),
 		];
 
 		$data = [
