@@ -71,7 +71,7 @@
 																</select>
 															</td>
 															<td>
-																<input type="text" name="batch[]" class="form-control mt-2"  placeholder="Input Batch Manually">
+																<input type="text" name="batch[]" class="form-control mt-2" placeholder="Input Batch Manually">
 															</td>
 															<td>
 																<input type="text" class="form-control qty" name="qty[]">
@@ -130,8 +130,8 @@
 			initSelect2AndFlatpickr();
 
 			$('#add-row-btn').on('click', function() {
-					// var lastEDValue = $('#table-body tr:last-child').find('input[name="ed[]"]').val();
-					var newRow = `
+				// var lastEDValue = $('#table-body tr:last-child').find('input[name="ed[]"]').val();
+				var newRow = `
 					<tr>
 							<td>
 									<select name="barang[]" class="form-control selectBarang">
@@ -151,210 +151,218 @@
 									<button type="button" class="btn btn-danger remove-row">Remove</button>
 							</td>
 					</tr>`;
-					
-					$('#table-body').append(newRow);
-					initSelect2AndFlatpickr(); 
+
+				$('#table-body').append(newRow);
+				initSelect2AndFlatpickr();
 			});
 
 			$('#table-body').on('click', '.remove-row', function() {
-					$(this).closest('tr').remove();
+				$(this).closest('tr').remove();
 			});
 
 			//loading swal
 			$('#picklistForm').on('submit', function(e) {
-					e.preventDefault();
-		
-					const submitButton = $(this).find('button[type="submit"]');
-					if ($(this).hasClass('loading')) {
-							return;
+				e.preventDefault();
+
+				const submitButton = $(this).find('button[type="submit"]');
+				if ($(this).hasClass('loading')) {
+					return;
+				}
+				$(this).addClass('loading');
+				submitButton.prop('disabled', true);
+
+				// Validasi input barang
+				const barang = $('select[name="barang[]"]');
+				for (let i = 0; i < barang.length; i++) {
+					if (barang[i].value === '-' || barang[i].value.trim() === '') {
+						Swal.fire({
+							title: 'Error!',
+							text: 'Barang tidak boleh kosong!',
+							icon: 'error',
+							confirmButtonText: 'OK'
+						});
+						$(this).removeClass('loading');
+						submitButton.prop('disabled', false);
+						return;
 					}
-					$(this).addClass('loading');
-					submitButton.prop('disabled', true);
+				}
 
-					// Validasi input barang
-					const barang = $('select[name="barang[]"]');
-					for (let i = 0; i < barang.length; i++) {
-							if (barang[i].value === '-' || barang[i].value.trim() === '') { 
-									Swal.fire({
-											title: 'Error!',
-											text: 'Barang tidak boleh kosong!',
-											icon: 'error',
-											confirmButtonText: 'OK'
-									});
-									$(this).removeClass('loading');
-									submitButton.prop('disabled', false);
-									return;
-							}
+				// Validasi input batch
+				const batchInputs = $('input[name="batch[]"]');
+				for (let i = 0; i < batchInputs.length; i++) {
+					if (batchInputs[i].value.trim() === '') {
+						Swal.fire({
+							title: 'Error!',
+							text: 'Batch input tidak boleh kosong!',
+							icon: 'error',
+							confirmButtonText: 'OK'
+						});
+						$(this).removeClass('loading');
+						submitButton.prop('disabled', false);
+						return;
 					}
+				}
 
-					// Validasi input batch
-					const batchInputs = $('input[name="batch[]"]');
-					for (let i = 0; i < batchInputs.length; i++) {
-							if (batchInputs[i].value.trim() === '') {
-									Swal.fire({
-											title: 'Error!',
-											text: 'Batch input tidak boleh kosong!',
-											icon: 'error',
-											confirmButtonText: 'OK'
-									});
-									$(this).removeClass('loading');
-									submitButton.prop('disabled', false);
-									return;
-							}
+				// Validasi input quantity
+				const qtyInputs = $('input[name="qty[]"]');
+				for (let i = 0; i < qtyInputs.length; i++) {
+					if (qtyInputs[i].value.trim() === '') {
+						Swal.fire({
+							title: 'Error!',
+							text: 'Quantity input tidak boleh kosong!',
+							icon: 'error',
+							confirmButtonText: 'OK'
+						});
+						$(this).removeClass('loading');
+						submitButton.prop('disabled', false);
+						return;
 					}
+				}
 
-					// Validasi input quantity
-					const qtyInputs = $('input[name="qty[]"]');
-					for (let i = 0; i < qtyInputs.length; i++) {
-							if (qtyInputs[i].value.trim() === '') {
-									Swal.fire({
-											title: 'Error!',
-											text: 'Quantity input tidak boleh kosong!',
-											icon: 'error',
-											confirmButtonText: 'OK'
-									});
-									$(this).removeClass('loading');
-									submitButton.prop('disabled', false);
-									return;
-							}
+				// Validasi input expiration date
+				const edInputs = $('input[name="ed[]"]');
+				for (let i = 0; i < edInputs.length; i++) {
+					if (edInputs[i].value.trim() === '') {
+						Swal.fire({
+							title: 'Error!',
+							text: 'Tanggal input tidak boleh kosong!',
+							icon: 'error',
+							confirmButtonText: 'OK'
+						});
+						$(this).removeClass('loading');
+						submitButton.prop('disabled', false);
+						return;
 					}
+				}
 
-					// Validasi input expiration date
-					const edInputs = $('input[name="ed[]"]');
-					for (let i = 0; i < edInputs.length; i++) {
-							if (edInputs[i].value.trim() === '') {
-									Swal.fire({
-											title: 'Error!',
-											text: 'Tanggal input tidak boleh kosong!',
-											icon: 'error',
-											confirmButtonText: 'OK'
-									});
-									$(this).removeClass('loading');
-									submitButton.prop('disabled', false);
-									return;
-							}
+				// Tampilkan loading Swal
+				Swal.fire({
+					title: 'Loading',
+					text: 'Please wait...',
+					allowOutsideClick: false,
+					showConfirmButton: false,
+					willOpen: () => {
+						Swal.showLoading();
 					}
+				});
 
-					// Tampilkan loading Swal
-					Swal.fire({
-							title: 'Loading',
-							text: 'Please wait...',
-							allowOutsideClick: false,
-							showConfirmButton: false,
-							willOpen: () => {
-									Swal.showLoading();
+				// Kirim data dengan AJAX
+				$.ajax({
+					url: "<?= base_url('user/picklist/insertPicklist2') ?>",
+					type: "POST",
+					data: $(this).serialize(),
+					dataType: 'json',
+					success: function(response) {
+						Swal.fire({
+							title: response.status === 'success' ? 'Success' : 'Error',
+							text: response.message,
+							icon: response.status === 'success' ? 'success' : 'error',
+							confirmButtonText: 'OK'
+						}).then(() => {
+							if (response.status === 'success') {
+								Swal.fire({
+									title: 'Loading',
+									text: 'Please wait...',
+									allowOutsideClick: false,
+									showConfirmButton: false,
+									willOpen: () => {
+										Swal.showLoading();
+									}
+								});
+								$('#picklistForm')[0].reset();
+								window.location.href = "<?= base_url('user/picklist') ?>";
 							}
-					});
-
-					// Kirim data dengan AJAX
-					$.ajax({
-							url: "<?= base_url('user/picklist/insertPicklist') ?>",
-							type: "POST",
-							data: $(this).serialize(),
-							dataType: 'json',
-							success: function(response) {
-									Swal.fire({
-											title: response.status === 'success' ? 'Success' : 'Error',
-											text: response.message,
-											icon: response.status === 'success' ? 'success' : 'error',
-											confirmButtonText: 'OK'
-									}).then(() => {
-											if (response.status === 'success') {
-													$('#picklistForm')[0].reset();
-													window.location.href = "<?= base_url('user/picklist') ?>";
-											}
-											$('#picklistForm').removeClass('loading');
-											submitButton.prop('disabled', false);
-									});
-							},
-							error: function(jqXHR, textStatus, errorThrown) {
-									Swal.fire({
-											title: 'Error',
-											text: 'Something went wrong: ' + textStatus,
-											icon: 'error',
-											confirmButtonText: 'OK'
-									});
-									$('#picklistForm').removeClass('loading');
-									submitButton.prop('disabled', false);
-							}
-					});
+							
+						});
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+						Swal.fire({
+							title: 'Error',
+							text: 'Something went wrong: ' + textStatus,
+							icon: 'error',
+							confirmButtonText: 'OK'
+						});
+						$('#picklistForm').removeClass('loading');
+						submitButton.prop('disabled', false);
+					}
+				});
 			});
 
 
 			function initSelect2AndFlatpickr() {
-					$('.selectBarang').select2({
-							ajax: {
-									url: '<?= base_url('user/picklist/getDataBarangSelect') ?>',
-									type: "POST",
-									dataType: 'json',
-									delay: 250,
-									data: function(params) {
-											return {
-													searchTerm: params.term || ''
-											};
-									},
-									processResults: function(response) {
-											return {
-													results: response
-											};
-									},
-									cache: true
-							},
-							minimumInputLength: 0,
-							placeholder: "Pilih barang",
-							allowClear: true
-					});
+				$('.selectBarang').select2({
+					ajax: {
+						url: '<?= base_url('user/picklist/getDataBarangSelect') ?>',
+						type: "POST",
+						dataType: 'json',
+						delay: 250,
+						data: function(params) {
+							return {
+								searchTerm: params.term || ''
+							};
+						},
+						processResults: function(response) {
+							return {
+								results: response
+							};
+						},
+						cache: true
+					},
+					minimumInputLength: 0,
+					placeholder: "Pilih barang",
+					allowClear: true
+				});
 
-					$('.flatpickrDate').flatpickr({
-							dateFormat: "Y-m-d" // Adjusted format for date input
-					});
+				$('.flatpickrDate').flatpickr({
+					dateFormat: "Y-m-d" // Adjusted format for date input
+				});
 
-					$('.selectBarang').on('change', function() {
-							var barangId = $(this).val();
-							var row = $(this).closest('tr');
-							var batchSelect = row.find('.selectBatch');
-							var inputBatchManual = row.find('.inputBatchManual');
-							var qty = row.find('.qty');
-							var ed = row.find('.flatpickrDate');
-							var btnSaveBatch = row.find('.btn-save-batch');
+				$('.selectBarang').on('change', function() {
+					var barangId = $(this).val();
+					var row = $(this).closest('tr');
+					var batchSelect = row.find('.selectBatch');
+					var inputBatchManual = row.find('.inputBatchManual');
+					var qty = row.find('.qty');
+					var ed = row.find('.flatpickrDate');
+					var btnSaveBatch = row.find('.btn-save-batch');
 
-							$.ajax({
-									url: '<?= base_url('user/goodsorder/getBatch') ?>',
-									type: 'POST',
-									data: {
-											barangId: barangId
-									},
-									dataType: 'json',
-									success: function(response) {
-											console.log(response);
-											var batchOptions = response.batch_options;
-											batchSelect.empty();
-											batchSelect.append($('<option>', {
-													value: '-',
-													text: 'Select Batch'
-											}));
+					$.ajax({
+						url: '<?= base_url('user/goodsorder/getBatch') ?>',
+						type: 'POST',
+						data: {
+							barangId: barangId
+						},
+						dataType: 'json',
+						success: function(response) {
+							console.log(response);
+							var batchOptions = response.batch_options;
+							batchSelect.empty();
+							batchSelect.append($('<option>', {
+								value: '-',
+								text: 'Select Batch'
+							}));
 
-											if (batchOptions.length > 0) {
-													$.each(batchOptions, function(index, batch) {
-															batchSelect.append($('<option>', {
-																	value: batch.id,
-																	text: batch.name
-															}));
-													});
-													inputBatchManual.hide();
-													btnSaveBatch.hide();
-											} else {
-													inputBatchManual.show();
-													btnSaveBatch.show();
-											}
+							if (batchOptions.length > 0) {
+								$.each(batchOptions, function(index, batch) {
+									batchSelect.append($('<option>', {
+										value: batch.id,
+										text: batch.name
+									}));
+								});
+								inputBatchManual.hide();
+								btnSaveBatch.hide();
+							} else {
+								inputBatchManual.show();
+								btnSaveBatch.show();
+							}
 
-											batchSelect.select2({
-													width: '100%',
-													placeholder: 'Select batch'
-											});
-									}
+							batchSelect.select2({
+								width: '100%',
+								placeholder: 'Select batch'
 							});
+						}
 					});
+				});
 			}
 
 		});

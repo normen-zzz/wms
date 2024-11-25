@@ -65,7 +65,7 @@
 															<th>ED</th>
 															<th>Qty</th>
 															<th>Good</th>
-															<th>Bad</th>
+															<th>Damage</th>
 															<th>Submit</th> <!-- New column for row submission -->
 														</tr>
 													</thead>

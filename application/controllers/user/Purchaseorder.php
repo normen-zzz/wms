@@ -89,37 +89,49 @@ class Purchaseorder extends CI_Controller
 
 	public function insertPurchaseorder()
 	{
-		$no_purchaseorder = generate_purchaseorder_number();
-		$customer = $this->input->post('customer');
-		$created_by = $this->session->userdata('id_users');
-		$barang =  $this->input->post('barang');
-		$qty = $this->input->post('qty');
-		$batch =  $this->input->post('batch');
-		$status = 0;
-		$purchaseorder = array(
-			'uuid' => uniqid(),
-			'no_purchaseorder' => $no_purchaseorder,
-			'created_at' => date('Y-m-d H:i:s'),
-			'customer' => $customer,
-			'created_by' => $created_by,
-			'status' => $status
-		);
-		$insert_id = $this->purchaseorder->insert_purchaseorder($purchaseorder);
-		if ($insert_id) {
-			for ($i = 0; $i < sizeof($barang); $i++) {
-				$dataPurchaseorder = [
-					'id_purchaseorder' => $insert_id,
-					'id_barang' => $barang[$i],
-					'id_batch' => $batch[$i],
-					'qty' => $qty[$i],
-					'created_at' => date('Y-m-d H:i:s'),
-					'created_by' => $this->session->userdata('id_users')
-				];
-				$this->db->insert('datapurchaseorder', $dataPurchaseorder);
+		$this->db->trans_start();
+		try {
+			$no_purchaseorder = generate_purchaseorder_number();
+			$customer = $this->input->post('customer');
+			$created_by = $this->session->userdata('id_users');
+			$barang =  $this->input->post('barang');
+			$qty = $this->input->post('qty');
+			$batch =  $this->input->post('batch');
+			$status = 0;
+			$purchaseorder = array(
+				'uuid' => uniqid(),
+				'no_purchaseorder' => $no_purchaseorder,
+				'created_at' => date('Y-m-d H:i:s'),
+				'customer' => $customer,
+				'created_by' => $created_by,
+				'status' => $status
+			);
+			$insert_id = $this->purchaseorder->insert_purchaseorder($purchaseorder);
+			if ($insert_id) {
+				for ($i = 0; $i < sizeof($barang); $i++) {
+					$dataPurchaseorder = [
+						'id_purchaseorder' => $insert_id,
+						'id_barang' => $barang[$i],
+						'id_batch' => $batch[$i],
+						'qty' => $qty[$i],
+						'created_at' => date('Y-m-d H:i:s'),
+						'created_by' => $this->session->userdata('id_users')
+					];
+					$insertDataPurchaseorder = $this->db->insert('datapurchaseorder', $dataPurchaseorder);
+					if (!$insertDataPurchaseorder) {
+						throw new Exception('Failed to insert datapurchaseorder.');
+					}
+				}
+				$response = array('status' => 'success', 'message' => 'Purchaseorder inserted successfully.');
+			} else {
+				throw new Exception('Failed to insert purchaseorder.');
 			}
-			$response = array('status' => 'success', 'message' => 'Purchaseorder inserted successfully.');
-		} else {
-			$response = array('status' => 'error', 'message' => 'Failed to insert purchaseorder.');
+			$this->db->trans_complete();
+			if ($this->db->trans_status() === FALSE) {
+				throw new Exception('Transaction failed');
+			}
+		} catch (Exception $e) {
+			$response = array('status' => 'error', 'message' => $e->getMessage());
 		}
 
 		echo json_encode($response);
