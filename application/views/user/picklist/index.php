@@ -40,6 +40,16 @@
 							<div class="col">
 								<!-- Minimal jQuery Datatable end -->
 								<!-- Basic Tables start -->
+								 <!-- show flashdata  -->
+								 
+									
+								<?php if ($this->session->flashdata('error')) { ?>
+									<div class="alert alert-danger" role="alert">
+										<?= $this->session->flashdata('error') ?>
+									</div>
+								<?php } ?>
+									
+								
 
 								<div class="card">
 									<div class="card-header">
