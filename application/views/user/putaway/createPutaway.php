@@ -422,7 +422,7 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: 'There was a problem saving the data. Please try again.'
+                    text: 'There was a problem saving the data. Please try again.'+error+status+xhr
                 });
             }
         });
