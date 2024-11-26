@@ -25,13 +25,15 @@
 	}
 
 	@media (max-width: 768px) {
-  #table1 {
-    font-size: 0.8rem;
-  }
-  #table1 th, #table1 td {
-    padding: 0.2rem;
-  }
-}
+		#table1 {
+			font-size: 0.8rem;
+		}
+
+		#table1 th,
+		#table1 td {
+			padding: 0.2rem;
+		}
+	}
 </style>
 
 <body>
@@ -57,49 +59,49 @@
 								<!-- Basic Tables start -->
 
 								<div class="card">
-										<div class="card-header">
-											<h5 class="card-title"><?= $subtitle2 ?></h5>
-											<button type="button" data-bs-toggle="modal" data-bs-target="#modalAddBarang" class="btn btn-primary">Add Barang</button>
-											<!-- btn modal add barang bulky with excel -->
-											<button type="button" data-bs-toggle="modal" data-bs-target="#modalAddBarangBulky" class="btn btn-primary">Add Barang Bulky</button>
-										</div>
+									<div class="card-header">
+										<h5 class="card-title"><?= $subtitle2 ?></h5>
+										<button type="button" data-bs-toggle="modal" data-bs-target="#modalAddBarang" class="btn btn-primary">Add Barang</button>
+										<!-- btn modal add barang bulky with excel -->
+										<button type="button" data-bs-toggle="modal" data-bs-target="#modalAddBarangBulky" class="btn btn-primary">Add Barang Bulky</button>
+									</div>
 
-										<div class="card-body">
-											<div class="table-responsive">
-												<table class="table table-sm" id="table1">
-													<thead>
+									<div class="card-body">
+										<div class="table-responsive">
+											<table class="table table-sm" id="table1">
+												<thead>
+													<tr>
+														<th>SKU</th>
+														<th>Nama Barang</th>
+														<th>UOM</th>
+														<th>Status</th>
+														<th>Action</th>
+													</tr>
+												</thead>
+												<tbody>
+													<?php foreach ($barang->result_array() as $barang1) { ?>
 														<tr>
-															<th>SKU</th>
-															<th>Nama Barang</th>
-															<th>UOM</th>
-															<th>Status</th>
-															<th>Action</th>
-														</tr>
-													</thead>
-													<tbody>
-														<?php foreach ($barang->result_array() as $barang1) { ?>
-															<tr>
-																<td><?= $barang1['sku'] ?></td>
-																<td><?= $barang1['nama_barang'] ?></td>
-																<td><?= $barang1['uom'] ?></td>
-																<td><?= getStatusBarang($barang1['is_deleted'])  ?></td>
-																<td>
-																	<?php if ($barang1['is_deleted'] == 0): ?>
-																			<button class="btn btn-warning btn-sm edit-btn" data-id_barang="<?= $barang1['id_barang'] ?>">Edit</button>
-																			<button class="btn btn-danger btn-sm delete-btn" data-id_barang="<?= $barang1['id_barang'] ?>">Deactivate</button>
-																	<?php endif; ?>
+															<td><?= $barang1['sku'] ?></td>
+															<td><?= $barang1['nama_barang'] ?></td>
+															<td><?= $barang1['uom'] ?></td>
+															<td><?= getStatusBarang($barang1['is_deleted'])  ?></td>
+															<td>
+																<?php if ($barang1['is_deleted'] == 0) : ?>
+																	<button class="btn btn-warning btn-sm edit-btn" data-id_barang="<?= $barang1['id_barang'] ?>">Edit</button>
+																	<button class="btn btn-danger btn-sm delete-btn" data-id_barang="<?= $barang1['id_barang'] ?>">Deactivate</button>
+																<?php endif; ?>
 
-																	<?php if ($barang1['is_deleted'] == 1): ?>
+																<?php if ($barang1['is_deleted'] == 1) : ?>
 																	<button class="btn btn-info text-white btn-sm activated-btn" data-id_barang="<?= $barang1['id_barang'] ?>">Activated</button>
-																	<?php endif; ?>	
-																</td>
-															</tr>
-														<?php } ?>
-													</tbody>
-												</table>
-											</div>
+																<?php endif; ?>
+															</td>
+														</tr>
+													<?php } ?>
+												</tbody>
+											</table>
 										</div>
 									</div>
+								</div>
 
 								<!-- Basic Tables end -->
 							</div>
@@ -120,13 +122,13 @@
 							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
 								<i data-feather="x"></i>
 							</button>
-							
+
 						</div>
 						<form id="addBarangBulky">
 							<div class="modal-body">
 								<label for="file">File</label>
 								<div class="form-group">
-									
+
 									<input id="file" type="file" name="file" class="form-control" accept=".xls,.xlsx">
 								</div>
 							</div>
@@ -144,301 +146,340 @@
 				</div>
 			</div>
 
-				<!--login form Modal -->
-				<div class="modal fade text-left" id="modalAddBarang" tabindex="-1" role="dialog" aria-labelledby="modalAddBarang" aria-hidden="true">
-					<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-						<div class="modal-content">
-							<div class="modal-header">
-								<h4 class="modal-title" id="myModalLabel33">Add Barang Form</h4>
-								<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-									<i data-feather="x"></i>
+			<!--login form Modal -->
+			<div class="modal fade text-left" id="modalAddBarang" tabindex="-1" role="dialog" aria-labelledby="modalAddBarang" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h4 class="modal-title" id="myModalLabel33">Add Barang Form</h4>
+							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+								<i data-feather="x"></i>
+							</button>
+						</div>
+						<form action="<?= base_url('user/Barang') ?>" method="POST">
+							<div class="modal-body">
+								<label for="sku">Sku</label>
+								<div class="form-group">
+									<input id="sku" type="text" placeholder="Sku" name="sku" class="form-control">
+								</div>
+								<label for="name">Name</label>
+								<div class="form-group">
+									<input id="name" type="text" placeholder="Name" name="name" class="form-control">
+								</div>
+
+								<label for="uom">Uom</label>
+								<div class="form-group">
+									<input id="uom" type="text" placeholder="Uom" name="uom" class="form-control">
+								</div>
+
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+
+									Close
+								</button>
+								<button type="submit" class="btn btn-primary ms-1">
+									Submit
 								</button>
 							</div>
-							<form action="<?= base_url('user/Barang') ?>" method="POST">
-								<div class="modal-body">
-									<label for="sku">Sku</label>
-									<div class="form-group">
-										<input id="sku" type="text" placeholder="Sku" name="sku" class="form-control">
-									</div>
-									<label for="name">Name</label>
-									<div class="form-group">
-										<input id="name" type="text" placeholder="Name" name="name" class="form-control">
-									</div>
-
-									<label for="uom">Uom</label>
-									<div class="form-group">
-										<input id="uom" type="text" placeholder="Uom" name="uom" class="form-control">
-									</div>
-
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
-
-										Close
-									</button>
-									<button type="submit" class="btn btn-primary ms-1">
-										Submit
-									</button>
-								</div>
-							</form>
-						</div>
+						</form>
 					</div>
 				</div>
+			</div>
 
-				<!-- ediot barang -->
-				<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
-					<div class="modal-dialog" role="document">
-						<div class="modal-content">
-							<form id="editForm">
-								<div class="modal-header">
-									<h5 class="modal-title" id="editModalLabel">Edit Barang</h5>
-									<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-										<span aria-hidden="true">&times;</span>
-									</button>
-								</div>
-								<div class="modal-body">
-									<input type="hidden" id="editId" name="id_barang">
-									<!-- <div class="form-group">
+			<!-- ediot barang -->
+			<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<form id="editForm">
+							<div class="modal-header">
+								<h5 class="modal-title" id="editModalLabel">Edit Barang</h5>
+								<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<input type="hidden" id="editId" name="id_barang">
+								<!-- <div class="form-group">
 										<label for="sku">SKU</label>
 										<input type="text" class="form-control" id="editSku" name="sku" required>
 									</div> -->
-									<div class="form-group">
-										<label for="nama_barang">Nama Barang</label>
-										<input type="text" class="form-control" id="editNamaBarang" name="nama_barang" required>
-									</div>
-									<div class="form-group">
-										<label for="uom">UOM</label>
-										<input type="text" class="form-control" id="editUom" name="uom" required>
-									</div>
+								<div class="form-group">
+									<label for="nama_barang">Nama Barang</label>
+									<input type="text" class="form-control" id="editNamaBarang" name="nama_barang" required>
 								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-									<button type="submit" class="btn btn-primary">Save changes</button>
+								<div class="form-group">
+									<label for="uom">UOM</label>
+									<input type="text" class="form-control" id="editUom" name="uom" required>
 								</div>
-							</form>
-						</div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+								<button type="submit" class="btn btn-primary">Save changes</button>
+							</div>
+						</form>
 					</div>
 				</div>
-
-
-
-				<?php $this->load->view('templates/footer') ?>
 			</div>
+
+
+
+			<?php $this->load->view('templates/footer') ?>
 		</div>
+	</div>
 
 
 
-		<script src="<?= base_url() . '/' ?>assets/static/js/components/dark.js"></script>
-		<script src="<?= base_url() . '/' ?>assets/static/js/pages/horizontal-layout.js"></script>
-		<script src="<?= base_url() . '/' ?>assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+	<script src="<?= base_url() . '/' ?>assets/static/js/components/dark.js"></script>
+	<script src="<?= base_url() . '/' ?>assets/static/js/pages/horizontal-layout.js"></script>
+	<script src="<?= base_url() . '/' ?>assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 
-		<script src="<?= base_url() . '/' ?>assets/compiled/js/app.js"></script>
-		<script src="<?= base_url() . '/' ?>assets/extensions/jquery/jquery.min.js"></script>
-		<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
-		<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
-		<script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
-		<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
+	<script src="<?= base_url() . '/' ?>assets/compiled/js/app.js"></script>
+	<script src="<?= base_url() . '/' ?>assets/extensions/jquery/jquery.min.js"></script>
+	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
+	<script src="<?= base_url() . '/' ?>assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
+	<script src="<?= base_url() . '/' ?>assets/static/js/pages/datatables.js"></script>
+	<script src="<?= base_url() . '/' ?>assets/extensions/sweetalert2/sweetalert2.all.min.js"></script>
 
-		<script>
-			$('body').on('click', 'button[type="submit"]', function() {
-				var button = $(this);
+	<script>
+		$('body').on('click', 'button[type="submit"]', function() {
+			var button = $(this);
+			setTimeout(function() {
+				button.prop('disabled', true);
+				Swal.fire({
+					title: 'Processing...',
+					text: 'Please wait while we process your request.',
+					icon: 'info',
+					timer: 10000,
+					timerProgressBar: true,
+					showConfirmButton: false
+				});
 				setTimeout(function() {
-					button.prop('disabled', true);
+					button.prop('disabled', false);
 					Swal.fire({
-						title: 'Processing...',
-						text: 'Please wait while we process your request.',
-						icon: 'info',
-						timer: 10000,
-						timerProgressBar: true,
-						showConfirmButton: false
+						title: 'Success!',
+						text: 'Your request has been processed successfully.',
+						icon: 'success',
+						confirmButtonText: 'OK'
 					});
-					setTimeout(function() {
-						button.prop('disabled', false);
-						Swal.fire({
-							title: 'Success!',
-							text: 'Your request has been processed successfully.',
-							icon: 'success',
-							confirmButtonText: 'OK'
-						});
-					}, 10000);
-				});
+				}, 10000);
+			});
+		});
+
+		$('.edit-btn').click(function() {
+			var id = $(this).data('id_barang');
+
+			$.ajax({
+				url: '<?= base_url("barang/get_barang") ?>/' + id,
+				type: 'GET',
+				dataType: 'json',
+				success: function(data) {
+					$('#editId').val(data.id_barang);
+					$('#editSku').val(data.sku);
+					$('#editNamaBarang').val(data.nama_barang);
+					$('#editUom').val(data.uom);
+					$('#editModal').modal('show');
+				}
+			});
+		});
+
+		//add barang bulky form submit jquery with loading
+		$('#addBarangBulky').submit(function(e) {
+			e.preventDefault();
+
+			var formData = new FormData(this);
+
+			// swal loading 
+			Swal.fire({
+				title: 'Please Wait..!',
+				html: 'Reloading Page',
+				didOpen: () => {
+					Swal.showLoading()
+				},
+				showConfirmButton: false,
+				allowOutsideClick: false
 			});
 
-			$('.edit-btn').click(function() {
-				var id = $(this).data('id_barang');
+			$.ajax({
+				url: '<?= base_url("user/Barang/import_barang") ?>',
+				type: 'POST',
+				data: formData,
+				cache: false,
+				contentType: false,
+				processData: false,
+				success: function(response) {
+					$('#modalAddBarangBulky').modal('hide');
+					Swal.fire({
+						title: 'Success!',
+						text: 'Data barang berhasil ditambahkan!',
+						icon: 'success',
+						confirmButtonText: 'OK'
+					}).then((result) => {
+						if (result.isConfirmed) {
+							// swal loading 
+							Swal.fire({
+								title: 'Please Wait..!',
+								html: 'Reloading Page',
+								didOpen: () => {
+									Swal.showLoading()
+								},
+								showConfirmButton: false,
+								allowOutsideClick: false
+							});
+							location.reload();
+						}
+					});
+				},
+				error: function(xhr) {
+					// swal error 
+					Swal.fire({
+						title: 'Error!',
+						text: 'An error occurred while adding the item.',
+						icon: 'error',
+						confirmButtonText: 'OK'
+					}).then((result) => {
+						if (result.isConfirmed) {
+							Swal.fire({
+								title: 'Please Wait..!',
+								html: 'Reloading Page',
+								didOpen: () => {
+									Swal.showLoading()
+								},
+								showConfirmButton: false,
+								allowOutsideClick: false
+							});
+							location.reload();
+						}
+					});
 
-				$.ajax({
-					url: '<?= base_url("barang/get_barang") ?>/' + id,
-					type: 'GET',
-					dataType: 'json',
-					success: function(data) {
-						$('#editId').val(data.id_barang);
-						$('#editSku').val(data.sku);
-						$('#editNamaBarang').val(data.nama_barang);
-						$('#editUom').val(data.uom);
-						$('#editModal').modal('show');
-					}
-				});
+
+
+
+				}
 			});
+		});
 
-			//add barang bulky form submit jquery with loading
-			$('#addBarangBulky').submit(function(e) {
-				e.preventDefault();
 
-				var formData = new FormData(this);
 
-				$.ajax({
-					url: '<?= base_url("user/Barang/import_barang") ?>',
-					type: 'POST',
-					data: formData,
-					cache: false,
-					contentType: false,
-					processData: false,
-					success: function(response) {
-						$('#modalAddBarangBulky').modal('hide');
-						Swal.fire({
-							title: 'Success!',
-							text: 'Data barang berhasil ditambahkan!',
-							icon: 'success',
-							confirmButtonText: 'OK'
-						}).then((result) => {
-							if (result.isConfirmed) {
-								location.reload();
-							}
-						});
-					},
-					error: function(xhr) {
-						// swal error 
-						Swal.fire({
-							title: 'Error!',
-							text: 'An error occurred while adding the item.',
-							icon: 'error',
-							confirmButtonText: 'OK'
-						}).then((result) => {
-							if (result.isConfirmed) {
-								location.reload();
-							}
-						});
-						
-						
-						
-						
-					}
-				});
+		$('#editForm').submit(function(e) {
+			e.preventDefault();
+
+			$.ajax({
+				url: '<?= base_url("barang/update_barang") ?>',
+				type: 'POST',
+				data: $(this).serialize(),
+				success: function(response) {
+					$('#editModal').modal('hide');
+					Swal.fire({
+						title: 'Success!',
+						text: 'Data barang berhasil diupdate!',
+						icon: 'success',
+						confirmButtonText: 'OK'
+					}).then((result) => {
+						if (result.isConfirmed) {
+							Swal.fire({
+                                title: 'Please Wait..!',
+                                html: 'Reloading Page',
+                                didOpen: () => {
+                                    Swal.showLoading()
+                                },
+                                showConfirmButton: false,
+                                allowOutsideClick: false
+                            });
+							location.reload();
+						}
+					});
+				},
+				error: function(xhr) {
+					alert("An error occurred.");
+				}
 			});
+		});
 
-			
+		$('.delete-btn').click(function() {
+			var id = $(this).data('id_barang');
 
-			$('#editForm').submit(function(e) {
-				e.preventDefault();
-
-				$.ajax({
-					url: '<?= base_url("barang/update_barang") ?>',
-					type: 'POST',
-					data: $(this).serialize(),
-					success: function(response) {
-						$('#editModal').modal('hide');
-						Swal.fire({
-							title: 'Success!',
-							text: 'Data barang berhasil diupdate!',
-							icon: 'success',
-							confirmButtonText: 'OK'
-						}).then((result) => {
-							if (result.isConfirmed) {
-								location.reload();
-							}
-						});
-					},
-					error: function(xhr) {
-						alert("An error occurred.");
-					}
-				});
+			Swal.fire({
+				title: 'Are you sure?',
+				text: "You won't be able to revert this!",
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Yes, delete it!',
+				cancelButtonText: 'Cancel'
+			}).then((result) => {
+				if (result.isConfirmed) {
+					$.ajax({
+						url: '<?= base_url("barang/delete_barang") ?>/' + id,
+						type: 'POST',
+						success: function(response) {
+							Swal.fire({
+								title: 'Deleted!',
+								text: 'Data barang berhasil dinonaktifkan!',
+								icon: 'success',
+								confirmButtonText: 'OK'
+							}).then((result) => {
+								if (result.isConfirmed) {
+									location.reload();
+								}
+							});
+						},
+						error: function(xhr) {
+							Swal.fire({
+								title: 'Error!',
+								text: 'An error occurred while nonactivated the item.',
+								icon: 'error',
+								confirmButtonText: 'OK'
+							});
+						}
+					});
+				}
 			});
+		});
 
-			$('.delete-btn').click(function() {
-				var id = $(this).data('id_barang');
+		$('.activated-btn').click(function() {
+			var id = $(this).data('id_barang');
 
-				Swal.fire({
-					title: 'Are you sure?',
-					text: "You won't be able to revert this!",
-					icon: 'warning',
-					showCancelButton: true,
-					confirmButtonColor: '#3085d6',
-					cancelButtonColor: '#d33',
-					confirmButtonText: 'Yes, delete it!',
-					cancelButtonText: 'Cancel'
-				}).then((result) => {
-					if (result.isConfirmed) {
-						$.ajax({
-							url: '<?= base_url("barang/delete_barang") ?>/' + id,
-							type: 'POST',
-							success: function(response) {
-								Swal.fire({
-									title: 'Deleted!',
-									text: 'Data barang berhasil dinonaktifkan!',
-									icon: 'success',
-									confirmButtonText: 'OK'
-								}).then((result) => {
-									if (result.isConfirmed) {
-										location.reload();
-									}
-								});
-							},
-							error: function(xhr) {
-								Swal.fire({
-									title: 'Error!',
-									text: 'An error occurred while nonactivated the item.',
-									icon: 'error',
-									confirmButtonText: 'OK'
-								});
-							}
-						});
-					}
-				});
+			Swal.fire({
+				title: 'Are you sure?',
+				text: "You won't be able to revert this!",
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Yes, delete it!',
+				cancelButtonText: 'Cancel'
+			}).then((result) => {
+				if (result.isConfirmed) {
+					$.ajax({
+						url: '<?= base_url("user/barang/activated") ?>/' + id,
+						type: 'POST',
+						success: function(response) {
+							Swal.fire({
+								title: 'Success!',
+								text: 'Data barang berhasil diaktifkan!',
+								icon: 'success',
+								confirmButtonText: 'OK'
+							}).then((result) => {
+								if (result.isConfirmed) {
+									location.reload();
+								}
+							});
+						},
+						error: function(xhr) {
+							Swal.fire({
+								title: 'Error!',
+								text: 'An error occurred while activated the item.',
+								icon: 'error',
+								confirmButtonText: 'OK'
+							});
+						}
+					});
+				}
 			});
-
-			$('.activated-btn').click(function() {
-				var id = $(this).data('id_barang');
-
-				Swal.fire({
-					title: 'Are you sure?',
-					text: "You won't be able to revert this!",
-					icon: 'warning',
-					showCancelButton: true,
-					confirmButtonColor: '#3085d6',
-					cancelButtonColor: '#d33',
-					confirmButtonText: 'Yes, delete it!',
-					cancelButtonText: 'Cancel'
-				}).then((result) => {
-					if (result.isConfirmed) {
-						$.ajax({
-							url: '<?= base_url("user/barang/activated") ?>/' + id,
-							type: 'POST',
-							success: function(response) {
-								Swal.fire({
-									title: 'Success!',
-									text: 'Data barang berhasil diaktifkan!',
-									icon: 'success',
-									confirmButtonText: 'OK'
-								}).then((result) => {
-									if (result.isConfirmed) {
-										location.reload();
-									}
-								});
-							},
-							error: function(xhr) {
-								Swal.fire({
-									title: 'Error!',
-									text: 'An error occurred while activated the item.',
-									icon: 'error',
-									confirmButtonText: 'OK'
-								});
-							}
-						});
-					}
-				});
-			});
-		</script>
+		});
+	</script>
 
 
 </body>

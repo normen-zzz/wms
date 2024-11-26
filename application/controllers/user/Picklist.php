@@ -210,7 +210,7 @@ class Picklist extends CI_Controller
 							if ($id_batch_temporary == null) {
 								$this->db->insert('batch', [
 									'uuid' => uniqid(),
-									'batchnumber' => $batch[$i] . $id_batch_temporary,
+									'batchnumber' => $batch[$i],
 									'expiration_date' => date('Y-m-d H:i:s', strtotime($ed[$i]))
 								]);
 								$id_batch = $this->db->insert_id();
@@ -220,7 +220,7 @@ class Picklist extends CI_Controller
 						} else {
 							$this->db->insert('batch', [
 								'uuid' => uniqid(),
-								'batchnumber' => $batch[$i] . 'bbb',
+								'batchnumber' => $batch[$i],
 								'expiration_date' => date('Y-m-d H:i:s', strtotime($ed[$i]))
 							]);
 							$id_batch = $this->db->insert_id();
@@ -308,8 +308,8 @@ class Picklist extends CI_Controller
 								'sku' => $value[0],
 								'id_barang' => $checkSku->row()->id_barang,
 								'nama_barang' => $checkSku->row()->nama_barang,
-								'batch' => $value[1],
-								'qty' => $value[2],
+								'batch' => str_replace(' ', '', trim($value[1])),
+								'qty' => preg_replace('/[^0-9]/', '', str_replace(' ', '', trim($value[2]))),
 								'ed' => $ed
 							];
 						}
