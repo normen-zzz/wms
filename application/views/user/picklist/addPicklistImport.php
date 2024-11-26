@@ -57,6 +57,7 @@
                                                 <table class="table" id="table">
                                                     <thead>
                                                         <tr>
+                                                            <th>No</th>
                                                             <th>Barang</th>
                                                             <th>Batch</th>
                                                             <th>QTY</th>
@@ -65,12 +66,13 @@
                                                     </thead>
                                                     <tbody id="table-body">
 
-                                                        <?php foreach ($dataPicklist as $dataPicklist1) { ?>
+                                                        <?php $no = 1; foreach ($dataPicklist as $dataPicklist1) { ?>
 
                                                             <tr>
+                                                                <td><?= $no++ ?></td>
                                                                 <td>
-                                                                    <p><b><?= $dataPicklist1['sku'] ?></b></p>
-                                                                    <p><?= $dataPicklist1['nama_barang'] ?></p>
+                                                                    <span><b><?= $dataPicklist1['sku'] ?></b></span><br>
+                                                                    <span><?= $dataPicklist1['nama_barang'] ?></span>
                                                                     <input type="text" name="barang[]" value="<?= $dataPicklist1['id_barang'] ?>" hidden>
                                                                 </td>
                                                                 <td>

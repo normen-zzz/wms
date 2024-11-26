@@ -24,6 +24,23 @@ class ReceivingInbound_model extends CI_Model
 			return $query->result();
 	}
 
+	// getDetailPicklist
+
+	public function getPicklistDetail($uuid)
+	{
+			$id_picklist = $this->db->query('SELECT id_picklist FROM picklist WHERE uuid = "' . $uuid . '" ')->row_array();
+			$this->db->select('sku, nama_barang, a.id_barang, batch, c.expiration_date, a.qty, a.status_row, a.id_datapicklist');
+			$this->db->from('datapicklist a');
+			$this->db->join('barang b', 'a.id_barang = b.id_barang');
+			$this->db->join('batch c', 'a.batch = c.id_batch');
+			$this->db->where('a.id_picklist', $id_picklist['id_picklist']);
+			// $this->db->order_by('a.id_picklist', 'DESC');
+			$this->db->order_by('a.id_datapicklist', 'ASC');
+
+			return $this->db->get()->result_array();
+	}
+
+
 	public function get_detils_inbound($uuid)
 	{
 			$id_picklist = $this->db->query('SELECT id_picklist FROM picklist WHERE uuid = "' . $uuid . '" ')->row_array();

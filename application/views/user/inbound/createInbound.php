@@ -59,6 +59,7 @@
 												<table class="table" id="table">
 													<thead>
 														<tr>
+															<th>No</th>
 															<th>SKU</th>
 															<th>Nama Barang</th>
 															<th>Batch</th>
@@ -70,9 +71,10 @@
 														</tr>
 													</thead>
 													<tbody>
-														<?php foreach ($detailPl as $dtl) { ?>
+														<?php $no = 1; foreach ($detailPl as $dtl) { ?>
 															<?php if ($dtl['status_row'] == 0) { ?>
 																<tr>
+																	<td><?= $no++ ?></td>
 																	<td><?= $dtl['sku'] ?></td>
 																	<td><?= $dtl['nama_barang'] ?></td>
 																	<td><?= getBatchById($dtl['batch']) ?></td>

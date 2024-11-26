@@ -150,6 +150,16 @@
                 cancelButtonText: 'No, cancel'
             }).then((result) => {
                 if (result.isConfirmed) {
+                    // swal loading 
+                    Swal.fire({
+                        title: 'Processing',
+                        text: 'Please wait...',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        willOpen: () => {
+                            Swal.showLoading()
+                        },
+                    });
                     window.location.href = "<?= base_url('user/Packing/processPickingslipToPacking/' . $uuid) ?>";
                 }
             });

@@ -64,6 +64,7 @@
 																<table class="table table-striped table-hover" id="detailPicklistTable">
 																		<thead>
 																				<tr>
+																					<th>No</th>
 																						<th>SKU</th>
 																						<th>Nama Barang</th>
 																						<th>Batch</th>
@@ -71,8 +72,9 @@
 																				</tr>
 																		</thead>
 																		<tbody>
-																				<?php foreach ($pl as $item) : ?>
+																				<?php $no = 0; foreach ($pl as $item) : ?>
 																						<tr>
+																								<td><?= ++$no ?></td>
 																								<td><?= $item['sku'] ?></td>
 																								<td><?= $item['nama_barang'] ?></td>
 																								<td><?= $item['batchnumber'] ?></td>
