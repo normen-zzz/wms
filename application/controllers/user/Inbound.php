@@ -275,7 +275,24 @@ class Inbound extends CI_Controller
 						'created_by' => $created_by,
 					];
 					$insertToRackItemsDamage = $this->db->insert('rack_items', $dataDamageRackItems);
-					if (!$insertToRackItemsDamage) {
+					if ($insertToRackItemsDamage) {
+						// log 
+						$dataLog = [
+							'id_barang' => $id_barang,
+							'id_batch' => $batch_id,
+							'id_rack' => $rackDamage['id_rack'],
+							'condition' => 'in',
+							'qty' => $bad_qty,
+							'at' => date('Y-m-d H:i:s'),
+							'by' => $created_by,
+							'no_document' => $no_inbound,
+							'description' => 'Barang Damage dari Inbound',
+						];
+						$insertLog = $this->db->insert('wms_log', $dataLog);
+						if (!$insertLog) {
+							throw new Exception('Failed to insert log.');
+						}
+					} else {
 						throw new Exception('Failed to insert damage to rack items.');
 					}
 				}
