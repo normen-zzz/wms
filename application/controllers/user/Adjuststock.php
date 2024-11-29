@@ -108,6 +108,7 @@ class Adjuststock extends CI_Controller
                 $quantity = $this->input->post('qty');
                 $notes = $this->input->post('notes');
                 $batchDataAdjuststock = [];
+                $dataAdjuststockWa = '';
                 for ($i = 0; $i < count($id_barang); $i++) {
 
                     $checkSloc = $this->adjuststock->checkSloc($rack[$i]);
@@ -119,26 +120,31 @@ class Adjuststock extends CI_Controller
                         $checkSloc = $checkSloc['id_rack'];
                     }
                     // add to array 
+                    $quantityBefore = $this->db->query('SELECT quantity FROM rack_items WHERE id_barang = ' . $id_barang[$i] . ' AND id_batch = ' . $id_batch[$i] . ' AND id_rack = ' . $checkSloc)->row_array();
                     $dataAdjuststock = [
                         'id_adjuststock' => $id_adjuststock,
                         'id_barang' => $id_barang[$i],
                         'id_batch' => $id_batch[$i],
                         'id_rack' => $checkSloc,
-                        'quantity' => $quantity[$i],
+                        'quantity_from' => $quantityBefore['quantity'],
+                        'quantity_to' => $quantity[$i],
                         'created_at' => date('Y-m-d H:i:s'),
                         'created_by' => $this->session->userdata('id_users'),
                         'status' => 0,
                         'notes' => $notes[$i],
                     ];
                     $batchDataAdjuststock[] = $dataAdjuststock;
+                    $dataBarang = $this->db->query('SELECT nama_barang FROM barang WHERE id_barang = ' . $id_barang[$i])->row_array();
+                    $dataBatch = $this->db->query('SELECT batchnumber FROM batch WHERE id_batch = ' . $id_batch[$i])->row_array();
+                    $dataRack = $this->db->query('SELECT sloc FROM rack WHERE id_rack = ' . $checkSloc)->row_array();
+
+                    $dataAdjuststockWa .= 'Barang : ' . $dataBarang['nama_barang'] . '<br> Batch : ' . $dataBatch['batchnumber'] . '<br> Rack : ' . $dataRack['sloc'] . '<br> Quantity (Before) : ' . $quantityBefore['quantity'] . '<br> Quantity (After) : ' . $quantity[$i] . '<br> Notes : ' . $notes[$i] . ' \r\n\r\n';
                 }
                 $insertDataAdjuststock = $this->adjuststock->insert_data_adjuststock($batchDataAdjuststock);
                 if ($insertDataAdjuststock) {
-
-                    
                     $superadmin = $this->db->query('SELECT no_handphone FROM users WHERE role_id = 1')->result_array();
                     foreach ($superadmin as $admin) {
-                        $wa = $this->whatsapp->kirim($admin['no_handphone'], 'Adjust Stock baru telah ditambahkan oleh ' . $this->session->userdata('nama') . ' dengan nomor ' . $no_adjuststock . ' \r\n\r\n Silahkan cek di warehouse.transtama.com');
+                        $wa = $this->whatsapp->kirim($admin['no_handphone'], 'Adjust Stock baru telah ditambahkan oleh ' . $this->session->userdata('nama') . ' dengan nomor ' . $no_adjuststock . ', Berikut Datanya : <br><br> ' . $dataAdjuststockWa . ' Silahkan cek di warehouse.transtama.com Untuk melakukan Approval');
                         // $wa = $this->whatsapp->kirim($admin['no_handphone'], "Silahkan cek di warehouse.transtama.com");
 
                         if (!$wa) {
@@ -151,12 +157,11 @@ class Adjuststock extends CI_Controller
             } else {
                 throw new Exception('Gagal menambahkan Adjust stock 2');
             }
-
+            $response = array('status' => 'success', 'message' => 'Adjust Stock berhasil ditambahkan');
             $this->db->trans_complete();
             if ($this->db->trans_status() === FALSE) {
                 throw new Exception('Gagal menambahkan adjust Stock');
             }
-            $response = array('status' => 'success', 'message' => 'Adjust Stock berhasil ditambahkan');
         } catch (Exception $e) {
             $this->db->trans_rollback();
             $response = array('status' => 'error', 'message' => $e->getMessage());
@@ -201,6 +206,7 @@ class Adjuststock extends CI_Controller
             $notes_approved = $this->input->post('notes_approved');
             $id_dataadjuststock = $this->input->post('id_dataadjuststock');
             $adjustStock = $this->db->query('SELECT * FROM adjuststock WHERE id_adjuststock = ' . $id_adjuststock)->row_array();
+            $requester = $this->db->query('SELECT * FROM users WHERE id_users = ' . $adjustStock['created_by'])->row_array();
 
             //    for id_dataadjuststock 
             for ($i = 0; $i < count($id_dataadjuststock); $i++) {
@@ -219,7 +225,7 @@ class Adjuststock extends CI_Controller
                             'at' => date('Y-m-d H:i:s'),
                             'by' => $dataAdjuststock['created_by'],
                             'no_document' => $adjustStock['no_adjuststock'],
-                            'description' => 'Adjust Stock Approved (FROM)'
+                            'description' => 'Adjust Stock Approved By ' . $this->session->userdata('nama') . ' (FROM)'
                         ];
                         $insertLog1 = $this->db->insert('wms_log', $dataLog1);
                         if ($insertLog1) {
@@ -228,11 +234,11 @@ class Adjuststock extends CI_Controller
                                 'id_batch' => $dataAdjuststock['id_batch'],
                                 'id_rack' => $dataAdjuststock['id_rack'],
                                 'condition' => 'in',
-                                'qty' => $dataAdjuststock['quantity'],
+                                'qty' => $dataAdjuststock['quantity_to'],
                                 'at' => date('Y-m-d H:i:s'),
-                                'by' => $this->session->userdata('id_users'),
+                                'by' => $dataAdjuststock['created_by'],
                                 'no_document' => $adjustStock['no_adjuststock'],
-                                'description' => 'Adjust Stock Approved  (TO)'
+                                'description' => 'Adjust Stock Approved By ' . $this->session->userdata('nama') . '  (TO)'
                             ];
                             $insertLog2 = $this->db->insert('wms_log', $dataLog2);
                             if (!$insertLog2) {
@@ -250,7 +256,7 @@ class Adjuststock extends CI_Controller
             }
             $updateAdjuststock = $this->db->update('adjuststock', ['status' => 1, 'approved_by' => $this->session->userdata('id_users'), 'notes_approved' => $notes_approved], ['id_adjuststock' => $id_adjuststock]);
             if ($updateAdjuststock) {
-                $checkLastAdjuststock = $this->db->query('SELECT * FROM dataadjuststock WHERE id_adjuststock = ' . $id_adjuststock.' AND status = 0 ')->result_array();
+                $checkLastAdjuststock = $this->db->query('SELECT * FROM dataadjuststock WHERE id_adjuststock = ' . $id_adjuststock . ' AND status = 0 ')->result_array();
                 if (count($checkLastAdjuststock) != 0) {
                     foreach ($checkLastAdjuststock as $checkLastAdjuststock1) {
                         $updateDataAdjuststock = $this->db->update('dataadjuststock', ['status' => 2, 'approved_by' => $this->session->userdata('id_users')], ['id_dataadjuststock' => $checkLastAdjuststock1['id_dataadjuststock']]);
@@ -259,7 +265,12 @@ class Adjuststock extends CI_Controller
                         }
                     }
                 }
-                $response = json_encode(['status' => 'success', 'message' => 'Adjust Stock berhasil di approve']);
+                $sendWaToRequester = $this->whatsapp->kirim($requester['no_handphone'], 'Adjust Stock dengan nomor ' . $adjustStock['no_adjuststock'] . ' telah di approve oleh ' . $this->session->userdata('nama') . ' \r\n\r\n Silahkan cek di warehouse.transtama.com');
+                if ($sendWaToRequester) {
+                    $response = json_encode(['status' => 'success', 'message' => 'Adjust Stock berhasil di approve']);
+                } else {
+                    throw new Exception('Gagal mengirimkan pesan ke whatsapp requester');
+                }
             } else {
                 throw new Exception('Gagal mengupdate adjust stock');
             }
@@ -269,7 +280,7 @@ class Adjuststock extends CI_Controller
             }
         } catch (Exception $e) {
             $this->db->trans_rollback();
-            $response = array('status' => 'error', 'message' => $e->getMessage());
+            $response = json_encode(array('status' => 'error', 'message' => $e->getMessage()));
         }
         echo $response;
     }

@@ -11,10 +11,13 @@ class Adjuststock_model extends CI_Model {
 
     // getDataAdjustStock
     public function getDataAdjustStock() {
-        $this->db->select('adjuststock.*, users.nama');
+        $this->db->select('adjuststock.*, a.nama,b.nama as approve');
         $this->db->from('adjuststock');
         // join users
-        $this->db->join('users', 'users.id_users = adjuststock.created_by');
+        $this->db->join('users a', 'a.id_users = adjuststock.created_by');
+        // if adjuststock.approved_by != NULL 
+        $this->db->join('users b', 'b.id_users = adjuststock.approved_by', 'left');
+        
         // sort by id_adjuststock
         $this->db->order_by('adjuststock.id_adjuststock', 'desc');
         $query = $this->db->get();
@@ -179,7 +182,7 @@ class Adjuststock_model extends CI_Model {
     public function getDetailAdjustStockDetail($uuidAdjuststock)
     {
         $adjuststock = $this->db->query('SELECT * FROM adjuststock WHERE uuid = "' . $uuidAdjuststock . '"')->row();
-        $this->db->select('dataadjuststock.*, barang.sku, barang.nama_barang, batch.batchnumber, batch.expiration_date, rack.sloc');
+        $this->db->select('dataadjuststock.*, barang.sku, barang.nama_barang, batch.batchnumber, batch.expiration_date, rack.sloc ,users.nama as approved_by');
         $this->db->from('dataadjuststock');
         $this->db->where('dataadjuststock.id_adjuststock', $adjuststock->id_adjuststock);
         // join barang
@@ -188,6 +191,8 @@ class Adjuststock_model extends CI_Model {
         $this->db->join('batch', 'batch.id_batch = dataadjuststock.id_batch');
         // join rack
         $this->db->join('rack', 'rack.id_rack = dataadjuststock.id_rack');
+        // join users 
+        $this->db->join('users', 'users.id_users = dataadjuststock.approved_by', 'left');
         $query = $this->db->get();
         return $query;
     }

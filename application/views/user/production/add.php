@@ -152,8 +152,109 @@
 	<script>
 		$(document).ready(function() {
 			$('#search-bundling').click(function() {
+				// swal loading 
+				Swal.fire({
+					title: 'Loading',
+					text: 'Please wait...',
+					allowOutsideClick: false,
+					showConfirmButton: false,
+					willOpen: () => {
+						Swal.showLoading();
+					}
+				});
+				var batch = $('#batch_bundling').val();
 				var sku = $('#sku_bundling').val();
 				var quantity_bundling = $('#quantity_bundling').val();
+				var ed = $('#ed_bundling').val();
+				if (sku == '') {
+					// close Swal 
+					Swal.close();
+					// swal mixin 
+					const Toast = Swal.mixin({
+						toast: true,
+						position: "top-end",
+						showConfirmButton: false,
+						timer: 2000,
+						timerProgressBar: true,
+						didOpen: (toast) => {
+							toast.onmouseenter = Swal.stopTimer;
+							toast.onmouseleave = Swal.resumeTimer;
+						}
+					});
+					Toast.fire({
+						icon: "warning",
+						title: "Please fill SKU Bundling"
+					});
+					return false;
+				}
+				if (batch == '') {
+					// close Swal 
+					Swal.close();
+					// swal mixin 
+					const Toast = Swal.mixin({
+						toast: true,
+						position: "top-end",
+						showConfirmButton: false,
+						timer: 2000,
+						timerProgressBar: true,
+						didOpen: (toast) => {
+							toast.onmouseenter = Swal.stopTimer;
+							toast.onmouseleave = Swal.resumeTimer;
+						}
+					});
+					Toast.fire({
+						icon: "warning",
+						title: "Please fill batch bundling"
+					});
+					return false;
+				}
+
+				if (quantity_bundling == '' || quantity_bundling == 0) {
+					// close Swal 
+					Swal.close();
+					// swal mixin 
+					const Toast = Swal.mixin({
+						toast: true,
+						position: "top-end",
+						showConfirmButton: false,
+						timer: 2000,
+						timerProgressBar: true,
+						didOpen: (toast) => {
+							toast.onmouseenter = Swal.stopTimer;
+							toast.onmouseleave = Swal.resumeTimer;
+						}
+					});
+					Toast.fire({
+						icon: "warning",
+						title: "Please fill quantity bundling"
+					});
+					return false;
+
+				}
+				if (ed == '') {
+					// close Swal 
+					Swal.close();
+					// swal mixin 
+					const Toast = Swal.mixin({
+						toast: true,
+						position: "top-end",
+						showConfirmButton: false,
+						timer: 2000,
+						timerProgressBar: true,
+						didOpen: (toast) => {
+							toast.onmouseenter = Swal.stopTimer;
+							toast.onmouseleave = Swal.resumeTimer;
+						}
+					});
+					Toast.fire({
+						icon: "warning",
+						title: "Please fill expired date"
+					});
+					return false;
+
+				}
+
+
 				$.ajax({
 					url: '<?= base_url() ?>user/production/get_materials',
 					type: 'post',
@@ -224,6 +325,8 @@
 								}
 							});
 						});
+						// close swal 
+						Swal.close();
 					}
 				});
 			});
@@ -309,158 +412,193 @@
 			$('#production-form').submit(function(e) {
 				e.preventDefault();
 
-				var formData = {
-					sku_bundling: $('#sku_bundling').val(),
-					batch_bundling: $('#batch_bundling').val(),
-					quantity_bundling: $('#quantity_bundling').val(),
-					ed_bundling: $('#ed_bundling').val(),
-					materials: []
-				};
-
-				var isValid = true;
-				var errorMessage = '';
-
-				if (!formData.quantity_bundling || parseFloat(formData.quantity_bundling) <= 0) {
-					Swal.fire({
-						title: 'Error!',
-						text: 'Please enter a valid bundling quantity',
-						icon: 'error',
-						confirmButtonText: 'OK'
-					});
-					return;
-				}
-
-				$('#material-rows tr').each(function() {
-					var $materialRow = $(this);
-					var requiredQty = getRequiredQuantity($materialRow);
-					var materialBatches = [];
-					var totalBatchQty = 0;
-
-					$materialRow.find('.tableBatch tbody tr').each(function() {
-						var batchId = $(this).find('select[name="batch[]"]').val();
-						var qtyBatch = parseFloat($(this).find('input[name="qtyBatch[]"]').val()) || 0;
-
-						if (batchId && qtyBatch > 0) {
-							materialBatches.push({
-								batch: batchId,
-								qtyBatch: qtyBatch
-							});
-							totalBatchQty += qtyBatch;
-						}
-					});
-
-					var difference = Math.abs(totalBatchQty - requiredQty);
-					if (difference > 0.01) {
-						isValid = false;
-						errorMessage =
-							`Jumlah material tidak sesuai. Dibutuhkan: ${requiredQty}, Total jumlah batch: ${totalBatchQty}`;
-						return false;
-					}
-
-					formData.materials.push({
-						sku_material: $materialRow.find('input[name="sku_material[]"]').val(),
-						batches: materialBatches
-					});
-				});
-
-				if (!isValid) {
-					Swal.fire({
-						title: 'Validation Error',
-						text: errorMessage,
-						icon: 'error',
-						confirmButtonText: 'OK'
-					});
-					return;
-				}
-
-				// show loading swal 
+				// swal confirm 
 				Swal.fire({
-					title: 'Saving Production',
-					text: 'Please wait...',
-					allowOutsideClick: false,
-					showConfirmButton: false,
-					willOpen: () => {
-						Swal.showLoading();
-					}
-				});
+					title: 'Are you sure?',
+					text: 'Do you want to save this production?',
+					icon: 'question',
+					showCancelButton: true,
+					confirmButtonText: 'Yes',
+					cancelButtonText: 'No'
+				}).then((result) => {
+					if (result.isConfirmed) {
+						var formData = {
+							sku_bundling: $('#sku_bundling').val(),
+							batch_bundling: $('#batch_bundling').val(),
+							quantity_bundling: $('#quantity_bundling').val(),
+							ed_bundling: $('#ed_bundling').val(),
+							materials: []
+						};
 
-				$.ajax({
-					url: '<?= base_url() ?>user/production/save_production',
-					type: 'post',
-					data: formData,
-					success: function(response) {
-						response = JSON.parse(response);
-						if (response.status == 'success') {
-							Swal.fire({
-								title: 'Success!',
-								text: 'Production saved successfully!',
-								icon: 'success',
-								confirmButtonText: 'OK'
-							}).then((result) => {
-								if (result.isConfirmed) {
-									Swal.fire({
-										title: 'Redirecting',
-										text: 'Please wait...',
-										allowOutsideClick: false,
-										showConfirmButton: false,
-										willOpen: () => {
-											Swal.showLoading();
-										}
-									});
-									window.location.href = '<?= base_url() ?>user/production';
-								}
-							});
+						var isValid = true;
+						var errorMessage = '';
 
-						} else {
+						if (!formData.quantity_bundling || parseFloat(formData.quantity_bundling) <= 0) {
 							Swal.fire({
 								title: 'Error!',
-								text: response.message,
+								text: 'Please enter a valid bundling quantity',
 								icon: 'error',
 								confirmButtonText: 'OK'
-							}).then((result) => {
-								if (result.isConfirmed) {
-									Swal.fire({
-										title: 'Redirecting',
-										text: 'Please wait...',
-										allowOutsideClick: false,
-										showConfirmButton: false,
-										willOpen: () => {
-											Swal.showLoading();
+							});
+							return;
+						}
+
+						$('#material-rows tr').each(function() {
+							var $materialRow = $(this);
+							var requiredQty = getRequiredQuantity($materialRow);
+							var materialBatches = [];
+							var totalBatchQty = 0;
+
+							$materialRow.find('.tableBatch tbody tr').each(function() {
+								var batchId = $(this).find('select[name="batch[]"]').val();
+								var qtyBatch = parseFloat($(this).find('input[name="qtyBatch[]"]').val()) || 0;
+
+								if (batchId && qtyBatch > 0) {
+									// checkQtyBatch using ajax
+									$.ajax({
+										url: '<?= base_url() ?>user/production/checkQtyBatch',
+										type: 'post',
+										async: false,
+										data: {
+											sku: $materialRow.find('input[name="sku_material[]"]').val(),
+											batch: batchId,
+											qty: qtyBatch
+										},
+										success: function(response) {
+											response = JSON.parse(response);
+											if (response.status == 'error') {
+												isValid = false;
+												// swal mixin 
+												errorMessage = response.message;
+											}
 										}
 									});
-									window.location.href = '<?= base_url() ?>user/production';
 
+
+									materialBatches.push({
+										batch: batchId,
+										qtyBatch: qtyBatch
+									});
+									totalBatchQty += qtyBatch;
 								}
 							});
+
+							var difference = Math.abs(totalBatchQty - requiredQty);
+							if (difference > 0.01) {
+								isValid = false;
+								errorMessage =
+									`Jumlah material tidak sesuai. Dibutuhkan: ${requiredQty}, Total jumlah batch: ${totalBatchQty}`;
+								return false;
+							}
+
+							formData.materials.push({
+								sku_material: $materialRow.find('input[name="sku_material[]"]').val(),
+								batches: materialBatches
+							});
+						});
+
+						if (!isValid) {
+							Swal.fire({
+								title: 'Validation Error',
+								text: errorMessage,
+								icon: 'error',
+								confirmButtonText: 'OK'
+							});
+							return;
 						}
 
-					},
-					error: function(xhr) {
-						var errorMessage = 'Failed to save production. Please try again.';
-						if (xhr.responseJSON && xhr.responseJSON.message) {
-							errorMessage = xhr.responseJSON.message;
-						}
+						// show loading swal 
 						Swal.fire({
-							title: 'Error!',
-							text: errorMessage,
-							icon: 'error',
-							confirmButtonText: 'OK'
-						}).then((result) => {
-							if (result.isConfirmed) {
+							title: 'Saving Production',
+							text: 'Please wait...',
+							allowOutsideClick: false,
+							showConfirmButton: false,
+							willOpen: () => {
+								Swal.showLoading();
+							}
+						});
+
+						$.ajax({
+							url: '<?= base_url() ?>user/production/save_production',
+							type: 'post',
+							data: formData,
+							success: function(response) {
+								response = JSON.parse(response);
+								if (response.status == 'success') {
+									Swal.fire({
+										title: 'Success!',
+										text: 'Production saved successfully!',
+										icon: 'success',
+										confirmButtonText: 'OK'
+									}).then((result) => {
+										if (result.isConfirmed) {
+											Swal.fire({
+												title: 'Redirecting',
+												text: 'Please wait...',
+												allowOutsideClick: false,
+												showConfirmButton: false,
+												willOpen: () => {
+													Swal.showLoading();
+												}
+											});
+											window.location.href = '<?= base_url() ?>user/production';
+										}
+									});
+
+								} else {
+									Swal.fire({
+										title: 'Error!',
+										text: response.message,
+										icon: 'error',
+										confirmButtonText: 'OK'
+									}).then((result) => {
+										if (result.isConfirmed) {
+											Swal.fire({
+												title: 'Redirecting',
+												text: 'Please wait...',
+												allowOutsideClick: false,
+												showConfirmButton: false,
+												willOpen: () => {
+													Swal.showLoading();
+												}
+											});
+											window.location.href = '<?= base_url() ?>user/production';
+
+										}
+									});
+								}
+
+							},
+							error: function(xhr) {
+								var errorMessage = 'Failed to save production. Please try again.';
+								if (xhr.responseJSON && xhr.responseJSON.message) {
+									errorMessage = xhr.responseJSON.message;
+								}
 								Swal.fire({
-									title: 'Redirecting',
-									text: 'Please wait...',
-									allowOutsideClick: false,
-									showConfirmButton: false,
-									willOpen: () => {
-										Swal.showLoading();
+									title: 'Error!',
+									text: errorMessage,
+									icon: 'error',
+									confirmButtonText: 'OK'
+								}).then((result) => {
+									if (result.isConfirmed) {
+										Swal.fire({
+											title: 'Redirecting',
+											text: 'Please wait...',
+											allowOutsideClick: false,
+											showConfirmButton: false,
+											willOpen: () => {
+												Swal.showLoading();
+											}
+										});
+										window.location.href = '<?= base_url() ?>user/production';
 									}
 								});
-								window.location.href = '<?= base_url() ?>user/production';
 							}
 						});
 					}
 				});
+
+
 			});
 
 		});
