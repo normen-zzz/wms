@@ -52,6 +52,16 @@
                                     </div>
 
                                     <div class="card-body">
+                                        <div>
+                                            <span></span>
+                                        </div>
+                                        <!-- notes from approval  -->
+                                        <div class="alert alert-warning" role="alert">
+                                            <h3>Notes:</h3>
+                                            <?= $adjuststock->notes_approved ?>
+                                        </div>
+
+
 
                                         <div class="table-responsive">
                                             <table class="table" id="table">
@@ -61,7 +71,9 @@
                                                         <th>Nama Barang</th>
                                                         <th>Batch</th>
                                                         <th>ED</th>
-                                                        <th>Qty</th>
+                                                        <th>Rack</th>
+                                                        <th>Qty (FROM)</th>
+                                                        <th>Qty (TO)</th>
                                                         <th>Status</th>
                                                     </tr>
                                                 </thead>
@@ -72,13 +84,17 @@
                                                             <td><?= $adjuststockDetail1['nama_barang'] ?></td>
                                                             <td><?= $adjuststockDetail1['batchnumber'] ?></td>
                                                             <td><?= $adjuststockDetail1['expiration_date'] ?></td>
-                                                            <td><?= $adjuststockDetail1['quantity'] ?></td>
-                                                           
+                                                            <td><?= $adjuststockDetail1['sloc'] ?></td>
+                                                            <td><?= $adjuststockDetail1['quantity_from'] ?></td>
+                                                            <td><?= $adjuststockDetail1['quantity_to'] ?></td>
+
                                                             <td><?php if ($adjuststockDetail1['status'] == 0) {
                                                                     echo '<span class="badge bg-warning">Wait Approve Super Admin</span>';
-                                                                } else {
-                                                                    echo '<span class="badge bg-success">Approved By ' . $adjuststock->approved_by . '</span>';
-                                                                } ?>
+                                                                } elseif ($adjuststockDetail1['status'] == 1) {
+                                                                    echo '<span class="badge bg-success">Approved By ' . $adjuststockDetail1['approved_by'] . '</span>';
+                                                                } else { ?>
+                                                                    <span class="badge bg-danger">Rejected By <?= $adjuststockDetail1['approved_by'] ?></span>
+                                                                <?php } ?>
                                                             </td>
                                                         </tr>
                                                     <?php } ?>

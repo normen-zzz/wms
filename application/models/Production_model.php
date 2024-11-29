@@ -407,4 +407,19 @@ class Production_model extends CI_Model
 		$query = $this->db->get();
 		return $query;
 	}
+
+	// checkQtyBatch
+	public function checkQtyBatch($sku,$batch)
+	{
+		$this->db->select('rack_items.quantity,batch.batchnumber,barang.sku');
+		$this->db->from('rack_items');
+		// join barang 
+		$this->db->join('barang', 'rack_items.id_barang = barang.id_barang');
+		// join batch 
+		$this->db->join('batch', 'rack_items.id_batch = batch.id_batch');
+		$this->db->where('barang.sku', $sku);
+		$this->db->where('rack_items.id_batch', $batch);
+		$query = $this->db->get();
+		return $query;
+	}
 }

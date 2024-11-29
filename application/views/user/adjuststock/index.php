@@ -70,7 +70,7 @@
                                                             <td><?= $s->created_at ?></td>
 															<td><?= $s->nama ?></td>
                                                             <td>
-																<?php if ($s->status == 0) : ?>
+																<?php if ($s->status == 0 && $this->session->userdata('role_id') == 1) : ?>
 																	
 																	<a href="<?= base_url('user/adjuststock/process/' . $s->uuid) ?>" class="btn btn-primary">Process</a>
 																	<?php endif; ?>

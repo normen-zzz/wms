@@ -11,6 +11,8 @@ class Profile extends CI_Controller
         date_default_timezone_set('Asia/Jakarta');
         $this->load->model('User_model', 'user');
         $this->load->model('Admin_model', 'admin');
+        // wa 
+        $this->load->model('Whatsapp_model', 'wa');
     }
 
     public function index()
@@ -89,12 +91,24 @@ class Profile extends CI_Controller
                 $this->session->set_userdata('username', $data['username']);
                 if ($no_handphone) {
                     $this->session->set_userdata('no_handphone', $data['no_handphone']);
-                }   
-               
+                }
+
                 if ($upload_image) {
                     $this->session->set_userdata('foto', $data['foto']);
                 }
-                $response  = json_encode(['status' => 'success', 'message' => 'Data Berhasil Diubah']);
+
+                $message = 'Data Profile Berhasil Diubah di wms.transtama.com, Berikut Datanya : <br>';
+                $message .= 'Nama : ' . htmlspecialchars($data['nama']) . ' <br>';
+                $message .= 'Username : ' . htmlspecialchars($data['username']) . ' <br>';
+                $message .= 'No Handphone : ' . $no_handphone . '<br> ';
+
+                $sendWa = $this->wa->kirim($no_handphone, $message);
+                if ($sendWa) {
+                    $response  = json_encode(['status' => 'success', 'message' => 'Data Berhasil Diubah']);
+                } else{
+                    throw new Exception('Data Gagal Diubah,Wa tidak terkirim');
+                }
+                
             } else {
                 throw new Exception('Data Gagal Diubah');
             }

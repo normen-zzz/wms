@@ -339,7 +339,7 @@ class Production extends CI_Controller
 						} else {
 							throw new Exception('Failed to update rack items1');
 						}
-					} else{
+					} else {
 						throw new Exception('Quantity rack items not enough');
 					}
 				}
@@ -562,5 +562,33 @@ class Production extends CI_Controller
 			$response = json_encode(array('status' => 'error', 'message' => $e->getMessage() . 'hehe'));
 		}
 		echo $response;
+	}
+
+	// checkQtyBatch
+	public function checkQtyBatch()
+	{
+		$sku = $this->input->post('sku');
+		$batch = $this->input->post('batch');
+		$qty = $this->input->post('qty');
+		$checkQtyBatch = $this->production->checkQtyBatch($sku, $batch);
+		if ($checkQtyBatch->num_rows() > 0) {
+			$checkQtyBatch = $checkQtyBatch->row_array();
+			if ($checkQtyBatch['quantity'] >= $qty) {
+				echo json_encode([
+					'status' => 'success',
+					'message' => 'Quantity available'
+				]);
+			} else {
+				echo json_encode([
+					'status' => 'error',
+					'message' => 'Quantity di sku ' . $sku . ' dan batch ' . $checkQtyBatch['batchnumber'] . ' tidak mencukupi (Available: ' . $checkQtyBatch['quantity'] . ')'
+				]);
+			}
+		} else {
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Batch not found'
+			]);
+		}
 	}
 }

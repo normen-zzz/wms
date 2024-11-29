@@ -63,8 +63,11 @@
 
 								<li class="submenu-item">
 									<a href="<?= base_url('user/Log') ?>" class='submenu-link'>LOG</a>
+								</li>
 
-
+								<!-- stock opname  -->
+								<li class="submenu-item">
+									<a href="<?= base_url('user/adjuststock') ?>" class='submenu-link'>ADJUST STOCK</a>
 								</li>
 
 							</ul>
