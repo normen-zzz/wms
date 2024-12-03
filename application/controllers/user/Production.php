@@ -573,7 +573,7 @@ class Production extends CI_Controller
 		$checkQtyBatch = $this->production->checkQtyBatch($sku, $batch);
 		if ($checkQtyBatch->num_rows() > 0) {
 			$checkQtyBatch = $checkQtyBatch->row_array();
-			if ($checkQtyBatch['quantity'] >= $qty) {
+			if ($checkQtyBatch['total_quantity'] >= $qty) {
 				echo json_encode([
 					'status' => 'success',
 					'message' => 'Quantity available'
