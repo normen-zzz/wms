@@ -1,6 +1,12 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Reader\Csv;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ReaderXlsx;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
 class Purchaseorder extends CI_Controller
 {
 
@@ -261,6 +267,105 @@ class Purchaseorder extends CI_Controller
 			$response = array('status' => 'error', 'message' => 'Failed to Edit Data.');
 		}
 		echo json_encode($response);
+	}
+
+	// templateBulkInput 
+	public function templateBulkInput()
+	{
+		$spreadsheet = new Spreadsheet();
+		$sheet = $spreadsheet->getActiveSheet();
+		$sheet->setCellValue('A1', 'SKU');
+		$sheet->setCellValue('B1', 'Batch');
+		$sheet->setCellValue('C1', 'Qty');
+		$writer = new Xlsx($spreadsheet);
+		$filename = 'template_bulk_input_purchaseorder.xlsx';
+		header('Content-Type: application/vnd.ms-excel');
+		header('Content-Disposition: attachment;filename="' . $filename . '"');
+		header('Cache-Control: max-age=0');
+		$writer->save('php://output');
+	}
+
+	// viewPurchaseorderBulky 
+	public function viewPurchaseorderBulky()
+	{
+
+		$this->db->trans_start();
+		try {
+			$file = $_FILES['file']['name'];
+			$ext = pathinfo($file, PATHINFO_EXTENSION);
+			if ($ext == 'csv') {
+				$reader = new Csv();
+			} else {
+				$reader = new ReaderXlsx();
+			}
+			$reader->setReadDataOnly(true);
+			$spreadsheet = $reader->load($_FILES['file']['tmp_name']);
+			$sheetData = $spreadsheet->getActiveSheet()->toArray();
+
+			$this->load->library('uuid');
+			$dataPurchaseOrder = [];
+			foreach ($sheetData as $key => $value) {
+				if ($key > 0) {
+					// pastikan tidak ada data yang kosong 
+					if (empty($value[0]) || empty($value[1]) || empty($value[2])) {
+						throw new Exception('Data cannot be empty');
+					} else {
+						$checkSku = $this->db->query('SELECT id_barang,sku,nama_barang FROM barang WHERE sku = "' . $value[0] . '" ');
+						$checkBatch = $this->db->query('SELECT id_batch,expiration_date FROM batch WHERE batchnumber = "' . str_replace(' ', '', trim($value[1])) . '" ');
+						$checkQty = $this->db->query('SELECT quantity FROM rack_items WHERE id_barang = "' . $checkSku->row()->id_barang . '" AND id_batch = "' . $checkBatch->row()->id_batch . '" ');
+
+						if ($checkSku->num_rows() == 0) {
+							throw new Exception('SKU ' . $value[0] . ' not found');
+						} else {
+							if ($checkBatch->num_rows() == 0) {
+								throw new Exception('Batch ' . $value[1] . ' on  SKU ' . $value[0] . ' not found');
+							} else {
+
+								if ($checkQty->num_rows() == 0) {
+									throw new Exception('SKU ' . $value[0] . ' with Batch ' . $value[1] . ' not found in rack');
+								} else {
+									if ($checkQty->row()->quantity < preg_replace('/[^0-9]/', '', str_replace(' ', '', trim($value[2])))) {
+										throw new Exception('SKU ' . $value[0] . ' with Batch ' . $value[1] . ' not enough in rack (Just ' . $checkQty->row()->quantity . ' PCS)');
+									} else {
+										$dataPurchaseOrder[] = [
+											'sku' => $value[0],
+											'id_barang' => $checkSku->row()->id_barang,
+											'nama_barang' => $checkSku->row()->nama_barang,
+											'id_batch' => $checkBatch->row()->id_batch,
+											'batchnumber' => str_replace(' ', '', trim($value[1])),
+											'ed' => $checkBatch->row()->expiration_date,
+											'qty' => preg_replace('/[^0-9]/', '', str_replace(' ', '', trim($value[2]))),
+										];
+									}
+								}
+							}
+						}
+						$response = array('status' => 'success', 'message' => 'Data imported successfully.');
+					}
+				}
+			}
+			$this->db->trans_complete();
+			if ($this->db->trans_status() === FALSE) {
+				throw new Exception('Transaction failed');
+			}
+		} catch (Exception $e) {
+			$this->db->trans_rollback();
+			$response = array('status' => 'error', 'message' => $e->getMessage());
+		}
+
+		if ($response['status'] == 'success') {
+			$data = [
+				'title' => 'Purchaseorder',
+				'subtitle' => 'Data Purchaseorder',
+				'subtitle2' => 'Data Purchaseorder',
+				'po' => $dataPurchaseOrder,
+				'customer' => $this->db->get('customer')
+			];
+			$this->load->view('user/purchaseorder/viewBulky', $data);
+		} else {
+			$this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">' . $response['message'] . '</div>');
+			redirect('user/purchaseorder');
+		}
 	}
 }
 
