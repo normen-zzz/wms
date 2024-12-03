@@ -93,7 +93,7 @@
 
                                                                </td>
                                                                 <td>
-                                                                    <input type="number" class="form-control qty" name="qty[]" value="<?= $po1['qty'] ?>">
+                                                                    <input type="number" class="form-control qty" name="qty[]" value="<?= $po1['qty'] ?>" readonly>
                                                                 </td>
                                                                 <td>
                                                                     <!-- button for remove row  -->
