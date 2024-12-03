@@ -58,6 +58,7 @@ class Customer extends CI_Controller
 		$id_customer = $this->input->post('id_customer');
 		$data = [
 			'nama_customer' => $this->input->post('nama_customer'),
+            'alamat' => $this->input->post('alamat')
 		];
 
 		$this->db->where('id_customer', $id_customer);

@@ -42,6 +42,7 @@
                                 <!-- Basic Tables start -->
 
                                 <div class="card">
+
                                     <div class="card-header">
                                         <h5 class="card-title">
                                             <?= $subtitle2 ?>
@@ -50,6 +51,15 @@
                                     </div>
 
                                     <div class="card-body">
+                                        <?php if ($this->session->flashdata('message')) { ?>
+
+                                            <?= $this->session->flashdata('message') ?>
+
+                                        <?php } ?>
+                                        <!-- button modal bulk input  -->
+                                        <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#bulkInput">
+                                            Bulk Input
+                                        </button>
                                         <div class="table-responsive">
                                             <table class="table" id="tblpo">
                                                 <thead>
@@ -102,6 +112,30 @@
             </div>
 
             <?php $this->load->view('templates/footer') ?>
+        </div>
+    </div>
+
+    <!-- bulkInput -->
+    <div class="modal fade" id="bulkInput" tabindex="-1" aria-labelledby="bulkInputLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bulkInputLabel">Bulk Input Purchase Order</h5>
+                    <a href="<?= base_url('user/Purchaseorder/templateBulkInput') ?>" class="btn btn-primary">Download Template</a>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="<?= base_url('user/purchaseorder/viewPurchaseorderBulky') ?>" method="post" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="bulkInputFile" class="form-label">File Excel</label>
+                            <input class="form-control" type="file" id="file" name="file">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                </form>
+            </div>
         </div>
     </div>
 
