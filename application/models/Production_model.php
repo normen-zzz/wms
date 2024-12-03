@@ -411,7 +411,7 @@ class Production_model extends CI_Model
 	// checkQtyBatch
 	public function checkQtyBatch($sku,$batch)
 	{
-		$this->db->select('rack_items.quantity,batch.batchnumber,barang.sku');
+		$this->db->select('SUM(rack_items.quantity),rack_items.quantity,batch.batchnumber,barang.sku');
 		$this->db->from('rack_items');
 		// join barang 
 		$this->db->join('barang', 'rack_items.id_barang = barang.id_barang');
