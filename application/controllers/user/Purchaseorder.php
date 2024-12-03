@@ -312,7 +312,7 @@ class Purchaseorder extends CI_Controller
 					} else {
 						$checkSku = $this->db->query('SELECT id_barang,sku,nama_barang FROM barang WHERE sku = "' . $value[0] . '" ');
 						$checkBatch = $this->db->query('SELECT id_batch,expiration_date FROM batch WHERE batchnumber = "' . str_replace(' ', '', trim($value[1])) . '" ');
-						$checkQty = $this->db->query('SELECT quantity FROM rack_items WHERE id_barang = "' . $checkSku->row()->id_barang . '" AND id_batch = "' . $checkBatch->row()->id_batch . '" ');
+						$checkQty = $this->db->query('SELECT SUM(a.quantity) AS total_quantity FROM rack_items a JOIN batch b ON a.id_batch = b.id_batch WHERE a.id_barang = "' . $checkSku->row()->id_barang . '" AND b.batchnumber = "' .str_replace(' ', '', trim($value[1])) . '" ');
 
 						if ($checkSku->num_rows() == 0) {
 							throw new Exception('SKU ' . $value[0] . ' not found');
@@ -324,8 +324,8 @@ class Purchaseorder extends CI_Controller
 								if ($checkQty->num_rows() == 0) {
 									throw new Exception('SKU ' . $value[0] . ' with Batch ' . $value[1] . ' not found in rack');
 								} else {
-									if ($checkQty->row()->quantity < preg_replace('/[^0-9]/', '', str_replace(' ', '', trim($value[2])))) {
-										throw new Exception('SKU ' . $value[0] . ' with Batch ' . $value[1] . ' not enough in rack (Just ' . $checkQty->row()->quantity . ' PCS)');
+									if ($checkQty->row()->total_quantity < preg_replace('/[^0-9]/', '', str_replace(' ', '', trim($value[2])))) {
+										throw new Exception('SKU ' . $value[0] . ' with Batch ' . $value[1] . ' not enough in rack (Just ' . $checkQty->row()->total_quantity . ' PCS)');
 									} else {
 										$dataPurchaseOrder[] = [
 											'sku' => $value[0],
