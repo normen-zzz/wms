@@ -86,9 +86,10 @@
                                                             <td>
                                                                 <input type="text" name="id_batch" id="id_batch" value="<?= $detailPo1['id_batch'] ?>" hidden>
                                                                 <select name="batch" class="form-select selectBatch">
+                                                                    <option selected value="<?= $detailPo1['id_batch'] ?>"><?= $detailPo1['batchnumber'] ?></option>
                                                                 </select>
 
-                                                               
+
                                                             </td>
                                                             <td><?= $detailPo1['expiration_date'] ?></td>
                                                             <td><input type="text" class="form-control" name="qty" value="<?= $detailPo1['qty'] ?>"></td>
@@ -174,7 +175,7 @@
                 var id_barang = $(this).find('#id_barang').val();
                 var id_batch = $(this).find('#id_batch').val();
                 console.log(id_barang);
-                
+
 
                 $.ajax({
                     url: "<?= base_url('user/purchaseorder/getBatch') ?>",
@@ -186,13 +187,7 @@
                     success: function(response) {
                         var batchOptions = response.batch_options;
                         $.each(batchOptions, function(index, batch) {
-                            if (batch.id == id_batch) {
-                                $selectBatch.append($('<option>', {
-                                    value: batch.id,
-                                    text: batch.name,
-                                    selected: true
-                                }));
-                            } else {
+                            if (batch.id != id_batch) {
                                 $selectBatch.append($('<option>', {
                                     value: batch.id,
                                     text: batch.name
@@ -203,7 +198,7 @@
                     }
 
                 });
-                
+
             });
 
 
@@ -263,7 +258,7 @@
             });
 
             var $row = $(this).closest('tr');
-           
+
             var id_barang = $row.find('input[name="id_barang"]').val();
             var id_batch = $row.find('select[name="batch"]').val();
             var qty = $row.find('input[name="qty"]').val();
