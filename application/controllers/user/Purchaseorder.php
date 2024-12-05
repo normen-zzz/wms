@@ -258,14 +258,33 @@ class Purchaseorder extends CI_Controller
 	// editRow
 	public function editRow()
 	{
-		$id_datapurchaseorder = $this->input->post('id_datapurchaseorder');
-		$qty = $this->input->post('qty');
-		$update = $this->db->update('datapurchaseorder', ['qty' => $qty], ['id_datapurchaseorder' => $id_datapurchaseorder]);
-		if ($update) {
-			$response = array('status' => 'success', 'message' => 'Edit Data successfully.');
-		} else {
-			$response = array('status' => 'error', 'message' => 'Failed to Edit Data.');
+		$this->db->trans_start();
+
+		try {
+			$id_datapurchaseorder = $this->input->post('id_datapurchaseorder');
+			$id_barang = $this->input->post('id_barang');
+			$id_batch = $this->input->post('id_batch');
+			$qty = $this->input->post('qty');
+			$checkRackItems = $this->db->query('SELECT SUM(a.quantity) AS total_quantity,c.sku,b.batchnumber FROM rack_items a JOIN batch b ON a.id_batch = b.id_batch JOIN barang c ON a.id_barang = c.id_barang WHERE a.id_barang = "' . $id_barang . '" AND b.id_batch = "' . $id_batch . '" ')->row_array();
+			if ($checkRackItems['total_quantity'] < $qty) {
+				throw new Exception('SKU ' . $checkRackItems['sku'] . ' with Batch ' . $checkRackItems['batchnumber'] . ' not enough in rack (Just ' . $checkRackItems['total_quantity'] . ' PCS)');
+			} else {
+				$update = $this->db->update('datapurchaseorder', ['id_batch' => $id_batch, 'qty' => $qty], ['id_datapurchaseorder' => $id_datapurchaseorder]);
+				if ($update) {
+					$response = array('status' => 'success', 'message' => 'Edit Data successfully.');
+				} else {
+					throw new Exception('Failed to Edit Data.');
+				}
+			}
+			$this->db->trans_complete();
+			if ($this->db->trans_status() === FALSE) {
+				throw new Exception('Transaction failed');
+			}
+		} catch (Exception $e) {
+			$this->db->trans_rollback();
+			$response = array('status' => 'error', 'message' => $e->getMessage());
 		}
+
 		echo json_encode($response);
 	}
 
@@ -312,7 +331,7 @@ class Purchaseorder extends CI_Controller
 					} else {
 						$checkSku = $this->db->query('SELECT id_barang,sku,nama_barang FROM barang WHERE sku = "' . $value[0] . '" ');
 						$checkBatch = $this->db->query('SELECT id_batch,expiration_date FROM batch WHERE batchnumber = "' . str_replace(' ', '', trim($value[1])) . '" ');
-						$checkQty = $this->db->query('SELECT SUM(a.quantity) AS total_quantity FROM rack_items a JOIN batch b ON a.id_batch = b.id_batch WHERE a.id_barang = "' . $checkSku->row()->id_barang . '" AND b.batchnumber = "' .str_replace(' ', '', trim($value[1])) . '" ');
+						$checkQty = $this->db->query('SELECT SUM(a.quantity) AS total_quantity FROM rack_items a JOIN batch b ON a.id_batch = b.id_batch WHERE a.id_barang = "' . $checkSku->row()->id_barang . '" AND b.batchnumber = "' . str_replace(' ', '', trim($value[1])) . '" ');
 
 						if ($checkSku->num_rows() == 0) {
 							throw new Exception('SKU ' . $value[0] . ' not found');
