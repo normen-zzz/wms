@@ -340,7 +340,7 @@ class Production extends CI_Controller
 							throw new Exception('Failed to update rack items1');
 						}
 					} else {
-						throw new Exception('Quantity rack items not enough');
+						throw new Exception('Quantity rack items not enough for ' . $pick['sku'].' '.$pick['batchnumber'].' '.$pick['sloc'].'just have '.$lastQuantityRackItemsMaterial.' available');
 					}
 				}
 				// update status material 
