@@ -287,8 +287,15 @@ class Production_model extends CI_Model
 	// getPicksByMaterial
 	public function getPicksByMaterial($id_material)
 	{
-		$this->db->select('*');
+		$this->db->select('*,barang.sku,batch.batchnumber,rack.sloc');
 		$this->db->from('pick_production');
+		// join barang 
+		$this->db->join('barang', 'pick_production.id_barang = barang.id_barang');
+		// join batch
+		$this->db->join('batch', 'pick_production.id_batch = batch.id_batch');
+		// join rack 
+		$this->db->join('rack', 'pick_production.id_rack = rack.id_rack');
+
 		$this->db->where('id_material', $id_material);
 		$this->db->order_by('pick_production.created_at', 'DESC');
 		$query = $this->db->get();
