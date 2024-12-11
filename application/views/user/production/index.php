@@ -119,9 +119,9 @@
 																<?php }
 																} ?>
 
-																<?php if ($production->status == 3) { ?>
+																<!-- <?php if ($production->status == 3) { ?>
 																	<button class="btn btn-primary" id="voidProduction" data-id_production="<?= $production->id_production ?>">Void Production</button>
-																<?php } ?>
+																<?php } ?> -->
 															</td>
 														</tr>
 													<?php endforeach; ?>
