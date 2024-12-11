@@ -22,8 +22,6 @@ class Production extends CI_Controller
 			'subtitle2' => 'Data Production',
 			'productions' => $this->production->getDataProduction(),
 		];
-
-
 		$this->load->view('user/production/index', $data);
 	}
 
@@ -299,6 +297,7 @@ class Production extends CI_Controller
 	// finishAllProduction
 	public function finishAllProduction($id_production)
 	{
+
 		$this->db->trans_start();
 		try {
 			// ambil data production berdasarkan id_production
@@ -312,37 +311,46 @@ class Production extends CI_Controller
 				// ambil data pick production berdasarkan id_material
 				$picks = $this->production->getPicksByMaterial($material['id_material']);
 				// perulangan pick production
-				foreach ($picks as $pick) {
-					// ambil data quantity rack items berdasarkan id_barang,id_batch,id_rack
-					$lastQuantityRackItemsMaterial = $this->production->getLastQtyRackItemsMaterial($pick['id_barang'], $pick['id_batch'], $pick['id_rack']);
-					if ($pick['qty'] <= $lastQuantityRackItemsMaterial) {
-						$updateQuantityRackItemsMaterial = $this->db->update('rack_items', ['quantity' => $lastQuantityRackItemsMaterial - $pick['qty']], ['id_barang' => $pick['id_barang'], 'id_batch' => $pick['id_batch'], 'id_rack' => $pick['id_rack']]);
+				if ($picks) {
+					foreach ($picks as $pick) {
+						// ambil data quantity rack items berdasarkan id_barang,id_batch,id_rack
+						$lastQuantityRackItemsMaterial = $this->production->getLastQtyRackItemsMaterial($pick['id_barang'], $pick['id_batch'], $pick['id_rack']);
+						if ($pick['qty'] != 0) {
+							if ($pick['qty'] <= $lastQuantityRackItemsMaterial) {
+								$updateQuantityRackItemsMaterial = $this->db->update('rack_items', ['quantity' => $lastQuantityRackItemsMaterial - $pick['qty']], ['id_barang' => $pick['id_barang'], 'id_batch' => $pick['id_batch'], 'id_rack' => $pick['id_rack']]);
 
-						if ($updateQuantityRackItemsMaterial) {
-							$updateStatusPickProduction = $this->db->update('pick_production', ['status' => 1], ['id_pick_production' => $pick['id_pick_production']]);
-							if ($updateStatusPickProduction) {
-								// log wms 
-								$dataLog1 = [
-									'id_barang' => $pick['id_barang'],
-									'id_batch' => $pick['id_batch'],
-									'id_rack' => $pick['id_rack'],
-									'condition' => 'out',
-									'qty' => $pick['qty'],
-									'at' => date('Y-m-d H:i:s'),
-									'by' => $pick['created_by'],
-									'no_document' => $production['no_production'],
-								];
-								$this->db->insert('wms_log', $dataLog1);
+								if ($updateQuantityRackItemsMaterial) {
+									$updateStatusPickProduction = $this->db->update('pick_production', ['status' => 1], ['id_pick_production' => $pick['id_pick_production']]);
+									if ($updateStatusPickProduction) {
+										// log wms 
+										$dataLog1 = [
+											'id_barang' => $pick['id_barang'],
+											'id_batch' => $pick['id_batch'],
+											'id_rack' => $pick['id_rack'],
+											'condition' => 'out',
+											'qty' => $pick['qty'],
+											'at' => date('Y-m-d H:i:s'),
+											'by' => $pick['created_by'],
+											'no_document' => $production['no_production'],
+										];
+										$this->db->insert('wms_log', $dataLog1);
+									} else {
+										throw new Exception('Failed to update pick production status');
+									}
+								} else {
+									throw new Exception('Failed to update rack items1');
+								}
 							} else {
-								throw new Exception('Failed to update pick production status');
+								throw new Exception('Quantity rack items not enough for ' . $pick['sku'] . ' ' . $pick['batchnumber'] . ' ' . $pick['sloc'] . 'just have ' . $lastQuantityRackItemsMaterial . ' available');
 							}
 						} else {
-							throw new Exception('Failed to update rack items1');
+							throw new Exception('Quantity pick tidak boleh 0' . $pick['sku'] . ' ' . $pick['batchnumber'] . ' ' . $pick['sloc'] . $pick['qty']);
 						}
-					} else {
-						throw new Exception('Quantity rack items not enough for ' . $pick['sku'].' '.$pick['batchnumber'].' '.$pick['sloc'].'just have '.$lastQuantityRackItemsMaterial.' available');
 					}
+				} else {
+					throw new Exception('Data pick production tidak ditemukan');
 				}
+
 				// update status material 
 				$updateStatusMaterial = $this->db->update('production_materials', ['status' => 2], ['id_material' => $material['id_material']]);
 				if (!$updateStatusMaterial) {
@@ -589,6 +597,155 @@ class Production extends CI_Controller
 				'status' => 'error',
 				'message' => 'Batch not found'
 			]);
+		}
+	}
+
+	// voidProduction
+	public function voidProduction()
+	{
+		$this->db->trans_start();
+		try {
+			$id_production = $this->input->post('id_production');
+			$production = $this->production->getProductionByIdAll($id_production);
+			$pick_production = $this->production->getPickProductionByProductionPicked($id_production);
+			$logProduction = $this->db->query('SELECT wms_log.*,batch.batchnumber FROM wms_log JOIN batch ON wms_log.id_batch = batch.id_batch WHERE wms_log.id_barang = ' . $production['id_barang'] . ' AND wms_log.id_batch = ' . $production['id_batch'] . ' AND wms_log.`condition` = "in" AND wms_log.no_document = "' . $production['no_production'] . '"  ')->row_array();
+			$checkQtyRackItemsProduction = $this->db->query('SELECT * FROM rack_items WHERE id_barang = ' . $production['id_barang'] . ' AND id_batch = ' . $production['id_batch'] . ' AND id_rack = ' . $logProduction['id_rack'] . ' ')->row_array();
+
+
+			if ($pick_production->num_rows() > 0) {
+				foreach ($pick_production->result_array() as $pick_production1) {
+					//check qty on rack items
+					$checkQtyOnRack = $this->production->getQtyRackItems($pick_production1['id_barang'], $pick_production1['id_batch'], $pick_production1['id_rack']);
+					//jika qty rack items production lebih besar sama dengan qty pick production
+					if ($pick_production1['qty'] != 0) {
+						
+							$updatePickProduction = $this->db->update('pick_production', ['status' => 2], ['id_pick_production' => $pick_production1['id_pick_production']]);
+							if ($updatePickProduction) {
+								$updateRackItems = $this->db->update('rack_items', ['quantity' => $checkQtyOnRack['quantity'] + $pick_production1['qty']], ['id_barang' => $pick_production1['id_barang'], 'id_batch' => $pick_production1['id_batch'], 'id_rack' => $pick_production1['id_rack']]);
+								if ($updateRackItems) {
+									$dataLog = [
+										'id_barang' => $pick_production1['id_barang'],
+										'id_batch' => $pick_production1['id_batch'],
+										'id_rack' => $pick_production1['id_rack'],
+										'condition' => 'in',
+										'qty' => $pick_production1['qty'],
+										'at' => date('Y-m-d H:i:s'),
+										'by' => $this->session->userdata('id_users'),
+										'no_document' => $production['no_production'],
+										'Description' => 'Void Production'
+									];
+									$insertLog = $this->db->insert('wms_log', $dataLog);
+									if (!$insertLog) {
+										throw new Exception('Failed to insert log');
+									}
+								} else {
+									throw new Exception('Failed to update rack items');
+								}
+							} else {
+								throw new Exception('Failed to update pick production');
+							}
+						
+					} else {
+						throw new Exception('Quantity pick tidak boleh 0' . $pick_production1['sku'] . ' ' . $pick_production1['batchnumber'] . ' ' . $pick_production1['sloc'] . $pick_production1['qty']);
+					}
+				}
+				//jika qty rack items production lebih besar sama dengan qty bundling
+				if ($checkQtyRackItemsProduction['quantity'] >= $production['qty_bundling']) {
+					$updateRackItemsProduction = $this->db->update('rack_items', ['quantity' => $checkQtyRackItemsProduction['quantity'] - $production['qty_bundling']], ['id_barang' => $production['id_barang'], 'id_batch' => $production['id_batch'], 'id_rack' => $logProduction['id_rack']]);
+					if ($updateRackItemsProduction) {
+						$dataLogProduction = [
+							'id_barang' => $production['id_barang'],
+							'id_batch' => $production['id_batch'],
+							'id_rack' => $logProduction['id_rack'],
+							'condition' => 'out',
+							'qty' => $production['qty_bundling'],
+							'at' => date('Y-m-d H:i:s'),
+							'by' => $this->session->userdata('id_users'),
+							'no_document' => $production['no_production'],
+							'Description' => 'Void Production'
+						];
+						$insertLogProduction = $this->db->insert('wms_log', $dataLogProduction);
+						//update log production
+						if ($insertLogProduction) {
+							$updateProduction = $this->db->update('production', ['status' => 4], ['id_production' => $id_production]);
+							if ($updateProduction) {
+								$response = json_encode(array('status' => 'success', 'message' => 'Production voided'));
+							} else {
+								throw new Exception('Failed to update production');
+							}
+						} else {
+							throw new Exception('Failed to insert log production');
+						}
+					} else {
+						throw new Exception('Failed to update rack items production');
+					}
+				} else {
+					throw new Exception('Quantity rack items not enough for ' . $production['sku_bundling'] . ' ' . $production['batch_bundling'] . ' ' . 'just have ' . $checkQtyRackItemsProduction['quantity'] . ' available');
+				}
+			} else {
+				throw new Exception('Data pick production tidak ditemukan');
+			}
+
+
+
+			$this->db->trans_complete();
+			if ($this->db->trans_status() === FALSE) {
+				throw new Exception('Transaction failed');
+			}
+		} catch (Exception $e) {
+			$this->db->trans_rollback();
+			$response = json_encode(array('status' => 'error', 'message' => $e->getMessage()));
+		}
+		echo $response;
+	}
+
+	//fixProduction
+	public function fixProduction()
+	{
+		$this->db->trans_start();
+		try {
+			$log = $this->db->query('SELECT * FROM `wms_log` WHERE no_document LIKE "%PRD%" AND `condition`= "out" AND qty = 0');
+			foreach ($log->result_array() as $log1) {
+				$production = $this->db->query('SELECT * FROM production WHERE no_production = "' . $log1['no_document'] . '"')->row_array();
+				$pick_production = $this->db->query('SELECT * FROM pick_production WHERE id_barang = ' . $log1['id_barang'] . ' AND id_batch = ' . $log1['id_batch'] . ' AND id_rack = ' . $log1['id_rack'] . ' AND id_production = ' . $production['id_production'] . ' ')->row_array();
+				$lastQuantityRackItems = $this->db->query('SELECT * FROM rack_items WHERE id_barang = ' . $log1['id_barang'] . ' AND id_batch = ' . $log1['id_batch'] . ' AND id_rack = ' . $log1['id_rack'] . ' ')->row_array();
+
+				if ($pick_production['qty'] <= $lastQuantityRackItems['quantity']) {
+					$updateRackItems = $this->db->update('rack_items', ['quantity' => $lastQuantityRackItems['quantity'] - $pick_production['qty']], ['id_barang' => $log1['id_barang'], 'id_batch' => $log1['id_batch'], 'id_rack' => $log1['id_rack']]);
+					if ($updateRackItems) {
+						$dataUpdateLog = [
+							'qty' => $pick_production['qty'],
+							'by' => $pick_production['created_by']
+						];
+						$updateLog = $this->db->update('wms_log', $dataUpdateLog, ['id_log' => $log1['id_log']]);
+						if (!$updateLog) {
+							throw new Exception('Failed to update log');
+						}
+					} else {
+						throw new Exception('Failed to update rack items');
+					}
+				} else {
+					throw new Exception('Quantity rack items not enough for id_barang ' . $log1['id_barang'] . ' and id_batch ' . $log1['id_batch'] . ' and id_rack ' . $log1['id_rack'] . ' just have ' . $lastQuantityRackItems['quantity'] . ' available');
+				}
+			}
+			$this->db->trans_complete();
+			if ($this->db->trans_status() === FALSE) {
+				throw new Exception('Transaction failed');
+			} else {
+				$response = json_encode(array('status' => 'success', 'message' => 'Production fixed'));
+			}
+		} catch (Exception $e) {
+			$this->db->trans_rollback();
+			$response = json_encode(array('status' => 'error', 'message' => $e->getMessage()));
+		}
+
+		$decode = json_decode($response, true);
+		if ($decode['status'] == 'success') {
+			$this->session->set_flashdata('success', 'Production fixed');
+			redirect('user/production');
+		} else {
+			$this->session->set_flashdata('error', 'Failed to fix production because ' . $decode['message']);
+			redirect('user/production');
 		}
 	}
 }

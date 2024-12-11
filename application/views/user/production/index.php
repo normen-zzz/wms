@@ -52,11 +52,22 @@
 											<a href="<?= base_url('user/production/add') ?>" class="btn btn-primary btn-sm">Add
 												Production</a>
 										<?php } ?>
-										
+
 
 									</div>
 
 									<div class="card-body">
+										<!-- show flashdata  -->
+										<?php if ($this->session->flashdata('success')) : ?>
+											<div class="alert alert-success" role="alert">
+												<?= $this->session->flashdata('success') ?>
+											</div>
+										<?php endif; ?>
+										<?php if ($this->session->flashdata('error')) : ?>
+											<div class="alert alert-danger" role="alert">
+												<?= $this->session->flashdata('error') ?>
+											</div>
+										<?php endif; ?>
 										<div class="table-responsive">
 											<table class="table" id="tblproduction">
 												<thead>
@@ -76,6 +87,7 @@
 													<?php
 													$index = 1;
 													foreach ($productions as $production) :
+														$log = $this->db->query('SELECT * FROM wms_log WHERE no_document = "' . $production->no_production . '" AND `condition` = "in" AND qty = 0');
 													?>
 														<tr>
 															<td><?= $index++; ?></td>
@@ -85,25 +97,31 @@
 															<td><?= $production->ed_bundling; ?></td>
 															<td><?= $production->qty_bundling; ?></td>
 															<td><?= date('d-m-Y H:i:s', strtotime($production->dibuat))  ?></td>
-															<td><?= getStatusProduction($production->status,$production->pick_by) ?></td>
+															<td><?= getStatusProduction($production->status, $production->pick_by) ?></td>
 															<td>
 																<a href="<?= base_url('user/production/detail/' . $production->id_production) ?>" class="btn btn-sm btn-primary text-white">Detail</a>
 																<?php if ($production->status == 0) { ?>
-																	<?php if ($this->session->userdata('role_id') == 1 ||  $this->session->userdata('role_id') == 6  ) { ?>
-																	<a href="<?= base_url('user/production/assign/' . $production->id_production) ?>" class="btn btn-sm btn-primary text-white">Assign Picker</a>
+																	<?php if ($this->session->userdata('role_id') == 1 ||  $this->session->userdata('role_id') == 6) { ?>
+																		<a href="<?= base_url('user/production/assign/' . $production->id_production) ?>" class="btn btn-sm btn-primary text-white">Assign Picker</a>
 																	<?php } ?>
 																<?php } ?>
 
 																<?php if ($production->status == 1) { ?>
-																	<?php if ($this->session->userdata('role_id') == 1 || $this->session->userdata('role_id') == 4 || $this->session->userdata('role_id') == 6  ) { ?>
-																	<a href="<?= base_url('user/production/pick/' . $production->id_production) ?>" class="btn btn-sm btn-warning text-black">Pick</a>
-																<?php }} ?>
+																	<?php if ($this->session->userdata('role_id') == 1 || $this->session->userdata('role_id') == 4 || $this->session->userdata('role_id') == 6) { ?>
+																		<a href="<?= base_url('user/production/pick/' . $production->id_production) ?>" class="btn btn-sm btn-warning text-black">Pick</a>
+																<?php }
+																} ?>
 
 																<?php if ($production->status == 2) { ?>
-																	<?php if ($this->session->userdata('role_id') == 1 ||  $this->session->userdata('role_id') == 6  ) { ?>
-																	
-																	<a href="<?= base_url('user/production/finish/' . $production->id_production) ?>" class="btn btn-sm btn-warning text-black">Finish</a>
-																<?php }} ?>
+																	<?php if ($this->session->userdata('role_id') == 1 ||  $this->session->userdata('role_id') == 6) { ?>
+
+																		<a href="<?= base_url('user/production/finish/' . $production->id_production) ?>" class="btn btn-sm btn-warning text-black">Finish</a>
+																<?php }
+																} ?>
+
+																<?php if ($production->status == 3) { ?>
+																	<button class="btn btn-primary" id="voidProduction" data-id_production="<?= $production->id_production ?>">Void Production</button>
+																<?php } ?>
 															</td>
 														</tr>
 													<?php endforeach; ?>
@@ -215,6 +233,80 @@
 					});
 				}
 			});
+		});
+	</script>
+
+	<script>
+		// voidProduction
+		$(document).on('click', '#voidProduction', function() {
+			var id_production = $(this).data('id_production');
+			Swal.fire({
+				title: 'Are you sure?',
+				text: "You want to void this production?",
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Yes, void it!'
+			}).then((result) => {
+				if (result.isConfirmed) {
+					// swal fire loading 
+					Swal.fire({
+						title: 'Void',
+						text: 'Please wait...',
+						allowOutsideClick: false,
+						showConfirmButton: false,
+						willOpen: () => {
+							Swal.showLoading();
+						}
+					});
+					$.ajax({
+						url: '<?= base_url('user/production/voidProduction') ?>',
+						type: 'POST',
+						data: {
+							id_production: id_production
+						},
+						success: function(data) {
+							response = JSON.parse(data);
+							if (response.status == 'success') {
+								Swal.fire(
+									'Verified!',
+									'Your production has been void.',
+									'success'
+								).then((result) => {
+									Swal.fire({
+										title: 'Void',
+										text: 'Please wait...',
+										allowOutsideClick: false,
+										showConfirmButton: false,
+										willOpen: () => {
+											Swal.showLoading();
+										}
+									});
+									location.reload();
+								});
+							} else {
+								Swal.fire(
+									'Error!',
+									'Your production not been void. ' + response.message,
+									'error'
+								).then((result) => {
+									Swal.fire({
+										title: 'Void',
+										text: 'Please wait...',
+										allowOutsideClick: false,
+										showConfirmButton: false,
+										willOpen: () => {
+											Swal.showLoading();
+										}
+									});
+									location.reload();
+								});
+							}
+						}
+					});
+				}
+			})
 		});
 	</script>
 
