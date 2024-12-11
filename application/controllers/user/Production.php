@@ -704,7 +704,7 @@ class Production extends CI_Controller
 	{
 		$this->db->trans_start();
 		try {
-			$log = $this->db->query('SELECT * FROM `wms_log` WHERE no_document LIKE "%PRD%" AND `condition`= "out" AND qty = 0');
+			$log = $this->db->query('SELECT wms_log.*,barang.sku,batch.batchnumber,rack.sloc FROM `wms_log` JOIN barang ON wms_log.id_barang = barang.id_barang JOIN batch ON wms_log.id_batch = batch.id_batch JOIN rack ON wms_log.id_rack = rack.id_rack WHERE no_document LIKE "%PRD%" AND `condition`= "out" AND qty = 0');
 			foreach ($log->result_array() as $log1) {
 				$production = $this->db->query('SELECT * FROM production WHERE no_production = "' . $log1['no_document'] . '"')->row_array();
 				$pick_production = $this->db->query('SELECT * FROM pick_production WHERE id_barang = ' . $log1['id_barang'] . ' AND id_batch = ' . $log1['id_batch'] . ' AND id_rack = ' . $log1['id_rack'] . ' AND id_production = ' . $production['id_production'] . ' ')->row_array();
@@ -725,7 +725,7 @@ class Production extends CI_Controller
 						throw new Exception('Failed to update rack items');
 					}
 				} else {
-					throw new Exception('Quantity rack items not enough for id_barang ' . $log1['id_barang'] . ' and id_batch ' . $log1['id_batch'] . ' and id_rack ' . $log1['id_rack'] . ' just have ' . $lastQuantityRackItems['quantity'] . ' available');
+					throw new Exception( $production['no_production'].' Quantity rack items not enough for sku ' . $log1['sku'] . ' and id_batch ' . $log1['batchnumber'] . ' and id_rack ' . $log1['sloc'] . ' just have ' . $lastQuantityRackItems['quantity'] . ' available');
 				}
 			}
 			$this->db->trans_complete();
