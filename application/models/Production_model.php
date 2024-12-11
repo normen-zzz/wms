@@ -287,7 +287,7 @@ class Production_model extends CI_Model
 	// getPicksByMaterial
 	public function getPicksByMaterial($id_material)
 	{
-		$this->db->select('*,barang.sku,batch.batchnumber,rack.sloc');
+		$this->db->select('pick_production.*,barang.sku,batch.batchnumber,rack.sloc');
 		$this->db->from('pick_production');
 		// join barang 
 		$this->db->join('barang', 'pick_production.id_barang = barang.id_barang');
@@ -428,5 +428,48 @@ class Production_model extends CI_Model
 		$this->db->where('rack_items.id_batch', $batch);
 		$query = $this->db->get();
 		return $query;
+	}
+
+	// getPickProductionByProduction
+	public function getPickProductionByProductionPicked($id)
+	{
+		$this->db->select('pick_production.*,barang.sku,batch.batchnumber,rack.sloc');
+		$this->db->from('pick_production');
+		// join 
+		$this->db->join('barang', 'pick_production.id_barang = barang.id_barang');
+		$this->db->join('batch', 'pick_production.id_batch = batch.id_batch');
+		$this->db->join('rack', 'pick_production.id_rack = rack.id_rack');
+		
+		$this->db->where('id_production', $id);
+		$this->db->where('pick_production.status', 1);
+		$this->db->order_by('pick_production.created_at', 'DESC');
+		$query = $this->db->get();
+		return $query;
+	}
+
+	// getQtyRackItems
+	public function getQtyRackItems($id_barang, $id_batch, $id_rack)
+	{
+		$this->db->select('quantity');
+		$this->db->from('rack_items');
+		$this->db->where('id_barang', $id_barang);
+		$this->db->where('id_batch', $id_batch);
+		$this->db->where('id_rack', $id_rack);
+		$query = $this->db->get();
+		return $query->row_array();
+	}
+
+	// getProductionByIdAll
+	public function getProductionByIdAll($id)
+	{
+		$this->db->select('production.*,barang.id_barang,batch.id_batch');
+		$this->db->from('production');
+		// join barang by sku 
+		$this->db->join('barang', 'production.sku_bundling = barang.sku');
+		// join batch 
+		$this->db->join('batch', 'production.batch_bundling = batch.batchnumber');
+		$this->db->where('production.id_production', $id);
+		$query = $this->db->get();
+		return $query->row_array();
 	}
 }
