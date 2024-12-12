@@ -145,6 +145,11 @@
 
 	<script type="text/javascript">
 		$(document).ready(function() {
+			// customer
+			$('#customer').select2({
+				placeholder: 'Select Customer',
+				allowClear: true
+			});
 
 			initSelect2AndFlatpickr();
 
