@@ -103,7 +103,9 @@
                                                 </tbody>
                                             </table>
                                            
+                                            <?php if ($adjuststock->status == 0 && $this->session->userdata('role_id') == 1) : ?>
                                             <a href="<?= base_url('user/adjuststock/process/' . $adjuststock->uuid) ?>" class="btn btn-primary">Process</a>
+                                            <?php endif; ?>
                                         </div>
 
                                     </div>
