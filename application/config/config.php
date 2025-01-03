@@ -23,7 +23,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = "http://wms.test/";
+$config['base_url'] = "https://wms.test/";
 // $http = 'http' . ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 's' : '') . '://';
 // $newurl = str_replace("index.php", "", $_SERVER['SCRIPT_NAME']);
 // $config['base_url']    = "$http" . $_SERVER['SERVER_NAME'] . "" . $newurl;

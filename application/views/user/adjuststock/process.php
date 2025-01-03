@@ -63,7 +63,8 @@
 
                                                             <th>Batch</th>
                                                             <th>Sloc</th>
-                                                            <th>Qty</th>
+                                                            <th>Qty FROM</th>
+                                                            <th>Qty TO</th>
                                                             <th>Status</th>
                                                             <th>Notes </th>
                                                         </tr>
@@ -81,7 +82,8 @@
 
                                                                 <td><?= $adjuststockDetail1['batchnumber'] ?> <br><?= $adjuststockDetail1['expiration_date'] ?></td>
                                                                 <td><?= $adjuststockDetail1['sloc'] ?></td>
-                                                                <td><?= $adjuststockDetail1['quantity'] ?></td>
+                                                                <td><?= $adjuststockDetail1['quantity_from'] ?></td>
+                                                                <td><?= $adjuststockDetail1['quantity_to'] ?></td>
 
                                                                 <td><?php if ($adjuststockDetail1['status'] == 0) {
                                                                         echo '<span class="badge bg-warning">Wait Approve Super Admin</span>';
