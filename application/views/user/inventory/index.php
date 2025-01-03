@@ -158,8 +158,18 @@
 				lastResult = decodedText;
 
 				// decodedText to fill sloc input after that auto submit form
+				// swal loading 
+				Swal.fire({
+					title: 'Loading',
+					text: 'Please wait...',
+					icon: 'info',
+					showCancelButton: false,
+					showConfirmButton: false,
+				});
 				$('#sloc').val(decodedText);
 				$('form').submit();
+				// close camera
+				html5QrcodeScanner.clear();
 
 
 
@@ -195,7 +205,7 @@
 			}, 2000)
 		});
 	</script>
-	
+
 
 </body>
 

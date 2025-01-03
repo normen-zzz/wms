@@ -74,6 +74,7 @@
                                                         <th>Rack</th>
                                                         <th>Qty (FROM)</th>
                                                         <th>Qty (TO)</th>
+                                                        <th>Notes</th>
                                                         <th>Status</th>
                                                     </tr>
                                                 </thead>
@@ -87,6 +88,7 @@
                                                             <td><?= $adjuststockDetail1['sloc'] ?></td>
                                                             <td><?= $adjuststockDetail1['quantity_from'] ?></td>
                                                             <td><?= $adjuststockDetail1['quantity_to'] ?></td>
+                                                            <td><?= $adjuststockDetail1['notes'] ?></td>
 
                                                             <td><?php if ($adjuststockDetail1['status'] == 0) {
                                                                     echo '<span class="badge bg-warning">Wait Approve Super Admin</span>';
@@ -100,6 +102,8 @@
                                                     <?php } ?>
                                                 </tbody>
                                             </table>
+                                           
+                                            <a href="<?= base_url('user/adjuststock/process/' . $adjuststock->uuid) ?>" class="btn btn-primary">Process</a>
                                         </div>
 
                                     </div>
