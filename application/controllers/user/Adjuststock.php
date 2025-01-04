@@ -138,18 +138,16 @@ class Adjuststock extends CI_Controller
                     $dataBatch = $this->db->query('SELECT batchnumber FROM batch WHERE id_batch = ' . $id_batch[$i])->row_array();
                     $dataRack = $this->db->query('SELECT sloc FROM rack WHERE id_rack = ' . $checkSloc)->row_array();
 
-                    $dataAdjuststockWa .= 'Barang : ' . $dataBarang['nama_barang'] . '<br> Batch : ' . $dataBatch['batchnumber'] . '<br> Rack : ' . $dataRack['sloc'] . '<br> Quantity (Before) : ' . $quantityBefore['quantity'] . '<br> Quantity (After) : ' . $quantity[$i] . '<br> Notes : ' . $notes[$i] . ' \r\n\r\n';
+                    $dataAdjuststockWa .= 'Barang : '. $dataBarang['sku'] .' ' . $dataBarang['nama_barang'] . '<br> Batch : ' . $dataBatch['batchnumber'] . '<br> Rack : ' . $dataRack['sloc'] . '<br> Quantity (Before) : ' . $quantityBefore['quantity'] . '<br> Quantity (After) : ' . $quantity[$i] . '<br> Notes : ' . $notes[$i] . ' \r\n\r\n';
                 }
                 $insertDataAdjuststock = $this->adjuststock->insert_data_adjuststock($batchDataAdjuststock);
                 if ($insertDataAdjuststock) {
                     $superadmin = $this->db->query('SELECT no_handphone FROM users WHERE role_id = 1')->result_array();
                     foreach ($superadmin as $admin) {
-                        $wa = $this->whatsapp->kirim($admin['no_handphone'], 'Adjust Stock baru telah ditambahkan oleh ' . $this->session->userdata('nama') . ' dengan nomor ' . $no_adjuststock . ', Berikut Datanya : <br><br> ' . $dataAdjuststockWa . ' Silahkan cek di warehouse.transtama.com Untuk melakukan Approval');
+                        $this->whatsapp->kirim($admin['no_handphone'], 'Adjust Stock baru telah ditambahkan oleh ' . $this->session->userdata('nama') . ' dengan nomor ' . $no_adjuststock . ', Berikut Datanya : <br><br> ' . $dataAdjuststockWa . ' Silahkan cek di warehouse.transtama.com Untuk melakukan Approval');
                         // $wa = $this->whatsapp->kirim($admin['no_handphone'], "Silahkan cek di warehouse.transtama.com");
 
-                        if (!$wa) {
-                            throw new Exception('Gagal mengirimkan pesan ke whatsapp');
-                        }
+                        
                     }
                 } else {
                     throw new Exception('Gagal menambahkan adjust stock  1');
@@ -212,41 +210,40 @@ class Adjuststock extends CI_Controller
             for ($i = 0; $i < count($id_dataadjuststock); $i++) {
                 $dataAdjuststock = $this->db->query('SELECT * FROM dataadjuststock WHERE id_dataadjuststock = ' . $id_dataadjuststock[$i])->row_array();
                 $rackItems = $this->db->query('SELECT * FROM rack_items WHERE id_barang = ' . $dataAdjuststock['id_barang'] . ' AND id_batch = ' . $dataAdjuststock['id_batch'] . ' AND id_rack = ' . $dataAdjuststock['id_rack'])->row_array();
-                $updateRackItems = $this->db->update('rack_items', ['quantity' => $dataAdjuststock['quantity']], ['id_barang' => $dataAdjuststock['id_barang'], 'id_batch' => $dataAdjuststock['id_batch'], 'id_rack' => $dataAdjuststock['id_rack']]);
+                $updateRackItems = $this->db->update('rack_items', ['quantity' => $dataAdjuststock['quantity_to']], ['id_barang' => $dataAdjuststock['id_barang'], 'id_batch' => $dataAdjuststock['id_batch'], 'id_rack' => $dataAdjuststock['id_rack']]);
                 if ($updateRackItems) {
                     $updateDataAdjuststock = $this->db->update('dataadjuststock', ['status' => 1, 'approved_by' => $this->session->userdata('id_users')], ['id_dataadjuststock' => $id_dataadjuststock[$i]]);
                     if ($updateDataAdjuststock) {
-                        $dataLog1 = [
-                            'id_barang' => $dataAdjuststock['id_barang'],
-                            'id_batch' => $dataAdjuststock['id_batch'],
-                            'id_rack' => $dataAdjuststock['id_rack'],
-                            'condition' => 'out',
-                            'qty' => $rackItems['quantity'],
-                            'at' => date('Y-m-d H:i:s'),
-                            'by' => $dataAdjuststock['created_by'],
-                            'no_document' => $adjustStock['no_adjuststock'],
-                            'description' => 'Adjust Stock Approved By ' . $this->session->userdata('nama') . ' (FROM)'
-                        ];
-                        $insertLog1 = $this->db->insert('wms_log', $dataLog1);
-                        if ($insertLog1) {
-                            $dataLog2 = [
+                        if ($rackItems['quantity'] > $dataAdjuststock['quantity_to']) {
+                            $datalog = [
+                                'id_barang' => $dataAdjuststock['id_barang'],
+                                'id_batch' => $dataAdjuststock['id_batch'],
+                                'id_rack' => $dataAdjuststock['id_rack'],
+                                'condition' => 'out',
+                                'qty' => $rackItems['quantity'] - $dataAdjuststock['quantity_to'],
+                                'at' => date('Y-m-d H:i:s'),
+                                'by' => $dataAdjuststock['created_by'],
+                                'no_document' => $adjustStock['no_adjuststock'],
+                                'description' => 'Adjust Stock Approved By ' . $this->session->userdata('nama')
+                            ];
+                        } else{
+                            $datalog = [
                                 'id_barang' => $dataAdjuststock['id_barang'],
                                 'id_batch' => $dataAdjuststock['id_batch'],
                                 'id_rack' => $dataAdjuststock['id_rack'],
                                 'condition' => 'in',
-                                'qty' => $dataAdjuststock['quantity_to'],
+                                'qty' => $dataAdjuststock['quantity_to'] - $rackItems['quantity'],
                                 'at' => date('Y-m-d H:i:s'),
                                 'by' => $dataAdjuststock['created_by'],
                                 'no_document' => $adjustStock['no_adjuststock'],
-                                'description' => 'Adjust Stock Approved By ' . $this->session->userdata('nama') . '  (TO)'
+                                'description' => 'Adjust Stock Approved By ' . $this->session->userdata('nama')
                             ];
-                            $insertLog2 = $this->db->insert('wms_log', $dataLog2);
-                            if (!$insertLog2) {
-                                throw new Exception('Gagal menambahkan log');
-                            }
-                        } else {
-                            throw new Exception('Gagal menambahkan log');
                         }
+
+                        $insertLog = $this->db->insert('wms_log', $datalog);
+                        if (!$insertLog) {
+                            throw new Exception('Gagal menambahkan log');
+                        } 
                     } else {
                         throw new Exception('Gagal mengupdate data adjust stock');
                     }

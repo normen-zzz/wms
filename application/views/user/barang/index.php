@@ -266,7 +266,7 @@
 			});
 		});
 
-		$('.edit-btn').click(function() {
+		$(document).on('click', '.edit-btn', function() {
 			var id = $(this).data('id_barang');
 
 			$.ajax({
@@ -378,14 +378,14 @@
 					}).then((result) => {
 						if (result.isConfirmed) {
 							Swal.fire({
-                                title: 'Please Wait..!',
-                                html: 'Reloading Page',
-                                didOpen: () => {
-                                    Swal.showLoading()
-                                },
-                                showConfirmButton: false,
-                                allowOutsideClick: false
-                            });
+								title: 'Please Wait..!',
+								html: 'Reloading Page',
+								didOpen: () => {
+									Swal.showLoading()
+								},
+								showConfirmButton: false,
+								allowOutsideClick: false
+							});
 							location.reload();
 						}
 					});
