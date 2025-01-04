@@ -267,6 +267,16 @@
 		});
 
 		$(document).on('click', '.edit-btn', function() {
+			// swal loading 
+			Swal.fire({
+				title: 'Please Wait..!',
+				html: 'Loading Data',
+				didOpen: () => {
+					Swal.showLoading()
+				},
+				showConfirmButton: false,
+				allowOutsideClick: false
+			});
 			var id = $(this).data('id_barang');
 
 			$.ajax({
@@ -274,6 +284,8 @@
 				type: 'GET',
 				dataType: 'json',
 				success: function(data) {
+					// swal close 
+					Swal.close();
 					$('#editId').val(data.id_barang);
 					$('#editSku').val(data.sku);
 					$('#editNamaBarang').val(data.nama_barang);
