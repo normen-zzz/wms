@@ -26,7 +26,7 @@ class Picklist_model extends CI_Model
 
 		$this->db->where('is_deleted', 0);
 		// where not like IBP 
-		$this->db->where('sku NOT LIKE', 'IBP%');
+		// $this->db->where('sku NOT LIKE', 'IBP%');
 		$this->db->limit(10);
 
 		$fetched_records = $this->db->get();
