@@ -269,14 +269,15 @@ class Rack extends CI_Controller
 		$mpdf->Output();
 	}
 
-	  public function print_sloc($sloc) {
+	public function print_sloc($sloc)
+	{
 
-        $data['items'] = $this->rack->getGroupedItemsBySloc($sloc);
-        $data['sloc'] = $sloc;
+		$data['items'] = $this->rack->getGroupedItemsBySloc($sloc);
+		$data['sloc'] = $sloc;
 
-        // Load view dengan data
-        $this->load->view('user/rack/print_sloc', $data);
-    }
+		// Load view dengan data
+		$this->load->view('user/rack/print_sloc', $data);
+	}
 	// print_items_qr berisi sloc dan barcode, bawahnya isinya list nama barang dari rack_items berbentuk png
 	public function print_items_qr($sloc)
 	{
@@ -286,8 +287,8 @@ class Rack extends CI_Controller
 		$mpdf->SetMargins(0, 0, 0, 0);
 
 
-		
-	
+
+
 		$html = '
 		
 		<div>
@@ -322,10 +323,75 @@ class Rack extends CI_Controller
 		// set name pdf with sloc on download
 		$mpdf->Output($sloc . '.pdf', 'D');
 		// $mpdf->Output();
-		
+
 		// convert to jpg
 		// convert pdf to jpg
-		
+
+	}
+
+	public function upSloc()
+	{
+		$this->db->trans_start();
+		try {
+			$this->db->select('id_rack, sloc');
+			$this->db->from('rack');
+			$this->db->where('is_deleted', 0);
+			$racks = $this->db->get()->result_array();
+
+			foreach ($racks as $rack) {
+				$data = array(
+					'sloc' => strtoupper($rack['sloc'])
+				);
+
+				$this->db->where('id_rack', $rack['id_rack']);
+				$update = $this->db->update('rack', $data);
+				if (!$update) {
+					throw new Exception('Failed to update rack with ID: ' . $rack['id_rack'].'. SLOC: '.$rack['sloc']);
+				}
+			}
+
+			echo 'Success';
+			$this->db->trans_complete();
+
+			if ($this->db->trans_status() === FALSE) {
+				throw new Exception('Transaction failed');
+			}
+		} catch (Exception $e) {
+			echo 'Error: ' . $e->getMessage();
+		}
+	}
+
+	// upColumn 
+	public function upColumn()
+	{
+		$this->db->trans_start();
+		try {
+			$this->db->select('id_rack, sloc, column_rack');
+			$this->db->from('rack');
+			$this->db->where('is_deleted', 0);
+			$racks = $this->db->get()->result_array();
+
+			foreach ($racks as $rack) {
+				$data = array(
+					'column_rack' => strtoupper($rack['column_rack'])
+				);
+
+				$this->db->where('id_rack', $rack['id_rack']);
+				$update = $this->db->update('rack', $data);
+				if (!$update) {
+					throw new Exception('Failed to update rack with ID: ' . $rack['id_rack'].'. SLOC: '.$rack['sloc']);
+				}
+			}
+
+			echo 'Success';
+			$this->db->trans_complete();
+
+			if ($this->db->trans_status() === FALSE) {
+				throw new Exception('Transaction failed');
+			}
+		} catch (Exception $e) {
+			echo 'Error: ' . $e->getMessage();
+		}
 	}
 }
 
