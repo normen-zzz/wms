@@ -357,6 +357,7 @@ class Rack extends CI_Controller
 				throw new Exception('Transaction failed');
 			}
 		} catch (Exception $e) {
+			$this->db->trans_rollback();
 			echo 'Error: ' . $e->getMessage();
 		}
 	}
@@ -390,6 +391,7 @@ class Rack extends CI_Controller
 				throw new Exception('Transaction failed');
 			}
 		} catch (Exception $e) {
+			$this->db->trans_rollback();
 			echo 'Error: ' . $e->getMessage();
 		}
 	}
