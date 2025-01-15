@@ -193,6 +193,9 @@ class Adjuststock_model extends CI_Model {
         $this->db->join('rack', 'rack.id_rack = dataadjuststock.id_rack');
         // join users 
         $this->db->join('users', 'users.id_users = dataadjuststock.approved_by', 'left');
+        // order by dataadjuststock id 
+        $this->db->order_by('dataadjuststock.id_dataadjuststock', 'asc');
+
         $query = $this->db->get();
         return $query;
     }
