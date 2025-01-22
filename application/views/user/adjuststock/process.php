@@ -59,6 +59,7 @@
                                                     <thead>
                                                         <tr>
                                                             <th># <br><button class="btn btn-primary" type="button" id="checkAllBtn">Check All</button></th>
+                                                            <th>No</th>
                                                             <th>SKU</th>
 
                                                             <th>Batch</th>
@@ -70,7 +71,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <?php foreach ($adjuststockDetail->result_array() as $adjuststockDetail1) { ?>
+                                                        <?php $no = 1; foreach ($adjuststockDetail->result_array() as $adjuststockDetail1) { ?>
                                                             <tr>
                                                                 <td>
                                                                     <div class="form-check">
@@ -78,6 +79,7 @@
 
                                                                     </div>
                                                                 </td>
+                                                                <td><?= $no++ ?></td>
                                                                 <td><?= $adjuststockDetail1['sku'] ?> <br><?= $adjuststockDetail1['nama_barang'] ?></td>
 
                                                                 <td><?= $adjuststockDetail1['batchnumber'] ?> <br><?= $adjuststockDetail1['expiration_date'] ?></td>

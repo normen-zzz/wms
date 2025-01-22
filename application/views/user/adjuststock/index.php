@@ -48,6 +48,14 @@
 										</h5>
 										<!-- tombol add stock transfer -->
 										<a href="<?= base_url('user/adjuststock/add') ?>" class="btn btn-primary">Add Adjust Stock</a>
+										<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAdjustStockBulky">
+											Adjust Stock Bulky 
+										</button>
+
+										<?php if ($this->session->flashdata('error')) {
+											echo '<div class="alert alert-danger">' . $this->session->flashdata('error') . '</div>';
+										} ?>
+
 									</div>
 
 									<div class="card-body">
@@ -95,6 +103,35 @@
 				</div>
 			</div>
 		</div>
+
+		<!-- modalAdjustStockBulky -->
+		<div class="modal fade" id="modalAdjustStockBulky" tabindex="-1" aria-labelledby="modalAdjustStockBulkyLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="modalAdjustStockBulkyLabel">Adjust Stock Bulky</h5><br>
+						<!-- button download template adjust stock  -->
+						
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<a href="<?= base_url('user/adjuststock/templateAdjustStock') ?>" class="btn btn-primary">Download Template</a>
+					<div class="modal-body">
+						<form action="<?= base_url('user/adjuststock/importAdjustStock') ?>" method="post" enctype="multipart/form-data">
+							<div class="mb-3">
+								<label for="exampleFormControlInput1" class="form-label">File</label>
+								<input type="file" class="form-control" id="fileAdjustStock" name="fileAdjustStock" required>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+								<button type="submit" class="btn btn-primary">Submit</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+							
+
 
 		<script src="<?= base_url() . '/' ?>assets/static/js/components/dark.js"></script>
 		<script src="<?= base_url() . '/' ?>assets/static/js/pages/horizontal-layout.js"></script>

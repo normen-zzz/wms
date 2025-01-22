@@ -1,6 +1,11 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Reader\Csv;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ReaderXlsx;
+
 class Adjuststock extends CI_Controller
 {
 
@@ -134,20 +139,18 @@ class Adjuststock extends CI_Controller
                         'notes' => $notes[$i],
                     ];
                     $batchDataAdjuststock[] = $dataAdjuststock;
-                    $dataBarang = $this->db->query('SELECT nama_barang FROM barang WHERE id_barang = ' . $id_barang[$i])->row_array();
-                    $dataBatch = $this->db->query('SELECT batchnumber FROM batch WHERE id_batch = ' . $id_batch[$i])->row_array();
-                    $dataRack = $this->db->query('SELECT sloc FROM rack WHERE id_rack = ' . $checkSloc)->row_array();
+                   
 
-                    $dataAdjuststockWa .= 'Barang : '. $dataBarang['sku'] .' ' . $dataBarang['nama_barang'] . '<br> Batch : ' . $dataBatch['batchnumber'] . '<br> Rack : ' . $dataRack['sloc'] . '<br> Quantity (Before) : ' . $quantityBefore['quantity'] . '<br> Quantity (After) : ' . $quantity[$i] . '<br> Notes : ' . $notes[$i] . ' \r\n\r\n';
+                   
                 }
                 $insertDataAdjuststock = $this->adjuststock->insert_data_adjuststock($batchDataAdjuststock);
                 if ($insertDataAdjuststock) {
                     $superadmin = $this->db->query('SELECT no_handphone FROM users WHERE role_id = 1')->result_array();
                     foreach ($superadmin as $admin) {
-                        $this->whatsapp->kirim($admin['no_handphone'], 'Adjust Stock baru telah ditambahkan oleh ' . $this->session->userdata('nama') . ' dengan nomor ' . $no_adjuststock . ', Berikut Datanya : <br><br> ' . $dataAdjuststockWa . ' Silahkan cek di warehouse.transtama.com Untuk melakukan Approval');
+                        $this->whatsapp->kirim($admin['no_handphone'], 'Adjust Stock baru telah ditambahkan oleh ' . $this->session->userdata('nama') . ' dengan nomor ' . $no_adjuststock . ' Silahkan cek di warehouse.transtama.com Untuk melakukan Approval');
                         // $wa = $this->whatsapp->kirim($admin['no_handphone'], "Silahkan cek di warehouse.transtama.com");
 
-                        
+
                     }
                 } else {
                     throw new Exception('Gagal menambahkan adjust stock  1');
@@ -226,7 +229,7 @@ class Adjuststock extends CI_Controller
                                 'no_document' => $adjustStock['no_adjuststock'],
                                 'description' => 'Adjust Stock Approved By ' . $this->session->userdata('nama')
                             ];
-                        } else{
+                        } else {
                             $datalog = [
                                 'id_barang' => $dataAdjuststock['id_barang'],
                                 'id_batch' => $dataAdjuststock['id_batch'],
@@ -243,7 +246,7 @@ class Adjuststock extends CI_Controller
                         $insertLog = $this->db->insert('wms_log', $datalog);
                         if (!$insertLog) {
                             throw new Exception('Gagal menambahkan log');
-                        } 
+                        }
                     } else {
                         throw new Exception('Gagal mengupdate data adjust stock');
                     }
@@ -280,5 +283,160 @@ class Adjuststock extends CI_Controller
             $response = json_encode(array('status' => 'error', 'message' => $e->getMessage()));
         }
         echo $response;
+    }
+
+    // generate excel template adjust stock  sku,batch and sloc 
+    public function templateAdjustStock()
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setCellValue('A1', 'SKU');
+        $sheet->setCellValue('B1', 'Nama Barang');
+        $sheet->setCellValue('C1', 'Batch');
+        $sheet->setCellValue('D1', 'Sloc');
+        // qty 
+        $sheet->setCellValue('E1', 'Quantity');
+        // notes 
+        $sheet->setCellValue('F1', 'Notes');
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Adjuststock_Template_' . date('YmdHis') . '.xlsx';
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+        $writer->save('php://output');
+    }
+
+    // import adjust stock
+    public function importAdjustStock()
+    {
+        try {
+            $file = $_FILES['fileAdjustStock']['tmp_name'];
+            $reader = new ReaderXlsx();
+            $spreadsheet = $reader->load($file);
+            $sheetData = $spreadsheet->getActiveSheet()->toArray();
+            $data = [];
+            $dataNotInRackItems = [];
+
+            for ($i = 1; $i < count($sheetData); $i++) {
+                $baris = $i + 1;
+                $barang = $this->db->query('SELECT * FROM barang WHERE sku = "' . $sheetData[$i][0] . '"')->row_array();
+                $batch = $this->db->query('SELECT * FROM batch WHERE batchnumber = "' . $sheetData[$i][2] . '"');
+                $rack = $this->db->query('SELECT * FROM rack WHERE sloc = "' . $sheetData[$i][3] . '"')->row_array();
+                $quantity = 0;
+                // jika quantity tidak kosong
+                if ($sheetData[$i][4] != '') {
+                    $quantity = $sheetData[$i][4];
+                } else {
+                    $quantity = 0;
+                }
+
+                if ($barang && $batch && $rack) {
+                    $sizeBatch = $batch->num_rows();
+                    $countBatch = 0;
+                    foreach ($batch->result_array() as $batch1) {
+
+                        $rackItems = $this->db->query('SELECT * FROM rack_items WHERE id_barang = ' . $barang['id_barang'] . ' AND id_batch = ' . $batch1['id_batch'] . ' AND id_rack = ' . $rack['id_rack'])->row_array();
+                        if ($rackItems) {
+                            $data[] = [
+                                'sku' => $sheetData[$i][0],
+                                'batch' => $sheetData[$i][2],
+                                'sloc' => $sheetData[$i][3],
+                                'nama_barang' => $sheetData[$i][1],
+                                'id_barang' => $barang['id_barang'],
+                                'id_batch' => $batch1['id_batch'],
+                                'id_rack' => $rack['id_rack'],
+                                'quantity_rack' => $rackItems['quantity'],
+                                'quantity' => $quantity,
+                                'notes' => $sheetData[$i][5],
+                            ];
+                            break;
+                        } else {
+                            $dataRackItems = [
+                                'id_barang' => $barang['id_barang'],
+                                'id_batch' => $batch1['id_batch'],
+                                'id_rack' => $rack['id_rack'],
+                                'quantity' => 0,
+                            ];
+                            $insertRackItems = $this->db->insert('rack_items', $dataRackItems);
+                            if ($insertRackItems) {
+                                // insert log 
+                                $datalog = [
+                                    'id_barang' => $barang['id_barang'],
+                                    'id_batch' => $batch1['id_batch'],
+                                    'id_rack' => $rack['id_rack'],
+                                    'condition' => 'in',
+                                    'qty' => 0,
+                                    'at' => date('Y-m-d H:i:s'),
+                                    'by' => $this->session->userdata('id_users'),
+                                    'no_document' => 'Adjust Stock',
+                                    'description' => 'Memasukan data kosong untuk adjust stock by' . $this->session->userdata('nama')
+                                ];
+                                $insertLog = $this->db->insert('wms_log', $datalog);
+                                if ($insertLog) {
+                                    $data[] = [
+                                        'sku' => $sheetData[$i][0],
+                                        'batch' => $sheetData[$i][2],
+                                        'sloc' => $sheetData[$i][3],
+                                        'nama_barang' => $sheetData[$i][1],
+                                        'id_barang' => $barang['id_barang'],
+                                        'id_batch' => $batch1['id_batch'],
+                                        'id_rack' => $rack['id_rack'],
+                                        'quantity_rack' => 0,
+                                        'quantity' => $quantity,
+                                        'notes' => $sheetData[$i][5],
+                                    ];
+                                    $dataNotInRackItems[] = [
+                                        'sku' => $sheetData[$i][0],
+                                        'batch' => $sheetData[$i][2],
+                                        'sloc' => $sheetData[$i][3],
+                                        'nama_barang' => $sheetData[$i][1],
+                                        'quantity' => $quantity,
+                                        'notes' => $sheetData[$i][5],
+                                    ];
+                                    break;
+                                } else {
+                                    throw new Exception('Gagal menambahkan log');
+                                }
+                            } else {
+                                throw new Exception('Gagal menambahkan rack items');
+                            }
+                        }
+                        $countBatch++;
+                    }
+                } else {
+                    throw new Exception('2. Data sku ' . $sheetData[$i][0] . 'Batch ' . $sheetData[$i][2] . ' Sloc ' . $sheetData[$i][3] . 'tidak ditemukan (ada di baris ke ' . $baris . ')');
+                }
+            }
+            //  // create excel for data not in rack items
+            //  $spreadsheet = new Spreadsheet();
+            //  $sheet = $spreadsheet->getActiveSheet();
+            //  $sheet->setCellValue('A1', 'SKU');
+            //  $sheet->setCellValue('B1', 'Batch');
+            //  $sheet->setCellValue('C1', 'Sloc');
+            //  $sheet->setCellValue('D1', 'Nama Barang');
+            //  $sheet->setCellValue('E1', 'Quantity');
+            //  $sheet->setCellValue('F1', 'Notes');
+            //  $row = 2;
+            //  foreach ($dataNotInRackItems as $dataNotInRackItems1) {
+            //      $sheet->setCellValue('A' . $row, $dataNotInRackItems1['sku']);
+            //      $sheet->setCellValue('B' . $row, $dataNotInRackItems1['batch']);
+            //      $sheet->setCellValue('C' . $row, $dataNotInRackItems1['sloc']);
+            //      $sheet->setCellValue('D' . $row, $dataNotInRackItems1['nama_barang']);
+            //      $sheet->setCellValue('E' . $row, $dataNotInRackItems1['quantity']);
+            //      $sheet->setCellValue('F' . $row, $dataNotInRackItems1['notes']);
+            //      $row++;
+            //  }
+            //  $writer = new Xlsx($spreadsheet);
+            //  $filename = 'Adjuststock_Not_In_Rack_Items_' . date('YmdHis') . '.xlsx';
+            //  header('Content-Type: application/vnd.ms-excel');
+            //  header('Content-Disposition: attachment;filename="' . $filename . '"');
+            //  header('Cache-Control: max-age=0');
+            //  $writer->save('php://output');
+            $this->load->view('user/adjuststock/import', ['data' => $data, 'title' => 'Adjuststock Bulky', 'subtitle' => 'Data Adjuststock Bulky', 'subtitle2' => 'Adjuststock bulky',]);
+           
+        } catch (Exception $e) {
+            $this->session->set_flashdata('error', $e->getMessage());
+            redirect('user/adjuststock/');
+        }
     }
 }

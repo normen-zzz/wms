@@ -67,6 +67,7 @@
                                             <table class="table" id="table">
                                                 <thead>
                                                     <tr>
+                                                        <th>No</th>
                                                         <th>SKU</th>
                                                         <th>Nama Barang</th>
                                                         <th>Batch</th>
@@ -79,8 +80,9 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <?php foreach ($adjuststockDetail->result_array() as $adjuststockDetail1) { ?>
+                                                    <?php $no = 1; foreach ($adjuststockDetail->result_array() as $adjuststockDetail1) { ?>
                                                         <tr>
+                                                            <td><?= $no++ ?></td>
                                                             <td><?= $adjuststockDetail1['sku'] ?></td>
                                                             <td><?= $adjuststockDetail1['nama_barang'] ?></td>
                                                             <td><?= $adjuststockDetail1['batchnumber'] ?></td>
