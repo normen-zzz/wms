@@ -139,9 +139,6 @@ class Adjuststock extends CI_Controller
                         'notes' => $notes[$i],
                     ];
                     $batchDataAdjuststock[] = $dataAdjuststock;
-                   
-
-                   
                 }
                 $insertDataAdjuststock = $this->adjuststock->insert_data_adjuststock($batchDataAdjuststock);
                 if ($insertDataAdjuststock) {
@@ -315,8 +312,6 @@ class Adjuststock extends CI_Controller
             $spreadsheet = $reader->load($file);
             $sheetData = $spreadsheet->getActiveSheet()->toArray();
             $data = [];
-            $dataNotInRackItems = [];
-
             for ($i = 1; $i < count($sheetData); $i++) {
                 $baris = $i + 1;
                 $barang = $this->db->query('SELECT * FROM barang WHERE sku = "' . $sheetData[$i][0] . '"')->row_array();
@@ -333,75 +328,79 @@ class Adjuststock extends CI_Controller
                 if ($barang && $batch && $rack) {
                     $sizeBatch = $batch->num_rows();
                     $countBatch = 0;
+                    $id_batch = '';
+                    $quantityRack = 0;
                     foreach ($batch->result_array() as $batch1) {
 
                         $rackItems = $this->db->query('SELECT * FROM rack_items WHERE id_barang = ' . $barang['id_barang'] . ' AND id_batch = ' . $batch1['id_batch'] . ' AND id_rack = ' . $rack['id_rack'])->row_array();
                         if ($rackItems) {
-                            $data[] = [
-                                'sku' => $sheetData[$i][0],
-                                'batch' => $sheetData[$i][2],
-                                'sloc' => $sheetData[$i][3],
-                                'nama_barang' => $sheetData[$i][1],
-                                'id_barang' => $barang['id_barang'],
-                                'id_batch' => $batch1['id_batch'],
-                                'id_rack' => $rack['id_rack'],
-                                'quantity_rack' => $rackItems['quantity'],
-                                'quantity' => $quantity,
-                                'notes' => $sheetData[$i][5],
-                            ];
+                            $id_batch = $batch1['id_batch'];
+                            $quantityRack = $rackItems['quantity'];
                             break;
-                        } else {
-                            $dataRackItems = [
-                                'id_barang' => $barang['id_barang'],
-                                'id_batch' => $batch1['id_batch'],
-                                'id_rack' => $rack['id_rack'],
-                                'quantity' => 0,
-                            ];
-                            $insertRackItems = $this->db->insert('rack_items', $dataRackItems);
-                            if ($insertRackItems) {
-                                // insert log 
-                                $datalog = [
-                                    'id_barang' => $barang['id_barang'],
-                                    'id_batch' => $batch1['id_batch'],
-                                    'id_rack' => $rack['id_rack'],
-                                    'condition' => 'in',
-                                    'qty' => 0,
-                                    'at' => date('Y-m-d H:i:s'),
-                                    'by' => $this->session->userdata('id_users'),
-                                    'no_document' => 'Adjust Stock',
-                                    'description' => 'Memasukan data kosong untuk adjust stock by' . $this->session->userdata('nama')
-                                ];
-                                $insertLog = $this->db->insert('wms_log', $datalog);
-                                if ($insertLog) {
-                                    $data[] = [
-                                        'sku' => $sheetData[$i][0],
-                                        'batch' => $sheetData[$i][2],
-                                        'sloc' => $sheetData[$i][3],
-                                        'nama_barang' => $sheetData[$i][1],
-                                        'id_barang' => $barang['id_barang'],
-                                        'id_batch' => $batch1['id_batch'],
-                                        'id_rack' => $rack['id_rack'],
-                                        'quantity_rack' => 0,
-                                        'quantity' => $quantity,
-                                        'notes' => $sheetData[$i][5],
-                                    ];
-                                    $dataNotInRackItems[] = [
-                                        'sku' => $sheetData[$i][0],
-                                        'batch' => $sheetData[$i][2],
-                                        'sloc' => $sheetData[$i][3],
-                                        'nama_barang' => $sheetData[$i][1],
-                                        'quantity' => $quantity,
-                                        'notes' => $sheetData[$i][5],
-                                    ];
-                                    break;
-                                } else {
-                                    throw new Exception('Gagal menambahkan log');
-                                }
-                            } else {
-                                throw new Exception('Gagal menambahkan rack items');
-                            }
                         }
                         $countBatch++;
+                    }
+                    if ($id_batch != '') {
+
+                        $data[] = [
+                            'sku' => $sheetData[$i][0],
+                            'batch' => $sheetData[$i][2],
+                            'sloc' => $sheetData[$i][3],
+                            'nama_barang' => $sheetData[$i][1],
+                            'id_barang' => $barang['id_barang'],
+                            'id_batch' => $id_batch,
+                            'id_rack' => $rack['id_rack'],
+                            'quantity_rack' => $quantityRack,
+                            'quantity' => $quantity,
+                            'notes' => $sheetData[$i][5],
+                        ];
+                    } else {
+
+                        $newBatch = $batch->row_array();
+                        
+                        // insert to rackitems 
+                        $dataRackItems = [
+                            'id_barang' => $barang['id_barang'],
+                            'id_batch' => $newBatch['id_batch'],
+                            'id_rack' => $rack['id_rack'],
+                            'quantity' => 0,
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'created_by' => $this->session->userdata('id_users'),
+                        ];
+                        $insertRackItems = $this->db->insert('rack_items', $dataRackItems);
+                        if ($insertRackItems) {
+                            // log 
+                            $datalog = [
+                                'id_barang' => $barang['id_barang'],
+                                'id_batch' => $newBatch['id_batch'],
+                                'id_rack' => $rack['id_rack'],
+                                'condition' => 'in',
+                                'qty' => 0,
+                                'at' => date('Y-m-d H:i:s'),
+                                'by' => $this->session->userdata('id_users'),
+                                'no_document' => 'Adjust Stock',
+                                'description' => 'Add 0 stock on rack items by ADMIN WMS (ADMINISTRATOR)'
+                            ];
+                            $insertLog = $this->db->insert('wms_log', $datalog);
+                            if ($insertLog) {
+                                $data[] = [
+                                    'sku' => $sheetData[$i][0],
+                                    'batch' => $sheetData[$i][2],
+                                    'sloc' => $sheetData[$i][3],
+                                    'nama_barang' => $sheetData[$i][1],
+                                    'id_barang' => $barang['id_barang'],
+                                    'id_batch' => $newBatch['id_batch'],
+                                    'id_rack' => $rack['id_rack'],
+                                    'quantity_rack' => $quantityRack,
+                                    'quantity' => $quantity,
+                                    'notes' => $sheetData[$i][5],
+                                ];
+                            } else {
+                                throw new Exception('Gagal menambahkan log');
+                            }
+                        } else {
+                            throw new Exception('Gagal menambahkan rack items');
+                        }
                     }
                 } else {
                     throw new Exception('2. Data sku ' . $sheetData[$i][0] . 'Batch ' . $sheetData[$i][2] . ' Sloc ' . $sheetData[$i][3] . 'tidak ditemukan (ada di baris ke ' . $baris . ')');
@@ -433,7 +432,6 @@ class Adjuststock extends CI_Controller
             //  header('Cache-Control: max-age=0');
             //  $writer->save('php://output');
             $this->load->view('user/adjuststock/import', ['data' => $data, 'title' => 'Adjuststock Bulky', 'subtitle' => 'Data Adjuststock Bulky', 'subtitle2' => 'Adjuststock bulky',]);
-           
         } catch (Exception $e) {
             $this->session->set_flashdata('error', $e->getMessage());
             redirect('user/adjuststock/');
