@@ -94,7 +94,7 @@
 															<td>
 																<!-- button for remove row  -->
 																<button type="button" class="btn btn-danger remove-row">Remove</button>
-														     
+
 															</td>
 
 
@@ -302,7 +302,7 @@
 							$.each(batchOptions, function(index, batch) {
 								batchSelect.append($('<option>', {
 									value: batch.id,
-									text: batch.name
+									text: batch.name + ' | ' + batch.ed
 								}));
 							});
 
