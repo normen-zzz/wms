@@ -183,7 +183,7 @@ class Purchaseorder extends CI_Controller
 		$batchOptions = $this->purchaseorder->getBatchBarang($barangId);
 		$batchOptionsArray = array();
 		foreach ($batchOptions->result() as $batch) {
-			$batchOptionsArray[] = array('id' => $batch->id_batch, 'name' => $batch->batchnumber);
+			$batchOptionsArray[] = array('id' => $batch->id_batch, 'name' => $batch->batchnumber, 'ed' => date('d-m-Y', strtotime($batch->expiration_date)));
 		}
 		// var_dump($batchOptionsArray);exit;
 		echo json_encode(['batch_options' => $batchOptionsArray]);
@@ -385,6 +385,37 @@ class Purchaseorder extends CI_Controller
 			$this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">' . $response['message'] . '</div>');
 			redirect('user/purchaseorder');
 		}
+	}
+
+
+	// addBatchDataPurchaseorder
+	public function addBatchDataPurchaseorder()
+	{
+		$this->db->trans_start();
+		try {
+
+			$datapurchaseorder = $this->db->get('datapurchaseorder')->result_array();
+			foreach ($datapurchaseorder as $dp) {
+				$batch = $this->db->query('SELECT batchnumber FROM batch WHERE id_batch = ' . $dp['id_batch'] . ' ')->row_array();
+				$dataBatch = [
+					'batch' => $batch['batchnumber']
+				];
+				$updateData = $this->db->update('datapurchaseorder', $dataBatch, ['id_datapurchaseorder' => $dp['id_datapurchaseorder']]);
+				if (!$updateData) {
+					throw new Exception('Failed to update batch data purchaseorder.');
+				}
+			}
+			$response = 'success';
+
+			$this->db->trans_complete();
+			if ($this->db->trans_status() === FALSE) {
+				throw new Exception('Transaction failed');
+			}
+		} catch (Exception $e) {
+			$this->db->trans_rollback();
+			$response = $e->getMessage();
+		}
+		echo $response;
 	}
 }
 
