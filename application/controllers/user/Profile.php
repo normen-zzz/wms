@@ -9,6 +9,7 @@ class Profile extends CI_Controller
         parent::__construct();
         is_login();
         date_default_timezone_set('Asia/Jakarta');
+        $this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));");
         $this->load->model('User_model', 'user');
         $this->load->model('Admin_model', 'admin');
         // wa 
