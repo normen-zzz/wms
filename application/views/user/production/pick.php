@@ -462,6 +462,11 @@
 				var batchnumber = $(this).closest('tr').parent().find('input[name="batchnumber"]').val();
 				var inputQty = $(this); // Simpan referensi ke input qty[]
 				console.log(sku);
+				console.log(id_batch);
+				console.log(batchnumber);
+				console.log(rack);
+				console.log(qty);
+				
 
 				// show loading swal 
 				// jeda 1000ms
