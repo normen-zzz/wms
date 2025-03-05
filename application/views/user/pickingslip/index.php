@@ -67,7 +67,7 @@
                                                 <tbody>
                                                     <?php foreach ($ps->result_array() as $ps1) { ?>
 
-                                                        <?php if ($this->session->userdata('role_id') == 6 || $this->session->userdata('role_id') == 1|| $this->session->userdata('role_id') == 3) { ?>
+                                                        <?php if ($this->session->userdata('role_id') == 6 || $this->session->userdata('role_id') == 1) { ?>
                                                             <tr>
                                                                 <td></td>
                                                                 <td><?= $ps1['no_pickingslip'] ?><br><?= $ps1['no_purchaseorder'] ?></td>

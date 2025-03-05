@@ -65,7 +65,7 @@ class Production_model extends CI_Model
 	// getBatchMaterial
 	public function getBatchMaterial($sku)
 	{
-		$this->db->select('*');
+		$this->db->select('*,SUM(rack_items.quantity) AS total_quantity');
 		$this->db->from('rack_items');
 		//    join batch 
 		$this->db->join('batch', 'rack_items.id_batch = batch.id_batch');
@@ -74,7 +74,7 @@ class Production_model extends CI_Model
 		$this->db->where('barang.sku', $sku);
 		$this->db->where('rack_items.quantity >', 0);
 		// group by batch 
-		$this->db->group_by('rack_items.id_batch');
+		$this->db->group_by('batch.batchnumber');
 		$query = $this->db->get();
 		return $query;
 	}
@@ -117,12 +117,12 @@ class Production_model extends CI_Model
 			pm.sku AS material_sku,
 			pm.quantity AS material_quantity,
 			pm.batch_id,
-			b.batchnumber
+			pm.batchnumber
 		');
 		$this->db->from('production p');
 		$this->db->join('production_materials pm', 'pm.production_id = p.id_production');
 		// join batch 
-		$this->db->join('batch b', 'pm.batch_id = b.id_batch');
+		
 		$this->db->where('p.id_production', $id);
 
 		$query = $this->db->get();
@@ -176,13 +176,13 @@ class Production_model extends CI_Model
 			pm.sku,
 			pm.batch_id,
 			pm.quantity,
-			b.batchnumber,
+			pm.batchnumber,
 			brg.nama_barang,
 			brg.id_barang
 
 		');
 		$this->db->from('production_materials pm');
-		$this->db->join('batch b', 'pm.batch_id = b.id_batch');
+		
 		// join barang 
 		$this->db->join('barang brg', 'pm.sku = brg.sku');
 		$this->db->where('pm.production_id', $id);
@@ -200,14 +200,12 @@ class Production_model extends CI_Model
 			pm.sku,
 			pm.batch_id,
 			pm.quantity,
-			b.batchnumber,
 			brg.nama_barang,
 			brg.id_barang
 
 		');
 		$this->db->from('production_materials pm');
-		$this->db->join('batch b', 'pm.batch_id = b.id_batch');
-		// join barang 
+		
 		$this->db->join('barang brg', 'pm.sku = brg.sku');
 		$this->db->where('pm.production_id', $id);
 		// where status 0 
@@ -225,6 +223,22 @@ class Production_model extends CI_Model
 		$this->db->join('barang c', 'a.id_barang = c.id_barang');
 		$this->db->where('c.sku', $sku);
 		$this->db->where('a.id_batch', $id_batch);
+		$this->db->where('a.quantity >', 0);
+
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+
+	public function getAvailableRack2($sku, $batchnumber)
+	{
+		$this->db->select('sloc,a.quantity');
+		$this->db->from('rack_items a');
+		$this->db->join('rack b', 'a.id_rack = b.id_rack', 'left');
+		// join barang 
+		$this->db->join('barang c', 'a.id_barang = c.id_barang');
+		$this->db->join('batch d', 'a.id_batch = d.id_batch');
+		$this->db->where('c.sku', $sku);
+		$this->db->where('d.batchnumber', $batchnumber);
 		$this->db->where('a.quantity >', 0);
 
 		$query = $this->db->get();
@@ -251,6 +265,21 @@ class Production_model extends CI_Model
 		$this->db->where('barang.sku', $sku);
 		$this->db->where('id_batch', $id_batch);
 		$this->db->where('id_rack', $id_rack);
+		$query = $this->db->get()->row_array();
+		return $query['quantity'];
+	}
+
+	public function getLastQtyRackItems2($sku, $batchnumber, $id_rack)
+	{
+		$this->db->select('SUM(rack_items.quantity) AS quantity');
+		$this->db->from('rack_items');
+		// join barang 
+		$this->db->join('barang', 'rack_items.id_barang = barang.id_barang');
+		$this->db->join('batch', 'rack_items.id_batch = batch.id_batch');
+		$this->db->where('barang.sku', $sku);
+		$this->db->where('batch.batchnumber', $batchnumber);
+		$this->db->where('id_rack', $id_rack);
+		$this->db->group_by('batch.batchnumber');
 		$query = $this->db->get()->row_array();
 		return $query['quantity'];
 	}
@@ -430,6 +459,22 @@ class Production_model extends CI_Model
 		return $query;
 	}
 
+	public function checkQtyBatch2($sku,$batchnumber)
+	{
+		$this->db->select('SUM(rack_items.quantity) AS total_quantity,rack_items.quantity,batch.batchnumber,barang.sku');
+		$this->db->from('rack_items');
+		// join barang 
+		$this->db->join('barang', 'rack_items.id_barang = barang.id_barang');
+		// join batch 
+		$this->db->join('batch', 'rack_items.id_batch = batch.id_batch');
+		$this->db->where('barang.sku', $sku);
+		$this->db->where('batch.batchnumber', $batchnumber);
+		// group by 
+		$this->db->group_by('batch.batchnumber');
+		$query = $this->db->get();
+		return $query;
+	}
+
 	// getPickProductionByProduction
 	public function getPickProductionByProductionPicked($id)
 	{
@@ -471,5 +516,21 @@ class Production_model extends CI_Model
 		$this->db->where('production.id_production', $id);
 		$query = $this->db->get();
 		return $query->row_array();
+	}
+
+	// getIdBatchFromSkuAndBatchnumberAndSloc
+	public function getIdBatchFromSkuAndBatchnumberAndSloc($sku, $batchnumber, $sloc)
+	{
+		$this->db->select('batch.id_batch');
+		$this->db->from('batch');
+		$this->db->join('rack_items', 'batch.id_batch = rack_items.id_batch');
+		$this->db->join('rack', 'rack_items.id_rack = rack.id_rack');
+		$this->db->join('barang', 'rack_items.id_barang = barang.id_barang');
+		$this->db->where('barang.sku', $sku);
+		$this->db->where('batch.batchnumber', $batchnumber);
+		$this->db->where('rack.sloc', $sloc);
+		$query = $this->db->get();
+		$query = $query->row_array();
+		return $query['id_batch'];
 	}
 }
