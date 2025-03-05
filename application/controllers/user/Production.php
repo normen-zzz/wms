@@ -96,14 +96,15 @@ class Production extends CI_Controller
 
 			$this->db->trans_complete();
 
-			if ($this->db->trans_status() === FALSE) {
-				throw new Exception('Transaction failed');
-			}
-
 			echo json_encode([
 				'status' => 'success',
 				'message' => 'Production saved successfully'
 			]);
+			if ($this->db->trans_status() === FALSE) {
+				throw new Exception('Transaction failed');
+			}
+
+			
 		} catch (Exception $e) {
 			$this->db->trans_rollback();
 			http_response_code(500);
