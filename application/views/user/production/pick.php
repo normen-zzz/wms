@@ -459,7 +459,7 @@
 				var qty = parseInt($(this).val());
 				var sku = $(this).closest('tr').parent().find('input[name="sku"]').val();
 				var id_batch = $(this).closest('tr').parent().find('input[name="id_batch"]').val();
-				var batchnumber = $(this).closest('tr').parent().find('input[name="batchnumber"]').val();
+				var batchnumber = var batchnumber = $(this).closest('tr').find('input[name="batchnumber"]').val();
 				var inputQty = $(this); // Simpan referensi ke input qty[]
 				console.log(sku);
 				console.log(id_batch);
