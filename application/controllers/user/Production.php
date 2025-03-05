@@ -60,6 +60,7 @@ class Production extends CI_Controller
 		$quantity_bundling = $this->input->post('quantity_bundling');
 		$ed_bundling = $this->input->post('ed_bundling');
 		$materials = $this->input->post('materials');
+		
 
 		$this->db->trans_start();
 
@@ -84,6 +85,7 @@ class Production extends CI_Controller
 							'production_id' => $production_id,
 							'sku' => $material['sku_material'],
 							'batch_id' => $batch['batch'],
+							'batchnumber' => $batch['batchnumber'],
 							'quantity' => $batch['qtyBatch']
 						];
 
@@ -193,19 +195,24 @@ class Production extends CI_Controller
 	{
 		$sku = $this->input->post('sku');
 		$id_batch = $this->input->post('id_batch');
+		$batchnumber = $this->input->post('batchnumber');
 
-		$recommendations = $this->production->getAvailableRack($sku, $id_batch);
+		// $recommendations = $this->production->getAvailableRack($sku, $id_batch);
+		$recommendations = $this->production->getAvailableRack2($sku, $batchnumber);
 
 		echo json_encode($recommendations);
 	}
+	
 
 	public function getQuantityRackItems()
 	{
 		$sku = $this->input->post('sku');
 		$id_batch = $this->input->post('id_batch');
+		$batchnumber = $this->input->post('batchnumber');
 		$sloc = $this->input->post('rack');
 		$id_rack =  $this->production->getIdRackFromSloc($sloc);
-		$getLastQtyRackItems = $this->production->getLastQtyRackItems($sku, $id_batch, $id_rack['id_rack']);
+		// $getLastQtyRackItems = $this->production->getLastQtyRackItems($sku, $id_batch, $id_rack['id_rack']);
+		$getLastQtyRackItems = $this->production->getLastQtyRackItems2($sku, $batchnumber, $id_rack['id_rack']);
 		echo json_encode($getLastQtyRackItems);
 	}
 
@@ -219,13 +226,14 @@ class Production extends CI_Controller
 		foreach ($data as $row) {
 
 			$sku = $row['sku'];
-			$id_batch = $row['id_batch'];
+			
 			$sloc = $row['rack'];
 			$qty = $row['qty'];
 			$id_material =  $row['id_material'];
 			$id_rack =  $this->production->getIdRackFromSloc($sloc);
 			// getIdBarangFromSku
 			$id_barang = $this->production->getIdBarangFromSku($sku);
+			$id_batch = $this->production->getIdBatchFromSkuAndBatchnumberAndSloc($sku, $row['batchnumber'], $sloc);
 			$dataPickProduction[] = [
 				'id_production' => $id_production,
 				'id_material' => $id_material,
@@ -577,8 +585,9 @@ class Production extends CI_Controller
 	{
 		$sku = $this->input->post('sku');
 		$batch = $this->input->post('batch');
+		$batchNumber = $this->input->post('batchnumber');
 		$qty = $this->input->post('qty');
-		$checkQtyBatch = $this->production->checkQtyBatch($sku, $batch);
+		$checkQtyBatch = $this->production->checkQtyBatch2($sku, $batchNumber);
 		if ($checkQtyBatch->num_rows() > 0) {
 			$checkQtyBatch = $checkQtyBatch->row_array();
 			if ($checkQtyBatch['total_quantity'] >= $qty) {
@@ -589,7 +598,7 @@ class Production extends CI_Controller
 			} else {
 				echo json_encode([
 					'status' => 'error',
-					'message' => 'Quantity di sku ' . $sku . ' dan batch ' . $checkQtyBatch['batchnumber'] . ' tidak mencukupi (Available: ' . $checkQtyBatch['quantity'] . ')'
+					'message' => 'Quantity di sku ' . $sku . ' dan batch ' . $checkQtyBatch['batchnumber'] . ' tidak mencukupiii (Available: ' . $checkQtyBatch['total_quantity'] . ')'
 				]);
 			}
 		} else {

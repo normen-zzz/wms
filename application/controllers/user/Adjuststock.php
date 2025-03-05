@@ -12,6 +12,7 @@ class Adjuststock extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+        $this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));");
         // Load necessary models, libraries, etc.
         $this->load->model('Adjuststock_model', 'adjuststock');
         $this->load->model('Whatsapp_model', 'whatsapp');

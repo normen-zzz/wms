@@ -450,10 +450,11 @@
 							var totalBatchQty = 0;
 
 							$materialRow.find('.tableBatch tbody tr').each(function() {
-								var batchId = $(this).find('select[name="batch[]"]').val();
+								
+								var batchNumber = $(this).find('select[name="batch[]"] option:selected').text();
 								var qtyBatch = parseFloat($(this).find('input[name="qtyBatch[]"]').val()) || 0;
 
-								if (batchId && qtyBatch > 0) {
+								if (batchNumber && qtyBatch > 0) {
 									// checkQtyBatch using ajax
 									$.ajax({
 										url: '<?= base_url() ?>user/production/checkQtyBatch',
@@ -461,7 +462,7 @@
 										async: false,
 										data: {
 											sku: $materialRow.find('input[name="sku_material[]"]').val(),
-											batch: batchId,
+											batchnumber: batchNumber,
 											qty: qtyBatch
 										},
 										success: function(response) {
@@ -476,7 +477,8 @@
 
 
 									materialBatches.push({
-										batch: batchId,
+										
+										batchnumber: batchNumber,
 										qtyBatch: qtyBatch
 									});
 									totalBatchQty += qtyBatch;

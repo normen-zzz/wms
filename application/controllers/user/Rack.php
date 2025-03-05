@@ -16,6 +16,7 @@ class Rack extends CI_Controller
 		$this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));");
 		is_login();
 		date_default_timezone_set('Asia/Jakarta');
+		$this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));");
 		$this->load->model('Rack_model', 'rack');
 	}
 

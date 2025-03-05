@@ -12,6 +12,7 @@ class Goodsorder extends CI_Controller
 		is_login();
 		$this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));");
 		date_default_timezone_set('Asia/Jakarta');
+		$this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));");
 		$this->load->model('Goodsorder_model', 'goodsorder');
 	}
 

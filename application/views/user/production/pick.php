@@ -125,7 +125,7 @@
 
 															<td><?= $item['quantity'] ?> <input hidden type="number" name="requiredQty" value="<?= $item['quantity'] ?>"></td>
 															<td>
-																<button type="button" class="btn btn-sm btn-primary get-recommendations" data-sku="<?= $item['sku'] ?>" data-id_batch="<?= $item['batch_id'] ?>">
+																<button type="button" class="btn btn-sm btn-primary get-recommendations" data-sku="<?= $item['sku'] ?>" data-id_batch="<?= $item['batch_id'] ?>" data-batchnumber="<?= $item['batchnumber'] ?>">
 																	Get Available On Rack
 																</button>
 																<div class="recommendations-list" style="display:none;"></div>
@@ -145,6 +145,7 @@
 																			<td><input type="text" name="rack[]" id="rack" class="form-control rack"></td>
 																			<td><input type="number" name="qty[]" id="qty" class="form-control qty">
 																				<input type="number" name="id_batch" hidden value="<?= $item['batch_id'] ?>">
+																				<input type="number" name="batchnumber" hidden value="<?= $item['batchnumber'] ?>">
 																				<input type="text" name="sku" hidden value="<?= $item['sku'] ?>">
 
 
@@ -293,6 +294,7 @@
 			var id_material = $(this).closest('tr').find('input[name="id_material"]').val();
 			var sku = $(this).closest('tr').find('input[name="sku"]').val();
 			var id_batch = $(this).closest('tr').find('input[name="id_batch"]').val();
+			var batchnumber = $(this).closest('tr').find('input[name="batchnumber"]').val();
 			var requiredQty = $(this).closest('tr').find('input[name="requiredQty"]').val();
 			var totalQty = 0;
 			$(this).closest('td').prev('td').find('table.addRackRow').find('tbody tr').each(function() {
@@ -309,14 +311,22 @@
 						id_material: id_material,
 						sku: sku,
 						id_batch: id_batch,
+						batchnumber: batchnumber,
 						rack: rack,
 						qty: qty
 					});
+
+					
+					
 
 
 				}
 
 			});
+
+			console.log(data);
+			
+			
 
 			if (totalQty < requiredQty) {
 				alert('Total qty tidak mencukupi');
@@ -408,6 +418,8 @@
 			var sku = button.data('sku');
 
 			var id_batch = button.data('id_batch');
+			var batchnumber = button.data('batchnumber');
+
 			var recommendationsList = button.siblings('.recommendations-list');
 
 			recommendationsList.html('<p>Loading Available...</p>').show();
@@ -417,7 +429,10 @@
 				method: 'POST',
 				data: {
 					sku: sku,
-					id_batch: id_batch
+					id_batch: id_batch,
+					batchnumber: batchnumber
+
+
 				},
 				dataType: 'json',
 				success: function(response) {
@@ -444,6 +459,7 @@
 				var qty = parseInt($(this).val());
 				var sku = $(this).closest('tr').parent().find('input[name="sku"]').val();
 				var id_batch = $(this).closest('tr').parent().find('input[name="id_batch"]').val();
+				var batchnumber = $(this).closest('tr').parent().find('input[name="batchnumber"]').val();
 				var inputQty = $(this); // Simpan referensi ke input qty[]
 				console.log(sku);
 
@@ -463,6 +479,7 @@
 						data: {
 							sku: sku,
 							id_batch: id_batch,
+							batchnumber: batchnumber,
 							rack: rack
 						},
 						dataType: 'json',
