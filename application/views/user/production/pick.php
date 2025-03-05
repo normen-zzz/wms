@@ -144,8 +144,8 @@
 																		<tr>
 																			<td><input type="text" name="rack[]" id="rack" class="form-control rack"></td>
 																			<td><input type="number" name="qty[]" id="qty" class="form-control qty">
-																				<input type="number" name="id_batch" hidden value="<?= $item['batch_id'] ?>">
-																				<input type="number" name="batchnumber" hidden value="<?= $item['batchnumber'] ?>">
+																				<input type="text" name="id_batch" hidden value="<?= $item['batch_id'] ?>">
+																				<input type="text" name="batchnumber" hidden value="<?= $item['batchnumber'] ?>">
 																				<input type="text" name="sku" hidden value="<?= $item['sku'] ?>">
 
 
