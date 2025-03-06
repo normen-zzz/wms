@@ -77,7 +77,6 @@ class Adjuststock_model extends CI_Model {
         $this->db->join('rack', 'rack_items.id_rack = rack.id_rack');
         $this->db->where('rack_items.id_barang', $id_barang);
         $this->db->where('rack_items.id_batch', $id_batch);
-        $this->db->where('rack_items.quantity >', 0);
         $query = $this->db->get();
         return $query->result();
     }
