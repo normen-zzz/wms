@@ -60,7 +60,7 @@ class Adjuststock_model extends CI_Model {
 
     public function getBatchBarang($id_barang)
 	{
-		return $this->db->query('SELECT  b.batchnumber,b.id_batch FROM rack_items AS a INNER JOIN batch AS b ON a.id_batch = b.id_batch WHERE a.id_barang = ' . $id_barang . ' AND a.quantity > 0 GROUP BY b.id_batch');
+		return $this->db->query('SELECT  b.batchnumber,b.id_batch FROM rack_items AS a INNER JOIN batch AS b ON a.id_batch = b.id_batch WHERE a.id_barang = ' . $id_barang . '  GROUP BY b.id_batch');
 	}
 
     public function checkQty($id_barang, $id_batch,$rack)

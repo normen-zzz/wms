@@ -13,7 +13,7 @@ class Production_model extends CI_Model
 	// getDataProduction
 	public function getDataProduction()
 	{
-		$this->db->select('*,production.created_at as dibuat,u.nama as picker');
+		$this->db->select('production.*,production.created_at as dibuat,u.nama as picker');
 		$this->db->from('production');
 		$this->db->join('users', 'production.created_by = users.id_users');
 		// join users for picker 
