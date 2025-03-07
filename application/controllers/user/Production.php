@@ -55,16 +55,14 @@ class Production extends CI_Controller
 
 	public function save_production()
 	{
-		$sku_bundling = $this->input->post('sku_bundling');
+		$this->db->trans_start();
+
+		try {
+			$sku_bundling = $this->input->post('sku_bundling');
 		$batch_bundling = $this->input->post('batch_bundling');
 		$quantity_bundling = $this->input->post('quantity_bundling');
 		$ed_bundling = $this->input->post('ed_bundling');
 		$materials = $this->input->post('materials');
-		
-
-		$this->db->trans_start();
-
-		try {
 			$production_data = [
 				'no_production' => generate_production_number(),
 				'sku_bundling' => $sku_bundling,
@@ -84,7 +82,7 @@ class Production extends CI_Controller
 						$material_data = [
 							'production_id' => $production_id,
 							'sku' => $material['sku_material'],
-							'batch_id' => $batch['batch'],
+							'batch_id' => '',
 							'batchnumber' => $batch['batchnumber'],
 							'quantity' => $batch['qtyBatch']
 						];
@@ -96,23 +94,26 @@ class Production extends CI_Controller
 
 			$this->db->trans_complete();
 
-			echo json_encode([
-				'status' => 'success',
-				'message' => 'Production saved successfully'
-			]);
+
 			if ($this->db->trans_status() === FALSE) {
 				throw new Exception('Transaction failed');
+			} else{
+				$response = json_encode([
+					'status' => 'success',
+					'message' => 'Production saved successfully'
+				]);
 			}
 
 			
 		} catch (Exception $e) {
 			$this->db->trans_rollback();
 			http_response_code(500);
-			echo json_encode([
+			$response = json_encode([
 				'status' => 'error',
 				'message' => 'Failed to save production: ' . $e->getMessage()
 			]);
 		}
+		echo $response;
 	}
 
 	public function detail($id)

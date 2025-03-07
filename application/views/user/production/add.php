@@ -422,6 +422,14 @@
 					cancelButtonText: 'No'
 				}).then((result) => {
 					if (result.isConfirmed) {
+						// show loading swal 
+						Swal.fire({
+							title: 'Saving Production',
+							text: 'Please wait...',
+							allowOutsideClick: false,
+							showConfirmButton: false,
+							
+						});
 						var formData = {
 							sku_bundling: $('#sku_bundling').val(),
 							batch_bundling: $('#batch_bundling').val(),
@@ -509,16 +517,7 @@
 							return;
 						}
 
-						// show loading swal 
-						Swal.fire({
-							title: 'Saving Production',
-							text: 'Please wait...',
-							allowOutsideClick: false,
-							showConfirmButton: false,
-							willOpen: () => {
-								Swal.showLoading();
-							}
-						});
+						
 
 						$.ajax({
 							url: '<?= base_url() ?>user/production/save_production',
@@ -529,7 +528,7 @@
 								if (response.status == 'success') {
 									Swal.fire({
 										title: 'Success!',
-										text: 'Production saved successfully!',
+										text: response.message,
 										icon: 'success',
 										confirmButtonText: 'OK'
 									}).then((result) => {
@@ -546,6 +545,7 @@
 											window.location.href = '<?= base_url() ?>user/production';
 										}
 									});
+									
 
 								} else {
 									Swal.fire({
