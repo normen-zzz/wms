@@ -14,14 +14,14 @@ class Log extends CI_Controller
 	{
 		parent::__construct();
 		$this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));");
-		$this->load->model('Log_model','wms_log');
+		$this->load->model('Log_model', 'wms_log');
 	}
 
 	public function index()
 	{
 		$filters = [
 			// remove space 
-			
+
 			'sku' => trim($this->input->get('sku')),
 			'batchnumber' => trim($this->input->get('batchnumber')),
 			'sloc' => trim($this->input->get('sloc')),
@@ -41,7 +41,7 @@ class Log extends CI_Controller
 	// export data to excel 
 	public function exportLog()
 	{
-		
+
 
 		$logs = $this->wms_log->getAllLogExport();
 
@@ -65,7 +65,7 @@ class Log extends CI_Controller
 
 		$no = 2;
 		foreach ($logs as $log) {
-			$sheet->setCellValue('A' . $no, $no-1);
+			$sheet->setCellValue('A' . $no, $no - 1);
 			$sheet->setCellValue('B' . $no, $log->sku);
 			$sheet->setCellValue('C' . $no, $log->nama_barang);
 			$sheet->setCellValue('D' . $no, $log->batchnumber);
@@ -85,23 +85,13 @@ class Log extends CI_Controller
 		$writer = new Xlsx($spreadsheet);
 		$filename = 'log-' . date('YmdHis') . '.xlsx';
 		// langsung download 
-		
-		
+
+
 		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 		header('Content-Disposition: attachment;filename="' . $filename . '"');
 		header('Cache-Control: max-age=0');
-		 
+
 
 		$writer->save('php://output');
-
 	}
-
-	
-
-	
-
-
-
-
-	
 }
