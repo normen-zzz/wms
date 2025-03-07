@@ -13,11 +13,11 @@ class Production_model extends CI_Model
 	// getDataProduction
 	public function getDataProduction()
 	{
-		$this->db->select('production.*,production.created_at as dibuat,u.nama as picker');
+		$this->db->select('production.no_production,production.sku_bundling,production.batch_bundling,production.ed_bundling,qty_bundling,production.id_production,production.status,production.pick_by,production.created_at as dibuat');
 		$this->db->from('production');
 		$this->db->join('users', 'production.created_by = users.id_users');
 		// join users for picker 
-		$this->db->join('users u', 'production.pick_by = u.id_users', 'left');
+		
 		if ($this->session->userdata('role_id') == 4) {
 			$this->db->where('production.pick_by', $this->session->userdata('id_users'));
 		}

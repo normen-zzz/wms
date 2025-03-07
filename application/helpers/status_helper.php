@@ -129,7 +129,7 @@ if (!function_exists('getStatusPutaway')) {
 		function getStatusProduction($status,$pick_by = NULL)
 		{
 			$CI = &get_instance();
-			$user = $CI->db->query("SELECT * FROM users WHERE id_users = '$pick_by'")->row_array();
+			$user = $CI->db->query("SELECT nama FROM users WHERE id_users = '$pick_by'")->row_array();
 			if ($status == 0) {
 				return '<span class="badge bg-warning">Created</span>';
 			} else if ($status == 1) {

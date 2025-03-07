@@ -77,11 +77,15 @@ class Picklist extends CI_Controller
 
 				if (is_array($barang_ids) && !empty($barang_ids)) {
 					foreach ($barang_ids as $key => $barang_id) {
-						$checkBatchItem = $this->db->query('SELECT id_batchitem, batch.id_batch, batchitem.qty, batch.expiration_date 
-																														FROM batchitem 
-																														INNER JOIN batch ON batchitem.id_batch = batch.id_batch 
-																														WHERE batch.batchnumber = "' . $batches[$key] . '" 
-																														AND batchitem.id_barang = "' . $barang_id . '"');
+						// $checkBatchItem = $this->db->query('SELECT id_batchitem, batch.id_batch, batchitem.qty, batch.expiration_date 
+						// 																								FROM batchitem 
+						// 																								INNER JOIN batch ON batchitem.id_batch = batch.id_batch 
+						// 																								WHERE batch.batchnumber = "' . $batches[$key] . '" 
+						// 																								AND batchitem.id_barang = "' . $barang_id . '"');
+
+						$checkBatchItem  = $this->db->query('SELECT a.id_barang,a.id_batch,a.qty,c.batchnumber,c.expiration_date FROM rack_items a
+																								INNER JOIN batch c ON a.id_batch = c.id_batch
+																								WHERE a.id_barang = "' . $barang_id . '" AND c.batchnumber = "' . trim($batches[$key])  . '"');
 
 						if ($checkBatchItem->num_rows() > 0) {
 							$existingBatch = $checkBatchItem->row_array();
@@ -195,22 +199,18 @@ class Picklist extends CI_Controller
 					for ($i = 0; $i < sizeof($id_barang); $i++) {
 
 						// check last batch
-						$checkBatch = $this->db->query('SELECT id_batch FROM batch WHERE batchnumber = "' . $batch[$i] . '"');
+						// $checkBatch = $this->db->query('SELECT id_batch FROM batch WHERE batchnumber = "' . trim($batch[$i])  . '"');
+						$checkBatch = $this->db->query('SELECT b.sku,a.id_batch,c.batchnumber,c.expiration_date,a.id_rack FROM rack_items a JOIN barang b ON a.id_barang = b.id_barang JOIN batch c ON a.id_batch = c.id_batch WHERE c.batchnumber = "' . $batch[$i] . '" AND c.expiration_date = "' . date('Y-m-d', strtotime($ed[$i])) . '" ');
 						if ($checkBatch->num_rows() != 0) {
-							$id_batch_temporary = null;
-							$checkBatch = $checkBatch->result_array();
-							foreach ($checkBatch as $checkBatch1) {
-								$checkRackItems = $this->db->query('SELECT id FROM rack_items WHERE id_barang = "' . $id_barang[$i] . '" AND id_batch = "' . $checkBatch1['id_batch'] . '"');
-								if ($checkRackItems->num_rows() != 0) {
-									$id_batch_temporary = $checkBatch1['id_batch'];
-									break;
-								}
-							}
+							$checkBatch = $checkBatch->row_array();
+							$id_batch_temporary = $checkBatch['id_batch'];
+
+
 							if ($id_batch_temporary == null) {
 								$this->db->insert('batch', [
 									'uuid' => uniqid(),
 									'batchnumber' => $batch[$i],
-									'expiration_date' => date('Y-m-d H:i:s', strtotime($ed[$i]))
+									'expiration_date' => date('Y-m-d', strtotime($ed[$i]))
 								]);
 								$id_batch = $this->db->insert_id();
 							} else {
@@ -220,7 +220,7 @@ class Picklist extends CI_Controller
 							$this->db->insert('batch', [
 								'uuid' => uniqid(),
 								'batchnumber' => $batch[$i],
-								'expiration_date' => date('Y-m-d H:i:s', strtotime($ed[$i]))
+								'expiration_date' => date('Y-m-d', strtotime($ed[$i]))
 							]);
 							$id_batch = $this->db->insert_id();
 						}
