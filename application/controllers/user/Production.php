@@ -59,10 +59,10 @@ class Production extends CI_Controller
 
 		try {
 			$sku_bundling = $this->input->post('sku_bundling');
-		$batch_bundling = $this->input->post('batch_bundling');
-		$quantity_bundling = $this->input->post('quantity_bundling');
-		$ed_bundling = $this->input->post('ed_bundling');
-		$materials = $this->input->post('materials');
+			$batch_bundling = $this->input->post('batch_bundling');
+			$quantity_bundling = $this->input->post('quantity_bundling');
+			$ed_bundling = $this->input->post('ed_bundling');
+			$materials = $this->input->post('materials');
 			$production_data = [
 				'no_production' => generate_production_number(),
 				'sku_bundling' => $sku_bundling,
@@ -97,14 +97,12 @@ class Production extends CI_Controller
 
 			if ($this->db->trans_status() === FALSE) {
 				throw new Exception('Transaction failed');
-			} else{
+			} else {
 				$response = json_encode([
 					'status' => 'success',
 					'message' => 'Production saved successfully'
 				]);
 			}
-
-			
 		} catch (Exception $e) {
 			$this->db->trans_rollback();
 			http_response_code(500);
@@ -204,7 +202,7 @@ class Production extends CI_Controller
 
 		echo json_encode($recommendations);
 	}
-	
+
 
 	public function getQuantityRackItems()
 	{
@@ -228,7 +226,7 @@ class Production extends CI_Controller
 		foreach ($data as $row) {
 
 			$sku = $row['sku'];
-			
+
 			$sloc = $row['rack'];
 			$qty = $row['qty'];
 			$id_material =  $row['id_material'];
@@ -629,33 +627,32 @@ class Production extends CI_Controller
 					$checkQtyOnRack = $this->production->getQtyRackItems($pick_production1['id_barang'], $pick_production1['id_batch'], $pick_production1['id_rack']);
 					//jika qty rack items production lebih besar sama dengan qty pick production
 					if ($pick_production1['qty'] != 0) {
-						
-							$updatePickProduction = $this->db->update('pick_production', ['status' => 2], ['id_pick_production' => $pick_production1['id_pick_production']]);
-							if ($updatePickProduction) {
-								$updateRackItems = $this->db->update('rack_items', ['quantity' => $checkQtyOnRack['quantity'] + $pick_production1['qty']], ['id_barang' => $pick_production1['id_barang'], 'id_batch' => $pick_production1['id_batch'], 'id_rack' => $pick_production1['id_rack']]);
-								if ($updateRackItems) {
-									$dataLog = [
-										'id_barang' => $pick_production1['id_barang'],
-										'id_batch' => $pick_production1['id_batch'],
-										'id_rack' => $pick_production1['id_rack'],
-										'condition' => 'in',
-										'qty' => $pick_production1['qty'],
-										'at' => date('Y-m-d H:i:s'),
-										'by' => $this->session->userdata('id_users'),
-										'no_document' => $production['no_production'],
-										'Description' => 'Void Production'
-									];
-									$insertLog = $this->db->insert('wms_log', $dataLog);
-									if (!$insertLog) {
-										throw new Exception('Failed to insert log');
-									}
-								} else {
-									throw new Exception('Failed to update rack items');
+
+						$updatePickProduction = $this->db->update('pick_production', ['status' => 2], ['id_pick_production' => $pick_production1['id_pick_production']]);
+						if ($updatePickProduction) {
+							$updateRackItems = $this->db->update('rack_items', ['quantity' => $checkQtyOnRack['quantity'] + $pick_production1['qty']], ['id_barang' => $pick_production1['id_barang'], 'id_batch' => $pick_production1['id_batch'], 'id_rack' => $pick_production1['id_rack']]);
+							if ($updateRackItems) {
+								$dataLog = [
+									'id_barang' => $pick_production1['id_barang'],
+									'id_batch' => $pick_production1['id_batch'],
+									'id_rack' => $pick_production1['id_rack'],
+									'condition' => 'in',
+									'qty' => $pick_production1['qty'],
+									'at' => date('Y-m-d H:i:s'),
+									'by' => $this->session->userdata('id_users'),
+									'no_document' => $production['no_production'],
+									'Description' => 'Void Production'
+								];
+								$insertLog = $this->db->insert('wms_log', $dataLog);
+								if (!$insertLog) {
+									throw new Exception('Failed to insert log');
 								}
 							} else {
-								throw new Exception('Failed to update pick production');
+								throw new Exception('Failed to update rack items');
 							}
-						
+						} else {
+							throw new Exception('Failed to update pick production');
+						}
 					} else {
 						throw new Exception('Quantity pick tidak boleh 0' . $pick_production1['sku'] . ' ' . $pick_production1['batchnumber'] . ' ' . $pick_production1['sloc'] . $pick_production1['qty']);
 					}
@@ -736,7 +733,7 @@ class Production extends CI_Controller
 						throw new Exception('Failed to update rack items');
 					}
 				} else {
-					throw new Exception( $production['no_production'].' Quantity rack items not enough for sku ' . $log1['sku'] . ' and id_batch ' . $log1['batchnumber'] . ' and id_rack ' . $log1['sloc'] . ' just have ' . $lastQuantityRackItems['quantity'] . ' available');
+					throw new Exception($production['no_production'] . ' Quantity rack items not enough for sku ' . $log1['sku'] . ' and id_batch ' . $log1['batchnumber'] . ' and id_rack ' . $log1['sloc'] . ' just have ' . $lastQuantityRackItems['quantity'] . ' available');
 				}
 			}
 			$this->db->trans_complete();
