@@ -73,7 +73,7 @@ class Log extends CI_Controller
 			$sheet->setCellValue('F' . $no, $log->expiration_date);
 			$sheet->setCellValue('G' . $no, $log->qty);
 			$sheet->setCellValue('H' . $no, $log->condition);
-			$sheet->setCellValue('I' . $no, $log->at);
+			$sheet->setCellValue('I' . $no, date('d-m-Y H:i:s', strtotime($log->at)));
 			$sheet->setCellValue('J' . $no, $log->no_document);
 			$sheet->setCellValue('K' . $no, $log->nama);
 			$sheet->setCellValue('L' . $no, $log->description);
