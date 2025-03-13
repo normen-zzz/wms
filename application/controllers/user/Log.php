@@ -41,8 +41,6 @@ class Log extends CI_Controller
 	// export data to excel 
 	public function exportLog()
 	{
-
-
 		$logs = $this->wms_log->getAllLogExport();
 
 		$spreadsheet = new Spreadsheet();
@@ -60,9 +58,6 @@ class Log extends CI_Controller
 		$sheet->setCellValue('K1', 'By');
 		$sheet->setCellValue('L1', 'Description');
 
-
-
-
 		$no = 2;
 		foreach ($logs as $log) {
 			$sheet->setCellValue('A' . $no, $no - 1);
@@ -73,24 +68,27 @@ class Log extends CI_Controller
 			$sheet->setCellValue('F' . $no, $log->expiration_date);
 			$sheet->setCellValue('G' . $no, $log->qty);
 			$sheet->setCellValue('H' . $no, $log->condition);
-			$sheet->setCellValue('I' . $no, date('d/m/Y H:i:s', strtotime($log->at)));
+
+			// Konversi tanggal ke format Excel
+			$phpDateValue = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel(strtotime($log->at));
+			$sheet->setCellValue('I' . $no, $phpDateValue);
+			$sheet->getStyle('I' . $no)
+				->getNumberFormat()
+				->setFormatCode('dd/mm/yyyy hh:mm:ss'); // Format tanggal Excel
+
 			$sheet->setCellValue('J' . $no, $log->no_document);
 			$sheet->setCellValue('K' . $no, $log->nama);
 			$sheet->setCellValue('L' . $no, $log->description);
-
 
 			$no++;
 		}
 
 		$writer = new Xlsx($spreadsheet);
 		$filename = 'log-' . date('YmdHis') . '.xlsx';
-		// langsung download 
-
 
 		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 		header('Content-Disposition: attachment;filename="' . $filename . '"');
 		header('Cache-Control: max-age=0');
-
 
 		$writer->save('php://output');
 	}
