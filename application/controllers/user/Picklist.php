@@ -192,39 +192,35 @@ class Picklist extends CI_Controller
 				$batch = $this->input->post('batch');
 				$qty = $this->input->post('qty');
 				$ed = $this->input->post('ed');
-
-
 				$dataPicklist = [];
+				$dataForCheck = [];
 				if ($id_barang == null) {
 					throw new Exception('Data cannot be empty');
 				} else {
 					for ($i = 0; $i < sizeof($id_barang); $i++) {
 
-						// check last batch
-						// $checkBatch = $this->db->query('SELECT id_batch FROM batch WHERE batchnumber = "' . trim($batch[$i])  . '"');
-						$checkBatch = $this->db->query('SELECT b.sku,a.id_batch,c.batchnumber,c.expiration_date,a.id_rack FROM rack_items a JOIN barang b ON a.id_barang = b.id_barang JOIN batch c ON a.id_batch = c.id_batch WHERE c.batchnumber = "' . $batch[$i] . '" AND c.expiration_date = "' . date('Y-m-d', strtotime($ed[$i])) . '" ');
-						if ($checkBatch->num_rows() != 0) {
-							$checkBatch = $checkBatch->row_array();
-							$id_batch_temporary = $checkBatch['id_batch'];
+						// find compare with batch and ed 
+						$find = array_search($batch[$i], array_column($dataForCheck, 'batchnumber'));
+						$find2 = array_search($ed[$i], array_column($dataForCheck, 'expiration_date'));
 
-
-							if ($id_batch_temporary == null) {
+						if ($find === false || $find2 === false) {
+							
+						
+							$checkBatch = $this->db->query('SELECT b.sku,a.id_batch,c.batchnumber,c.expiration_date,a.id_rack FROM rack_items a JOIN barang b ON a.id_barang = b.id_barang JOIN batch c ON a.id_batch = c.id_batch WHERE c.batchnumber = "' . $batch[$i] . '" AND c.expiration_date = "' . date('Y-m-d', strtotime($ed[$i])) . '" ORDER BY c.id_batch ASC LIMIT 1');
+							if ($checkBatch->num_rows() > 0) {
+								$checkBatch = $checkBatch->row_array();
+								$id_batch = $checkBatch['id_batch'];
+							} else {
 								$this->db->insert('batch', [
 									'uuid' => uniqid(),
 									'batchnumber' => $batch[$i],
 									'expiration_date' => date('Y-m-d', strtotime($ed[$i]))
 								]);
 								$id_batch = $this->db->insert_id();
-							} else {
-								$id_batch = $id_batch_temporary;
 							}
 						} else {
-							$this->db->insert('batch', [
-								'uuid' => uniqid(),
-								'batchnumber' => $batch[$i],
-								'expiration_date' => date('Y-m-d', strtotime($ed[$i]))
-							]);
-							$id_batch = $this->db->insert_id();
+							// ambil data dari $find 
+							$id_batch = $dataForCheck[$find]['id_batch'];
 						}
 
 						$dataPicklist[] = [
@@ -235,6 +231,12 @@ class Picklist extends CI_Controller
 							'created_at' => date('Y-m-d H:i:s'),
 							'created_by' => $created_by,
 							'expiration_date' => date('Y-m-d', strtotime($ed[$i]))
+						];
+						$dataForCheck[] = [
+							'id_barang' => $id_barang[$i],
+							'batchnumber' => $batch[$i],
+							'id_batch' => $id_batch,
+							'expiration_date' => date('Y-m-d', strtotime($ed[$i])),
 						];
 					}
 					$insertDataPicklist = $this->db->insert_batch('datapicklist', $dataPicklist);
