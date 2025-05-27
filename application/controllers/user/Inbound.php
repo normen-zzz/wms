@@ -378,4 +378,41 @@ class Inbound extends CI_Controller
 		// Load the view with the data
 		$this->load->view('user/inbound/detail', $data);
 	}
+
+	// editDataInbound
+	public function editDataInbound()
+	{
+		$this->db->trans_start(); 
+		try {
+			$id_data_inbound = $this->input->post('id_data_inbound');
+			$good_qty = $this->input->post('good_qty');
+			$bad_qty = $this->input->post('bad_qty');
+
+			$data = [
+				'good_qty' => $good_qty,
+				'bad_qty' => $bad_qty
+			];
+			$update = $this->db->update('data_inbound', $data, ['id_data_inbound' => $id_data_inbound]);
+			if (!$update) {
+				throw new Exception('Failed to update data Inbound.');
+			}
+			$this->db->trans_complete();
+			if ($this->db->trans_status() === FALSE) {
+				throw new Exception('Transaction failed');
+			}else{
+				$response = [
+					'status' => 'success',
+					'message' => 'Data Inbound updated successfully.'
+				];
+			}
+		} catch (Exception $e) {
+			$this->db->trans_rollback();
+			$response = [
+				'status' => 'error',
+				'message' => 'Error updating data Inbound: ' . $e->getMessage()
+			];
+		}
+
+		echo json_encode($response);
+	}
 }

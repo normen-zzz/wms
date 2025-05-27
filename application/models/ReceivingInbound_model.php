@@ -161,7 +161,7 @@ class ReceivingInbound_model extends CI_Model
 	// getDataInbound
 	public function getDataInbound($uuid) {
 		//from data_inbound where uuid on join inbound,join barang,batch
-		$this->db->select('data_inbound.good_qty,data_inbound.bad_qty,data_inbound.received_qty,inbound.no_inbound, barang.sku, barang.nama_barang, batch.batchnumber,batch.expiration_date');
+		$this->db->select('data_inbound.good_qty,data_inbound.bad_qty,data_inbound.received_qty,inbound.no_inbound, barang.sku, barang.nama_barang, batch.batchnumber,batch.expiration_date, data_inbound.id_data_inbound, data_inbound.status_putaway');
 		$this->db->from('data_inbound');
 		$this->db->join('inbound', 'inbound.id_inbound = data_inbound.id_inbound');
 		$this->db->join('barang', 'barang.id_barang = data_inbound.id_barang');
